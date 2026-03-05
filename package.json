@@ -1,20 +1,23 @@
 {
-    "name":  "dollar-gravity-framework",
-    "version":  "2.1.0",
-    "private":  true,
-    "scripts":  {
-                    "dev":  "vite",
-                    "build":  "vite build",
-                    "preview":  "vite preview"
-                },
-    "dependencies":  {
-                         "react":  "^18.3.1",
-                         "react-dom":  "^18.3.1",
-                         "d3":  "^7.9.0"
-                     },
-    "devDependencies":  {
-                            "@vitejs/plugin-react":  "^4.3.1",
-                            "vite":  "^5.4.0"
-                        },
-    "type":  "module"
+  "name": "dollar-gravity-framework",
+  "version": "2.1.0",
+  "private": true,
+  "homepage": "https://POWDER-RANGER.github.io/dollar-gravity-framework",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "predeploy": "vite build",
+    "deploy": "gh-pages -d dist"
+  },
+  "dependencies": {
+    "d3": "^7.9.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "gh-pages": "^6.3.0",
+    "vite": "^5.4.0"
+  }
 }
