@@ -1,26 +1,378 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>Dollar-Gravity Framework v4.0 Galaxy</title>
-  <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@18?dev",
-        "react-dom": "https://esm.sh/react-dom@18?dev",
-        "react-dom/client": "https://esm.sh/react-dom@18/client?dev",
-        "@react-three/fiber": "https://esm.sh/@react-three/fiber@8?dev",
-        "@react-three/drei": "https://esm.sh/@react-three/drei@9?dev",
-        "three": "https://esm.sh/three@0.158?dev",
-        "three/addons/": "https://esm.sh/three@0.158/addons/"
-      }
-    }
-  </script>
-  <script type="module" src="/main.jsx"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dollar-Gravity Framework v4.0 — Interactive Galaxy</title>
   <style>
-    * { margin: 0; padding: 0; }
-    html, body, #root { height: 100%; overflow: hidden; background: radial-gradient(circle at top, #020617 0%, #000000 100%); }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body, #root { 
+      width: 100%; 
+      height: 100%; 
+      overflow: hidden; 
+      background: radial-gradient(circle at top, #020617 0%, #000000 100%);
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    #loading {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #020617 0%, #000000 100%);
+      color: #60a5fa;
+      font-size: 18px;
+      z-index: 9999;
+    }
   </style>
 </head>
 <body>
+  <div id="loading">Loading Dollar-Gravity Galaxy...</div>
   <div id="root"></div>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "@react-three/fiber": "https://esm.sh/@react-three/fiber@8.15.12",
+        "@react-three/drei": "https://esm.sh/@react-three/drei@9.92.7",
+        "three": "https://esm.sh/three@0.160.0"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import React, { useRef, useState, useMemo } from 'react';
+    import { createRoot } from 'react-dom/client';
+    import { Canvas, useFrame } from '@react-three/fiber';
+    import { OrbitControls, Html, Stars } from '@react-three/drei';
+    import * as THREE from 'three';
+
+    const { useEffect } = React;
+
+    // Tier 1 Major Powers Dataset (Top 30 from v4.0 spec)
+    const countries = [
+      { id: 'USA', name: 'United States', mass: 1.00, color: '#00aaff', position: [0, 0, 0], threat: 0.85, usdDep: 0.95, size: 1.8, nuclear: 3708, haloColor: '#ffffff', bloc: 'US-centric' },
+      { id: 'CHN', name: 'China', mass: 0.92, color: '#ffcc00', position: [-20, -8, 15], threat: 0.65, usdDep: 0.25, size: 1.6, nuclear: 600, haloColor: '#ffcc00', bloc: 'China-led' },
+      { id: 'RUS', name: 'Russia', mass: 0.68, color: '#cc4400', position: [15, 5, -10], threat: 0.75, usdDep: 0.15, size: 1.4, nuclear: 4309, haloColor: '#aa2200', bloc: 'Russia-Iran axis' },
+      { id: 'IND', name: 'India', mass: 0.55, color: '#ff8800', position: [10, 20, 5], threat: 0.45, usdDep: 0.40, size: 1.2, nuclear: 180, haloColor: '#ff8800', bloc: 'Swing state' },
+      { id: 'KOR', name: 'South Korea', mass: 0.28, color: '#4488ff', position: [-15, -5, 12], threat: 0.50, usdDep: 0.70, size: 1.0, nuclear: 0, haloColor: null, bloc: 'US-centric' },
+      { id: 'FRA', name: 'France', mass: 0.25, color: '#4488ff', position: [-10, 10, -5], threat: 0.40, usdDep: 0.80, size: 1.0, nuclear: 290, haloColor: '#4488ff', bloc: 'US-centric' },
+      { id: 'JPN', name: 'Japan', mass: 0.24, color: '#5599ff', position: [-18, -8, 8], threat: 0.35, usdDep: 0.85, size: 0.95, nuclear: 0, haloColor: null, bloc: 'US-centric' },
+      { id: 'GBR', name: 'United Kingdom', mass: 0.22, color: '#4488ff', position: [-12, 12, -3], threat: 0.40, usdDep: 0.82, size: 0.95, nuclear: 225, haloColor: '#4488ff', bloc: 'US-centric' },
+      { id: 'IRN', name: 'Iran', mass: 0.22, color: '#ee2200', position: [8, -12, 3], threat: 0.95, usdDep: 0.05, size: 0.9, nuclear: 0, haloColor: '#dd0000', latent: true, bloc: 'Russia-Iran axis' },
+      { id: 'TUR', name: 'Turkey', mass: 0.21, color: '#aa6600', position: [2, 8, -5], threat: 0.55, usdDep: 0.60, size: 0.88, nuclear: 0, haloColor: null, bloc: 'Swing state' },
+      { id: 'ITA', name: 'Italy', mass: 0.19, color: '#5588ff', position: [-8, 14, -2], threat: 0.35, usdDep: 0.78, size: 0.85, nuclear: 0, haloColor: null, bloc: 'US-centric' },
+      { id: 'BRA', name: 'Brazil', mass: 0.18, color: '#00cc66', position: [-25, -18, 5], threat: 0.30, usdDep: 0.55, size: 0.85, nuclear: 0, haloColor: null, bloc: 'Neutral' },
+      { id: 'DEU', name: 'Germany', mass: 0.22, color: '#5588ff', position: [-6, 15, 0], threat: 0.30, usdDep: 0.88, size: 0.92, nuclear: 0, haloColor: null, bloc: 'US-centric' },
+      { id: 'IDN', name: 'Indonesia', mass: 0.17, color: '#88aa44', position: [-22, -10, 20], threat: 0.25, usdDep: 0.45, size: 0.82, nuclear: 0, haloColor: null, bloc: 'Neutral' },
+      { id: 'PAK', name: 'Pakistan', mass: 0.16, color: '#66aa66', position: [18, 15, 0], threat: 0.45, usdDep: 0.35, size: 0.8, nuclear: 170, haloColor: '#66aa66', bloc: 'China-adjacent' },
+      { id: 'ISR', name: 'Israel', mass: 0.18, color: '#88aaff', position: [5, -5, -8], threat: 0.80, usdDep: 0.85, size: 0.85, nuclear: 90, haloColor: '#ffffff', bloc: 'US-centric' },
+      { id: 'AUS', name: 'Australia', mass: 0.15, color: '#00aacc', position: [-28, -15, 18], threat: 0.30, usdDep: 0.75, size: 0.78, nuclear: 0, haloColor: null, bloc: 'US-centric' },
+      { id: 'ESP', name: 'Spain', mass: 0.14, color: '#6688ff', position: [-14, 16, -8], threat: 0.30, usdDep: 0.80, size: 0.75, nuclear: 0, haloColor: null, bloc: 'US-centric' },
+      { id: 'EGY', name: 'Egypt', mass: 0.13, color: '#cc8844', position: [6, 2, -12], threat: 0.40, usdDep: 0.50, size: 0.72, nuclear: 0, haloColor: null, bloc: 'Neutral' },
+      { id: 'UKR', name: 'Ukraine', mass: 0.12, color: '#4488ff', position: [10, 12, -8], threat: 0.70, usdDep: 0.40, size: 0.70, nuclear: 0, haloColor: null, bloc: 'US-centric' },
+      { id: 'POL', name: 'Poland', mass: 0.12, color: '#5599ff', position: [-2, 18, -5], threat: 0.45, usdDep: 0.78, size: 0.70, nuclear: 0, haloColor: null, bloc: 'US-centric' },
+      { id: 'TWN', name: 'Taiwan', mass: 0.13, color: '#33aaff', position: [-25, -12, 10], threat: 0.60, usdDep: 0.70, size: 0.72, nuclear: 0, haloColor: null, bloc: 'US-adjacent' },
+      { id: 'VNM', name: 'Vietnam', mass: 0.13, color: '#cc6600', position: [-20, -15, 15], threat: 0.40, usdDep: 0.45, size: 0.72, nuclear: 0, haloColor: null, bloc: 'Swing state' },
+      { id: 'THA', name: 'Thailand', mass: 0.11, color: '#aa8844', position: [-18, -12, 12], threat: 0.25, usdDep: 0.55, size: 0.68, nuclear: 0, haloColor: null, bloc: 'Neutral' },
+      { id: 'SAU', name: 'Saudi Arabia', mass: 0.12, color: '#00cc88', position: [12, -8, -3], threat: 0.55, usdDep: 0.75, size: 0.70, nuclear: 0, haloColor: null, bloc: 'US-adjacent' },
+      { id: 'SWE', name: 'Sweden', mass: 0.09, color: '#66aaff', position: [-5, 20, -10], threat: 0.30, usdDep: 0.80, size: 0.62, nuclear: 0, haloColor: null, bloc: 'US-centric' },
+      { id: 'DZA', name: 'Algeria', mass: 0.09, color: '#888888', position: [-3, 5, -18], threat: 0.35, usdDep: 0.45, size: 0.62, nuclear: 0, haloColor: null, bloc: 'Neutral' },
+      { id: 'CAN', name: 'Canada', mass: 0.12, color: '#3388ff', position: [-8, 5, 22], threat: 0.30, usdDep: 0.90, size: 0.70, nuclear: 0, haloColor: null, bloc: 'US-centric' },
+      { id: 'SGP', name: 'Singapore', mass: 0.09, color: '#00ddaa', position: [-22, -18, 15], threat: 0.25, usdDep: 0.90, size: 0.62, nuclear: 0, haloColor: null, bloc: 'US-adjacent' },
+      { id: 'PRK', name: 'North Korea', mass: 0.11, color: '#dd0000', position: [25, -20, 8], threat: 0.90, usdDep: 0.01, size: 0.68, nuclear: 50, haloColor: '#dd0000', bloc: 'Russia-adjacent' },
+    ];
+
+    const relationships = [
+      { from: 'RUS', to: 'IRN', color: '#aa00ff', pulse: true },
+      { from: 'USA', to: 'ISR', color: '#00aaff', pulse: false },
+      { from: 'USA', to: 'IRN', color: '#ff4400', pulse: false },
+      { from: 'CHN', to: 'RUS', color: '#ffaa00', pulse: false },
+      { from: 'USA', to: 'JPN', color: '#0088ff', pulse: false },
+      { from: 'USA', to: 'KOR', color: '#0088ff', pulse: false },
+      { from: 'USA', to: 'GBR', color: '#0088ff', pulse: false },
+      { from: 'USA', to: 'FRA', color: '#0088ff', pulse: false },
+      { from: 'USA', to: 'DEU', color: '#0088ff', pulse: false },
+      { from: 'USA', to: 'SAU', color: '#ffcc00', pulse: false },
+      { from: 'CHN', to: 'PAK', color: '#ffaa00', pulse: false },
+      { from: 'IND', to: 'PAK', color: '#ff6600', pulse: false },
+      { from: 'ISR', to: 'IRN', color: '#ff3300', pulse: false },
+      { from: 'RUS', to: 'PRK', color: '#cc4400', pulse: false },
+    ];
+
+    function Planet({ data, onClick }) {
+      const meshRef = useRef();
+      const haloRef = useRef();
+      const [hovered, setHovered] = useState(false);
+
+      useFrame(({ clock }) => {
+        if (!meshRef.current) return;
+        meshRef.current.rotation.y += 0.002;
+        if ((data.nuclear > 0 || data.latent) && haloRef.current) {
+          const t = clock.getElapsedTime();
+          const s = 1 + Math.sin(t * 0.8) * 0.06;
+          haloRef.current.scale.set(s, s, s);
+        }
+      });
+
+      return React.createElement('group', {
+        position: data.position,
+        onClick: (e) => { e.stopPropagation(); onClick(data); },
+        onPointerOver: (e) => { e.stopPropagation(); setHovered(true); },
+        onPointerOut: (e) => { e.stopPropagation(); setHovered(false); },
+      }, [
+        React.createElement('mesh', { ref: meshRef, key: 'sphere' }, [
+          React.createElement('sphereGeometry', { args: [data.size, 32, 32], key: 'geo' }),
+          React.createElement('meshStandardMaterial', {
+            color: data.color,
+            emissive: data.color,
+            emissiveIntensity: 0.6,
+            key: 'mat'
+          }),
+        ]),
+        React.createElement('mesh', {
+          position: [0, 0, 0],
+          rotation: [Math.PI / 2, 0, 0],
+          key: 'ring'
+        }, [
+          React.createElement('torusGeometry', { args: [data.size + 0.25, 0.05, 16, 100], key: 'rgeo' }),
+          React.createElement('meshBasicMaterial', {
+            color: '#ffcc00',
+            opacity: data.usdDep * 0.8,
+            transparent: true,
+            key: 'rmat'
+          }),
+        ]),
+        (data.nuclear > 0 || data.latent) && React.createElement('mesh', { ref: haloRef, key: 'halo' }, [
+          React.createElement('sphereGeometry', { args: [data.size * 1.5, 32, 32], key: 'hgeo' }),
+          React.createElement('meshBasicMaterial', {
+            color: data.haloColor || '#ff0000',
+            transparent: true,
+            opacity: data.latent ? 0.15 : 0.22,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            key: 'hmat'
+          }),
+        ]),
+        hovered && React.createElement(Html, {
+          position: [0, data.size + 0.6, 0],
+          center: true,
+          key: 'tooltip'
+        }, React.createElement('div', {
+          style: {
+            background: 'rgba(0,0,0,0.9)',
+            color: '#fff',
+            padding: '10px 14px',
+            borderRadius: '8px',
+            fontSize: '13px',
+            border: '1px solid rgba(255,255,255,0.3)',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.8)',
+            whiteSpace: 'nowrap',
+          }
+        }, [
+          React.createElement('div', { style: { fontWeight: 600, marginBottom: 4 }, key: 'n' }, data.name),
+          React.createElement('div', { key: 'm' }, `Mass: ${data.mass.toFixed(2)}`),
+          React.createElement('div', { key: 't' }, `Threat: ${(data.threat * 100).toFixed(0)}%`),
+          React.createElement('div', { key: 'd' }, `Dollar: ${(data.usdDep * 100).toFixed(0)}%`),
+          data.nuclear > 0 && React.createElement('div', { key: 'nuc' }, `Nuclear: ${data.nuclear.toLocaleString()}`),
+        ]))
+      ]);
+    }
+
+    function GravityLine({ fromPos, toPos, color, pulse }) {
+      const lineRef = useRef();
+      const points = useMemo(() => [new THREE.Vector3(...fromPos), new THREE.Vector3(...toPos)], [fromPos, toPos]);
+
+      useFrame(({ clock }) => {
+        if (!lineRef.current || !pulse) return;
+        if (lineRef.current.material) {
+          const t = clock.getElapsedTime();
+          lineRef.current.material.opacity = 0.4 + Math.sin(t * 2) * 0.35;
+        }
+      });
+
+      const geometry = new THREE.BufferGeometry().setFromPoints(points);
+
+      return React.createElement('line', { ref: lineRef }, [
+        React.createElement('primitive', { object: geometry, attach: 'geometry', key: 'geo' }),
+        React.createElement('lineBasicMaterial', {
+          color,
+          transparent: true,
+          opacity: 0.7,
+          key: 'mat'
+        }),
+      ]);
+    }
+
+    function GalaxyScene() {
+      const [selected, setSelected] = useState(null);
+      const positions = useMemo(() =>
+        countries.reduce((acc, c) => {
+          acc[c.id] = c.position;
+          return acc;
+        }, {}),
+        []
+      );
+
+      return React.createElement(React.Fragment, null, [
+        React.createElement(Stars, {
+          radius: 150,
+          depth: 60,
+          count: 8000,
+          factor: 5,
+          saturation: 0,
+          fade: true,
+          key: 'stars'
+        }),
+        ...countries.map((c) =>
+          React.createElement(Planet, {
+            key: c.id,
+            data: c,
+            onClick: setSelected
+          })
+        ),
+        ...relationships.map((rel, i) =>
+          React.createElement(GravityLine, {
+            key: `${rel.from}-${rel.to}-${i}`,
+            fromPos: positions[rel.from],
+            toPos: positions[rel.to],
+            color: rel.color,
+            pulse: rel.pulse
+          })
+        ),
+        selected && React.createElement(Html, { fullscreen: true, key: 'hud' },
+          React.createElement('div', {
+            onClick: () => setSelected(null),
+            style: {
+              position: 'fixed',
+              inset: 0,
+              display: 'flex',
+              alignItems: 'flex-end',
+              justifyContent: 'center',
+              background: 'radial-gradient(circle at top, rgba(15,23,42,0.75), rgba(0,0,0,0.96))',
+              pointerEvents: 'auto',
+            }
+          },
+            React.createElement('div', {
+              onClick: (e) => e.stopPropagation(),
+              style: {
+                width: '100%',
+                maxWidth: 520,
+                margin: 24,
+                padding: 24,
+                borderRadius: 20,
+                background: 'rgba(15,23,42,0.98)',
+                border: '1px solid rgba(148,163,184,0.5)',
+                boxShadow: '0 24px 60px rgba(0,0,0,0.9)',
+                color: '#e5e7eb',
+              }
+            }, [
+              React.createElement('h2', { style: { fontSize: 22, fontWeight: 600, marginBottom: 6 }, key: 'h' }, selected.name),
+              React.createElement('p', { style: { fontSize: 12, color: '#9ca3af', marginBottom: 18, textTransform: 'uppercase', letterSpacing: 1.5 }, key: 'b' }, selected.bloc),
+              React.createElement('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 14, marginBottom: 18 }, key: 'g' }, [
+                React.createElement('div', {
+                  style: {
+                    padding: 12,
+                    borderRadius: 14,
+                    background: 'rgba(14,165,233,0.12)',
+                    border: '1px solid rgba(56,189,248,0.4)'
+                  },
+                  key: 'm'
+                }, [
+                  React.createElement('div', { style: { fontSize: 10, textTransform: 'uppercase', letterSpacing: 1.8, color: '#bae6fd' }, key: 'l' }, 'Power mass'),
+                  React.createElement('div', { style: { fontSize: 20, fontWeight: 600, marginTop: 4 }, key: 'v' }, selected.mass.toFixed(2)),
+                ]),
+                React.createElement('div', {
+                  style: {
+                    padding: 12,
+                    borderRadius: 14,
+                    background: 'rgba(236,72,153,0.12)',
+                    border: '1px solid rgba(244,114,182,0.5)'
+                  },
+                  key: 'n'
+                }, [
+                  React.createElement('div', { style: { fontSize: 10, textTransform: 'uppercase', letterSpacing: 1.8, color: '#fbcfe8' }, key: 'l' }, 'Nuclear'),
+                  React.createElement('div', { style: { fontSize: 20, fontWeight: 600, marginTop: 4 }, key: 'v' },
+                    selected.nuclear ? selected.nuclear.toLocaleString() : selected.latent ? 'Latent' : 'None'
+                  ),
+                ]),
+                React.createElement('div', {
+                  style: {
+                    padding: 12,
+                    borderRadius: 14,
+                    background: 'rgba(239,68,68,0.12)',
+                    border: '1px solid rgba(248,113,113,0.5)'
+                  },
+                  key: 't'
+                }, [
+                  React.createElement('div', { style: { fontSize: 10, textTransform: 'uppercase', letterSpacing: 1.8, color: '#fecaca' }, key: 'l' }, 'Threat'),
+                  React.createElement('div', { style: { fontSize: 20, fontWeight: 600, marginTop: 4 }, key: 'v' }, `${(selected.threat * 100).toFixed(0)}%`),
+                ]),
+                React.createElement('div', {
+                  style: {
+                    padding: 12,
+                    borderRadius: 14,
+                    background: 'rgba(245,158,11,0.14)',
+                    border: '1px solid rgba(251,191,36,0.6)'
+                  },
+                  key: 'd'
+                }, [
+                  React.createElement('div', { style: { fontSize: 10, textTransform: 'uppercase', letterSpacing: 1.8, color: '#fde68a' }, key: 'l' }, 'Dollar dependency'),
+                  React.createElement('div', { style: { fontSize: 20, fontWeight: 600, marginTop: 4 }, key: 'v' }, `${(selected.usdDep * 100).toFixed(0)}%`),
+                ]),
+              ]),
+              React.createElement('button', {
+                onClick: () => setSelected(null),
+                style: {
+                  marginTop: 8,
+                  fontSize: 14,
+                  padding: '8px 16px',
+                  borderRadius: 9999,
+                  border: '1px solid rgba(148,163,184,0.7)',
+                  background: 'rgba(15,23,42,0.9)',
+                  color: '#e5e7eb',
+                  cursor: 'pointer',
+                },
+                key: 'btn'
+              }, 'Close HUD')
+            ])
+          )
+        )
+      ]);
+    }
+
+    function App() {
+      useEffect(() => {
+        const loader = document.getElementById('loading');
+        if (loader) loader.style.display = 'none';
+      }, []);
+
+      return React.createElement('div', { style: { width: '100vw', height: '100vh' } },
+        React.createElement(Canvas, {
+          camera: { position: [0, 0, 55], fov: 60 },
+          dpr: [1, 2]
+        }, [
+          React.createElement('color', { attach: 'background', args: ['#020617'], key: 'bg' }),
+          React.createElement('ambientLight', { intensity: 0.5, key: 'amb' }),
+          React.createElement('pointLight', { position: [30, 30, 30], intensity: 1.4, key: 'p1' }),
+          React.createElement('pointLight', { position: [-25, -20, -15], intensity: 0.8, color: '#60a5fa', key: 'p2' }),
+          React.createElement(OrbitControls, {
+            enablePan: true,
+            enableZoom: true,
+            enableRotate: true,
+            minDistance: 10,
+            maxDistance: 120,
+            key: 'ctrl'
+          }),
+          React.createElement(GalaxyScene, { key: 'scene' })
+        ])
+      );
+    }
+
+    const root = createRoot(document.getElementById('root'));
+    root.render(React.createElement(App));
+  </script>
 </body>
 </html>
