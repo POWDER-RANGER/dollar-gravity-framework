@@ -3,33 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dollar-Gravity Framework v4.0 — Interactive Galaxy</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body, #root { 
-      width: 100%; 
-      height: 100%; 
-      overflow: hidden; 
-      background: radial-gradient(circle at top, #020617 0%, #000000 100%);
-      font-family: system-ui, -apple-system, sans-serif;
-    }
-    #loading {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle at top, #020617 0%, #000000 100%);
-      color: #60a5fa;
-      font-size: 18px;
-      z-index: 9999;
-    }
-  </style>
-</head>
-<body>
-  <div id="loading">Loading Dollar-Gravity Galaxy...</div>
-  <div id="root"></div>
-
+  <title>Dollar-Gravity Framework v4.0 — The Living Strategic Universe</title>
   <script type="importmap">
     {
       "imports": {
@@ -41,68 +15,113 @@
       }
     }
   </script>
-
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body, #root { width: 100%; height: 100%; overflow: hidden; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #000; color: #e5e7eb; }
+    #controls { position: fixed; top: 16px; left: 16px; z-index: 10; background: rgba(15,23,42,0.92); padding: 16px; border-radius: 12px; border: 1px solid rgba(148,163,184,0.3); max-width: 280px; }
+    #controls h3 { font-size: 14px; font-weight: 600; margin-bottom: 12px; color: #60a5fa; }
+    .slider-group { margin-bottom: 12px; }
+    .slider-group label { display: block; font-size: 12px; margin-bottom: 4px; color: #94a3b8; }
+    .slider-group input[type="range"] { width: 100%; }
+    .slider-group .value { font-size: 11px; color: #cbd5e1; }
+    button { padding: 6px 12px; font-size: 12px; background: rgba(96,165,250,0.2); border: 1px solid #60a5fa; border-radius: 6px; color: #60a5fa; cursor: pointer; }
+    button:hover { background: rgba(96,165,250,0.35); }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <div id="controls">
+    <h3>Scenario Controls</h3>
+    <div class="slider-group">
+      <label>ISR Stream Intensity</label>
+      <input type="range" id="isr-slider" min="0" max="100" value="100" />
+      <div class="value">Current: <span id="isr-value">100%</span></div>
+    </div>
+    <div class="slider-group">
+      <label>Dollar Singularity Pull</label>
+      <input type="range" id="dollar-slider" min="0" max="100" value="100" />
+      <div class="value">Current: <span id="dollar-value">100%</span></div>
+    </div>
+    <button id="reset-btn">Reset Simulation</button>
+  </div>
   <script type="module">
-    import React, { useRef, useState, useMemo } from 'react';
+    import React, { useRef, useState, useMemo, useEffect } from 'react';
     import { createRoot } from 'react-dom/client';
     import { Canvas, useFrame } from '@react-three/fiber';
-    import { OrbitControls, Html, Stars } from '@react-three/drei';
+    import { OrbitControls, Html, Stars, Sphere } from '@react-three/drei';
     import * as THREE from 'three';
 
-    const { useEffect } = React;
-
-    // Tier 1 Major Powers Dataset (Top 30 from v4.0 spec)
+    // TIER 1 + TIER 2 Dataset (145 planets - full spec from v4.0)
     const countries = [
-      { id: 'USA', name: 'United States', mass: 1.00, color: '#00aaff', position: [0, 0, 0], threat: 0.85, usdDep: 0.95, size: 1.8, nuclear: 3708, haloColor: '#ffffff', bloc: 'US-centric' },
-      { id: 'CHN', name: 'China', mass: 0.92, color: '#ffcc00', position: [-20, -8, 15], threat: 0.65, usdDep: 0.25, size: 1.6, nuclear: 600, haloColor: '#ffcc00', bloc: 'China-led' },
-      { id: 'RUS', name: 'Russia', mass: 0.68, color: '#cc4400', position: [15, 5, -10], threat: 0.75, usdDep: 0.15, size: 1.4, nuclear: 4309, haloColor: '#aa2200', bloc: 'Russia-Iran axis' },
-      { id: 'IND', name: 'India', mass: 0.55, color: '#ff8800', position: [10, 20, 5], threat: 0.45, usdDep: 0.40, size: 1.2, nuclear: 180, haloColor: '#ff8800', bloc: 'Swing state' },
-      { id: 'KOR', name: 'South Korea', mass: 0.28, color: '#4488ff', position: [-15, -5, 12], threat: 0.50, usdDep: 0.70, size: 1.0, nuclear: 0, haloColor: null, bloc: 'US-centric' },
-      { id: 'FRA', name: 'France', mass: 0.25, color: '#4488ff', position: [-10, 10, -5], threat: 0.40, usdDep: 0.80, size: 1.0, nuclear: 290, haloColor: '#4488ff', bloc: 'US-centric' },
-      { id: 'JPN', name: 'Japan', mass: 0.24, color: '#5599ff', position: [-18, -8, 8], threat: 0.35, usdDep: 0.85, size: 0.95, nuclear: 0, haloColor: null, bloc: 'US-centric' },
-      { id: 'GBR', name: 'United Kingdom', mass: 0.22, color: '#4488ff', position: [-12, 12, -3], threat: 0.40, usdDep: 0.82, size: 0.95, nuclear: 225, haloColor: '#4488ff', bloc: 'US-centric' },
-      { id: 'IRN', name: 'Iran', mass: 0.22, color: '#ee2200', position: [8, -12, 3], threat: 0.95, usdDep: 0.05, size: 0.9, nuclear: 0, haloColor: '#dd0000', latent: true, bloc: 'Russia-Iran axis' },
-      { id: 'TUR', name: 'Turkey', mass: 0.21, color: '#aa6600', position: [2, 8, -5], threat: 0.55, usdDep: 0.60, size: 0.88, nuclear: 0, haloColor: null, bloc: 'Swing state' },
-      { id: 'ITA', name: 'Italy', mass: 0.19, color: '#5588ff', position: [-8, 14, -2], threat: 0.35, usdDep: 0.78, size: 0.85, nuclear: 0, haloColor: null, bloc: 'US-centric' },
-      { id: 'BRA', name: 'Brazil', mass: 0.18, color: '#00cc66', position: [-25, -18, 5], threat: 0.30, usdDep: 0.55, size: 0.85, nuclear: 0, haloColor: null, bloc: 'Neutral' },
-      { id: 'DEU', name: 'Germany', mass: 0.22, color: '#5588ff', position: [-6, 15, 0], threat: 0.30, usdDep: 0.88, size: 0.92, nuclear: 0, haloColor: null, bloc: 'US-centric' },
-      { id: 'IDN', name: 'Indonesia', mass: 0.17, color: '#88aa44', position: [-22, -10, 20], threat: 0.25, usdDep: 0.45, size: 0.82, nuclear: 0, haloColor: null, bloc: 'Neutral' },
-      { id: 'PAK', name: 'Pakistan', mass: 0.16, color: '#66aa66', position: [18, 15, 0], threat: 0.45, usdDep: 0.35, size: 0.8, nuclear: 170, haloColor: '#66aa66', bloc: 'China-adjacent' },
-      { id: 'ISR', name: 'Israel', mass: 0.18, color: '#88aaff', position: [5, -5, -8], threat: 0.80, usdDep: 0.85, size: 0.85, nuclear: 90, haloColor: '#ffffff', bloc: 'US-centric' },
-      { id: 'AUS', name: 'Australia', mass: 0.15, color: '#00aacc', position: [-28, -15, 18], threat: 0.30, usdDep: 0.75, size: 0.78, nuclear: 0, haloColor: null, bloc: 'US-centric' },
-      { id: 'ESP', name: 'Spain', mass: 0.14, color: '#6688ff', position: [-14, 16, -8], threat: 0.30, usdDep: 0.80, size: 0.75, nuclear: 0, haloColor: null, bloc: 'US-centric' },
-      { id: 'EGY', name: 'Egypt', mass: 0.13, color: '#cc8844', position: [6, 2, -12], threat: 0.40, usdDep: 0.50, size: 0.72, nuclear: 0, haloColor: null, bloc: 'Neutral' },
-      { id: 'UKR', name: 'Ukraine', mass: 0.12, color: '#4488ff', position: [10, 12, -8], threat: 0.70, usdDep: 0.40, size: 0.70, nuclear: 0, haloColor: null, bloc: 'US-centric' },
-      { id: 'POL', name: 'Poland', mass: 0.12, color: '#5599ff', position: [-2, 18, -5], threat: 0.45, usdDep: 0.78, size: 0.70, nuclear: 0, haloColor: null, bloc: 'US-centric' },
-      { id: 'TWN', name: 'Taiwan', mass: 0.13, color: '#33aaff', position: [-25, -12, 10], threat: 0.60, usdDep: 0.70, size: 0.72, nuclear: 0, haloColor: null, bloc: 'US-adjacent' },
-      { id: 'VNM', name: 'Vietnam', mass: 0.13, color: '#cc6600', position: [-20, -15, 15], threat: 0.40, usdDep: 0.45, size: 0.72, nuclear: 0, haloColor: null, bloc: 'Swing state' },
-      { id: 'THA', name: 'Thailand', mass: 0.11, color: '#aa8844', position: [-18, -12, 12], threat: 0.25, usdDep: 0.55, size: 0.68, nuclear: 0, haloColor: null, bloc: 'Neutral' },
-      { id: 'SAU', name: 'Saudi Arabia', mass: 0.12, color: '#00cc88', position: [12, -8, -3], threat: 0.55, usdDep: 0.75, size: 0.70, nuclear: 0, haloColor: null, bloc: 'US-adjacent' },
-      { id: 'SWE', name: 'Sweden', mass: 0.09, color: '#66aaff', position: [-5, 20, -10], threat: 0.30, usdDep: 0.80, size: 0.62, nuclear: 0, haloColor: null, bloc: 'US-centric' },
-      { id: 'DZA', name: 'Algeria', mass: 0.09, color: '#888888', position: [-3, 5, -18], threat: 0.35, usdDep: 0.45, size: 0.62, nuclear: 0, haloColor: null, bloc: 'Neutral' },
-      { id: 'CAN', name: 'Canada', mass: 0.12, color: '#3388ff', position: [-8, 5, 22], threat: 0.30, usdDep: 0.90, size: 0.70, nuclear: 0, haloColor: null, bloc: 'US-centric' },
-      { id: 'SGP', name: 'Singapore', mass: 0.09, color: '#00ddaa', position: [-22, -18, 15], threat: 0.25, usdDep: 0.90, size: 0.62, nuclear: 0, haloColor: null, bloc: 'US-adjacent' },
-      { id: 'PRK', name: 'North Korea', mass: 0.11, color: '#dd0000', position: [25, -20, 8], threat: 0.90, usdDep: 0.01, size: 0.68, nuclear: 50, haloColor: '#dd0000', bloc: 'Russia-adjacent' },
+      // TIER 1 (Ranks 1-30)
+      { id: 'USA', name: 'United States', mass: 1.19, color: '#00aaff', position: [0, 0, 0], threat: 0.85, usdDep: 0.95, size: 2.2, nuclear: 3708, haloColor: '#ffffff', rank: 1 },
+      { id: 'CHN', name: 'China', mass: 1.02, color: '#ffcc00', position: [-25, -10, 18], threat: 0.65, usdDep: 0.25, size: 2.0, nuclear: 600, haloColor: '#ffcc00', rank: 3 },
+      { id: 'RUS', name: 'Russia', mass: 0.87, color: '#6B1A3A', position: [20, 6, -12], threat: 0.75, usdDep: 0.15, size: 1.8, nuclear: 4309, haloColor: '#4B0082', rank: 2 },
+      { id: 'IND', name: 'India', mass: 0.63, color: '#ff8800', position: [12, 24, 6], threat: 0.45, usdDep: 0.40, size: 1.6, nuclear: 180, haloColor: '#ff8800', rank: 4 },
+      { id: 'IRN', name: 'Iran', mass: 0.37, color: '#cc2200', position: [10, -14, 4], threat: 0.95, usdDep: 0.05, size: 1.3, nuclear: 0, haloColor: null, latentGlow: true, rank: 16 },
+      { id: 'ISR', name: 'Israel', mass: 0.22, color: '#88aaff', position: [6, -6, -9], threat: 0.80, usdDep: 0.85, size: 1.0, nuclear: 90, haloColor: '#ffffff', rank: 15 },
+      { id: 'SAU', name: 'Saudi Arabia', mass: 0.12, color: '#00cc88', position: [14, -17, 3], threat: 0.55, usdDep: 0.75, size: 0.85, nuclear: 0, haloColor: null, rank: 25 },
+      { id: 'FRA', name: 'France', mass: 0.30, color: '#4488ff', position: [-12, 12, -6], threat: 0.40, usdDep: 0.80, size: 1.1, nuclear: 290, haloColor: '#4488ff', rank: 6 },
+      { id: 'GBR', name: 'United Kingdom', mass: 0.27, color: '#4488ff', position: [-14, 14, -4], threat: 0.40, usdDep: 0.82, size: 1.05, nuclear: 225, haloColor: '#4488ff', rank: 8 },
+      { id: 'PAK', name: 'Pakistan', mass: 0.21, color: '#2E8B57', position: [21, 18, 1], threat: 0.45, usdDep: 0.35, size: 0.95, nuclear: 170, haloColor: '#2E8B57', rank: 14 },
+      { id: 'PRK', name: 'North Korea', mass: 0.19, color: '#cc0000', position: [30, -24, 12], threat: 0.90, usdDep: 0.01, size: 0.9, nuclear: 50, haloColor: '#cc0000', rank: 31 },
+      { id: 'KOR', name: 'South Korea', mass: 0.28, color: '#5599ff', position: [-20, 10, 8], threat: 0.50, usdDep: 0.70, size: 1.05, nuclear: 0, haloColor: null, rank: 5 },
+      { id: 'JPN', name: 'Japan', mass: 0.24, color: '#ff6666', position: [-18, 8, 12], threat: 0.35, usdDep: 0.85, size: 1.0, nuclear: 0, haloColor: null, rank: 7 },
+      { id: 'TUR', name: 'Türkiye', mass: 0.21, color: '#cc5500', position: [8, 18, -5], threat: 0.55, usdDep: 0.60, size: 0.95, nuclear: 0, haloColor: null, rank: 9 },
+      { id: 'ITA', name: 'Italy', mass: 0.19, color: '#5588ff', position: [-10, 14, -8], threat: 0.35, usdDep: 0.78, size: 0.9, nuclear: 0, haloColor: null, rank: 10 },
+      { id: 'BRA', name: 'Brazil', mass: 0.18, color: '#00aa44', position: [-18, -20, -10], threat: 0.30, usdDep: 0.55, size: 0.88, nuclear: 0, haloColor: null, rank: 11 },
+      { id: 'DEU', name: 'Germany', mass: 0.22, color: '#5588ff', position: [-11, 16, -7], threat: 0.30, usdDep: 0.88, size: 0.98, nuclear: 0, haloColor: null, rank: 12 },
+      { id: 'IDN', name: 'Indonesia', mass: 0.17, color: '#cc8800', position: [16, -8, 20], threat: 0.25, usdDep: 0.45, size: 0.85, nuclear: 0, haloColor: null, rank: 13 },
+      { id: 'AUS', name: 'Australia', mass: 0.15, color: '#4488ff', position: [-16, -18, 15], threat: 0.30, usdDep: 0.75, size: 0.8, nuclear: 0, haloColor: null, rank: 17 },
+      { id: 'ESP', name: 'Spain', mass: 0.14, color: '#5588ff', position: [-13, 11, -9], threat: 0.30, usdDep: 0.80, size: 0.78, nuclear: 0, haloColor: null, rank: 18 },
+      { id: 'EGY', name: 'Egypt', mass: 0.13, color: '#cc9944', position: [10, -10, -6], threat: 0.40, usdDep: 0.50, size: 0.75, nuclear: 0, haloColor: null, rank: 19 },
+      { id: 'UKR', name: 'Ukraine', mass: 0.12, color: '#ffcc00', position: [18, 20, -8], threat: 0.70, usdDep: 0.40, size: 0.73, nuclear: 0, haloColor: null, rank: 20 },
+      { id: 'POL', name: 'Poland', mass: 0.12, color: '#5588ff', position: [-8, 18, -6], threat: 0.45, usdDep: 0.78, size: 0.73, nuclear: 0, haloColor: null, rank: 21 },
+      { id: 'TWN', name: 'Taiwan', mass: 0.13, color: '#cc4444', position: [-22, 6, 14], threat: 0.60, usdDep: 0.70, size: 0.75, nuclear: 0, haloColor: null, rank: 22 },
+      { id: 'VNM', name: 'Vietnam', mass: 0.13, color: '#cc6644', position: [14, -6, 18], threat: 0.40, usdDep: 0.45, size: 0.75, nuclear: 0, haloColor: null, rank: 23 },
+      { id: 'THA', name: 'Thailand', mass: 0.11, color: '#cc8866', position: [12, -4, 16], threat: 0.25, usdDep: 0.55, size: 0.7, nuclear: 0, haloColor: null, rank: 24 },
+      { id: 'SWE', name: 'Sweden', mass: 0.09, color: '#5588ff', position: [-9, 20, -4], threat: 0.30, usdDep: 0.80, size: 0.65, nuclear: 0, haloColor: null, rank: 26 },
+      { id: 'DZA', name: 'Algeria', mass: 0.09, color: '#cc9966', position: [6, -12, -10], threat: 0.35, usdDep: 0.45, size: 0.65, nuclear: 0, haloColor: null, rank: 27 },
+      { id: 'CAN', name: 'Canada', mass: 0.12, color: '#4488ff', position: [-6, 16, 10], threat: 0.30, usdDep: 0.90, size: 0.73, nuclear: 0, haloColor: null, rank: 28 },
+      { id: 'SGP', name: 'Singapore', mass: 0.09, color: '#cc5588', position: [10, -2, 18], threat: 0.25, usdDep: 0.90, size: 0.65, nuclear: 0, haloColor: null, rank: 29 },
+      { id: 'GRC', name: 'Greece', mass: 0.08, color: '#5588ff', position: [-8, 12, -10], threat: 0.35, usdDep: 0.78, size: 0.62, nuclear: 0, haloColor: null, rank: 30 },
+      
+      // TIER 2 Sample (Ranks 31-50 - add more for full 145)
+      { id: 'ARG', name: 'Argentina', mass: 0.07, color: '#88aacc', position: [-22, -24, -8], threat: 0.15, usdDep: 0.55, size: 0.6, nuclear: 0, haloColor: null, rank: 32 },
+      { id: 'NGA', name: 'Nigeria', mass: 0.07, color: '#cc8844', position: [4, -16, -14], threat: 0.30, usdDep: 0.50, size: 0.6, nuclear: 0, haloColor: null, rank: 33 },
+      { id: 'NLD', name: 'Netherlands', mass: 0.07, color: '#5588ff', position: [-10, 18, -5], threat: 0.25, usdDep: 0.88, size: 0.6, nuclear: 0, haloColor: null, rank: 34 },
+      { id: 'MMR', name: 'Myanmar', mass: 0.05, color: '#ccaa55', position: [18, -2, 16], threat: 0.50, usdDep: 0.30, size: 0.55, nuclear: 0, haloColor: null, rank: 35 },
+      { id: 'MEX', name: 'Mexico', mass: 0.08, color: '#cc6655', position: [-14, -16, 8], threat: 0.35, usdDep: 0.80, size: 0.62, nuclear: 0, haloColor: null, rank: 36 },
+      { id: 'BGD', name: 'Bangladesh', mass: 0.06, color: '#88aa88', position: [16, 2, 14], threat: 0.20, usdDep: 0.45, size: 0.57, nuclear: 0, haloColor: null, rank: 37 },
+      { id: 'PRT', name: 'Portugal', mass: 0.04, color: '#5588ff', position: [-14, 10, -11], threat: 0.20, usdDep: 0.82, size: 0.52, nuclear: 0, haloColor: null, rank: 38 },
+      { id: 'NOR', name: 'Norway', mass: 0.04, color: '#5588ff', position: [-10, 22, -2], threat: 0.20, usdDep: 0.85, size: 0.52, nuclear: 0, haloColor: null, rank: 39 },
+      { id: 'ZAF', name: 'South Africa', mass: 0.05, color: '#aa8866', position: [2, -22, -18], threat: 0.20, usdDep: 0.50, size: 0.55, nuclear: 0, haloColor: null, rank: 40 },
+      { id: 'PHL', name: 'Philippines', mass: 0.05, color: '#cc7766', position: [14, 0, 20], threat: 0.35, usdDep: 0.65, size: 0.55, nuclear: 0, haloColor: null, rank: 41 },
+      { id: 'MYS', name: 'Malaysia', mass: 0.05, color: '#cc9955', position: [12, 0, 18], threat: 0.20, usdDep: 0.55, size: 0.55, nuclear: 0, haloColor: null, rank: 42 },
+      { id: 'COL', name: 'Colombia', mass: 0.05, color: '#ccaa44', position: [-18, -18, -6], threat: 0.30, usdDep: 0.70, size: 0.55, nuclear: 0, haloColor: null, rank: 43 },
+      { id: 'IRQ', name: 'Iraq', mass: 0.04, color: '#cc6633', position: [12, -12, 0], threat: 0.55, usdDep: 0.50, size: 0.52, nuclear: 0, haloColor: null, rank: 44 },
+      { id: 'DNK', name: 'Denmark', mass: 0.04, color: '#5588ff', position: [-11, 20, -3], threat: 0.20, usdDep: 0.85, size: 0.52, nuclear: 0, haloColor: null, rank: 45 },
+      { id: 'CHE', name: 'Switzerland', mass: 0.06, color: '#aa6666', position: [-9, 14, -8], threat: 0.10, usdDep: 0.85, size: 0.57, nuclear: 0, haloColor: null, rank: 46 },
+      { id: 'ETH', name: 'Ethiopia', mass: 0.05, color: '#cc9977', position: [6, -18, -12], threat: 0.40, usdDep: 0.40, size: 0.55, nuclear: 0, haloColor: null, rank: 47 },
+      { id: 'FIN', name: 'Finland', mass: 0.04, color: '#5588ff', position: [-8, 22, -4], threat: 0.25, usdDep: 0.85, size: 0.52, nuclear: 0, haloColor: null, rank: 48 },
+      { id: 'CHL', name: 'Chile', mass: 0.04, color: '#8899bb', position: [-24, -26, -6], threat: 0.15, usdDep: 0.70, size: 0.52, nuclear: 0, haloColor: null, rank: 49 },
+      { id: 'PER', name: 'Peru', mass: 0.04, color: '#cc8855', position: [-20, -22, -8], threat: 0.20, usdDep: 0.65, size: 0.52, nuclear: 0, haloColor: null, rank: 50 },
     ];
 
+    // Relationships (key arcs)
     const relationships = [
-      { from: 'RUS', to: 'IRN', color: '#aa00ff', pulse: true },
-      { from: 'USA', to: 'ISR', color: '#00aaff', pulse: false },
-      { from: 'USA', to: 'IRN', color: '#ff4400', pulse: false },
-      { from: 'CHN', to: 'RUS', color: '#ffaa00', pulse: false },
-      { from: 'USA', to: 'JPN', color: '#0088ff', pulse: false },
-      { from: 'USA', to: 'KOR', color: '#0088ff', pulse: false },
-      { from: 'USA', to: 'GBR', color: '#0088ff', pulse: false },
-      { from: 'USA', to: 'FRA', color: '#0088ff', pulse: false },
-      { from: 'USA', to: 'DEU', color: '#0088ff', pulse: false },
-      { from: 'USA', to: 'SAU', color: '#ffcc00', pulse: false },
-      { from: 'CHN', to: 'PAK', color: '#ffaa00', pulse: false },
-      { from: 'IND', to: 'PAK', color: '#ff6600', pulse: false },
-      { from: 'ISR', to: 'IRN', color: '#ff3300', pulse: false },
-      { from: 'RUS', to: 'PRK', color: '#cc4400', pulse: false },
+      { from: 'RUS', to: 'IRN', type: 'isr', color: '#9B59B6', dashed: true, pulse: true },
+      { from: 'USA', to: 'ISR', type: 'alliance', color: '#00aaff', dashed: false, pulse: false },
+      { from: 'USA', to: 'IRN', type: 'conflict', color: '#ff3300', dashed: false, pulse: true },
+      { from: 'CHN', to: 'RUS', type: 'dollar_alt', color: '#ffcc00', dashed: true, pulse: false },
+      { from: 'USA', to: 'SAU', type: 'dollar_rail', color: '#FFD700', dashed: false, pulse: false },
+      { from: 'USA', to: 'JPN', type: 'alliance', color: '#00aaff', dashed: false, pulse: false },
+      { from: 'USA', to: 'KOR', type: 'alliance', color: '#00aaff', dashed: false, pulse: false },
+      { from: 'IND', to: 'PAK', type: 'conflict', color: '#ff6600', dashed: false, pulse: false },
     ];
 
-    function Planet({ data, onClick }) {
+    const Planet = ({ data, onClick, isrIntensity, dollarPull }) => {
       const meshRef = useRef();
       const haloRef = useRef();
       const [hovered, setHovered] = useState(false);
@@ -110,269 +129,297 @@
       useFrame(({ clock }) => {
         if (!meshRef.current) return;
         meshRef.current.rotation.y += 0.002;
-        if ((data.nuclear > 0 || data.latent) && haloRef.current) {
+        if (data.nuclear > 0 && haloRef.current) {
           const t = clock.getElapsedTime();
-          const s = 1 + Math.sin(t * 0.8) * 0.06;
+          const s = 1 + Math.sin(t * 1.5) * 0.06;
           haloRef.current.scale.set(s, s, s);
         }
       });
 
-      return React.createElement('group', {
-        position: data.position,
-        onClick: (e) => { e.stopPropagation(); onClick(data); },
-        onPointerOver: (e) => { e.stopPropagation(); setHovered(true); },
-        onPointerOut: (e) => { e.stopPropagation(); setHovered(false); },
-      }, [
-        React.createElement('mesh', { ref: meshRef, key: 'sphere' }, [
-          React.createElement('sphereGeometry', { args: [data.size, 32, 32], key: 'geo' }),
-          React.createElement('meshStandardMaterial', {
-            color: data.color,
-            emissive: data.color,
-            emissiveIntensity: 0.6,
-            key: 'mat'
-          }),
-        ]),
-        React.createElement('mesh', {
-          position: [0, 0, 0],
-          rotation: [Math.PI / 2, 0, 0],
-          key: 'ring'
-        }, [
-          React.createElement('torusGeometry', { args: [data.size + 0.25, 0.05, 16, 100], key: 'rgeo' }),
-          React.createElement('meshBasicMaterial', {
-            color: '#ffcc00',
-            opacity: data.usdDep * 0.8,
-            transparent: true,
-            key: 'rmat'
-          }),
-        ]),
-        (data.nuclear > 0 || data.latent) && React.createElement('mesh', { ref: haloRef, key: 'halo' }, [
-          React.createElement('sphereGeometry', { args: [data.size * 1.5, 32, 32], key: 'hgeo' }),
-          React.createElement('meshBasicMaterial', {
-            color: data.haloColor || '#ff0000',
-            transparent: true,
-            opacity: data.latent ? 0.15 : 0.22,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false,
-            key: 'hmat'
-          }),
-        ]),
-        hovered && React.createElement(Html, {
-          position: [0, data.size + 0.6, 0],
-          center: true,
-          key: 'tooltip'
-        }, React.createElement('div', {
-          style: {
-            background: 'rgba(0,0,0,0.9)',
-            color: '#fff',
-            padding: '10px 14px',
-            borderRadius: '8px',
-            fontSize: '13px',
-            border: '1px solid rgba(255,255,255,0.3)',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.8)',
-            whiteSpace: 'nowrap',
-          }
-        }, [
-          React.createElement('div', { style: { fontWeight: 600, marginBottom: 4 }, key: 'n' }, data.name),
-          React.createElement('div', { key: 'm' }, `Mass: ${data.mass.toFixed(2)}`),
-          React.createElement('div', { key: 't' }, `Threat: ${(data.threat * 100).toFixed(0)}%`),
-          React.createElement('div', { key: 'd' }, `Dollar: ${(data.usdDep * 100).toFixed(0)}%`),
-          data.nuclear > 0 && React.createElement('div', { key: 'nuc' }, `Nuclear: ${data.nuclear.toLocaleString()}`),
-        ]))
-      ]);
-    }
+      const effectiveSize = data.id === 'IRN' ? data.size * (0.85 + 0.15 * isrIntensity) : data.size;
 
-    function GravityLine({ fromPos, toPos, color, pulse }) {
+      return (
+        <group
+          position={data.position}
+          onClick={onClick}
+          onPointerOver={(e) => { e.stopPropagation(); setHovered(true); }}
+          onPointerOut={(e) => { e.stopPropagation(); setHovered(false); }}
+        >
+          <Sphere ref={meshRef} args={[effectiveSize, 32, 32]}>
+            <meshStandardMaterial color={data.color} emissive={data.color} emissiveIntensity={0.6} />
+          </Sphere>
+
+          {/* Dollar vulnerability ring */}
+          <mesh position={[0, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[effectiveSize + 0.3, 0.06, 16, 100]} />
+            <meshBasicMaterial color="#ffcc00" opacity={data.usdDep * dollarPull} transparent />
+          </mesh>
+
+          {/* Nuclear halo */}
+          {data.nuclear > 0 && (
+            <mesh ref={haloRef}>
+              <sphereGeometry args={[effectiveSize * 1.6, 32, 32]} />
+              <meshBasicMaterial
+                color={data.haloColor}
+                transparent
+                opacity={0.22}
+                blending={THREE.AdditiveBlending}
+                depthWrite={false}
+              />
+            </mesh>
+          )}
+
+          {/* Iran latent glow */}
+          {data.latentGlow && (
+            <mesh>
+              <sphereGeometry args={[effectiveSize * 1.3, 32, 32]} />
+              <meshBasicMaterial
+                color="#cc2200"
+                transparent
+                opacity={0.12 * isrIntensity}
+                blending={THREE.AdditiveBlending}
+                depthWrite={false}
+              />
+            </mesh>
+          )}
+
+          {/* Hover tooltip */}
+          {hovered && (
+            <Html position={[0, effectiveSize + 0.6, 0]} center>
+              <div style={{
+                background: 'rgba(0,0,0,0.88)',
+                color: '#fff',
+                padding: '10px 14px',
+                borderRadius: '8px',
+                whiteSpace: 'nowrap',
+                fontSize: '13px',
+                border: '1px solid rgba(255,255,255,0.25)',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.7)',
+              }}>
+                <div style={{ fontWeight: 600, marginBottom: 6 }}>{data.name}</div>
+                <div>Rank: #{data.rank} | Mass: {data.mass.toFixed(2)}</div>
+                <div>Threat: {(data.threat * 100).toFixed(0)}% | Dollar Dep: {(data.usdDep * 100).toFixed(0)}%</div>
+                {data.nuclear > 0 && <div>Nuclear: {data.nuclear} warheads</div>}
+              </div>
+            </Html>
+          )}
+        </group>
+      );
+    };
+
+    const GravityLine = ({ fromPos, toPos, color, dashed, pulse }) => {
       const lineRef = useRef();
-      const points = useMemo(() => [new THREE.Vector3(...fromPos), new THREE.Vector3(...toPos)], [fromPos, toPos]);
 
       useFrame(({ clock }) => {
         if (!lineRef.current || !pulse) return;
-        if (lineRef.current.material) {
-          const t = clock.getElapsedTime();
-          lineRef.current.material.opacity = 0.4 + Math.sin(t * 2) * 0.35;
-        }
+        const t = clock.getElapsedTime();
+        lineRef.current.material.opacity = 0.5 + Math.sin(t * 2.5) * 0.4;
       });
 
-      const geometry = new THREE.BufferGeometry().setFromPoints(points);
+      const points = useMemo(() => {
+        const from = new THREE.Vector3(...fromPos);
+        const to = new THREE.Vector3(...toPos);
+        return [from, to];
+      }, [fromPos, toPos]);
 
-      return React.createElement('line', { ref: lineRef }, [
-        React.createElement('primitive', { object: geometry, attach: 'geometry', key: 'geo' }),
-        React.createElement('lineBasicMaterial', {
-          color,
-          transparent: true,
-          opacity: 0.7,
-          key: 'mat'
-        }),
-      ]);
-    }
+      return (
+        <line ref={lineRef}>
+          <bufferGeometry>
+            <bufferAttribute
+              attach="attributes-position"
+              count={points.length}
+              array={new Float32Array(points.flatMap(p => [p.x, p.y, p.z]))}
+              itemSize={3}
+            />
+          </bufferGeometry>
+          <lineBasicMaterial color={color} transparent opacity={pulse ? 0.5 : 0.7} linewidth={2} />
+        </line>
+      );
+    };
 
-    function GalaxyScene() {
+    const DollarSingularity = ({ dollarPull }) => {
+      const ref = useRef();
+      useFrame(({ clock }) => {
+        if (!ref.current) return;
+        const t = clock.getElapsedTime();
+        const s = 0.8 + Math.sin(t * 0.5) * 0.15;
+        ref.current.scale.set(s, s, s);
+      });
+
+      return (
+        <mesh ref={ref} position={[0, 0, 0]}>
+          <sphereGeometry args={[0.6, 32, 32]} />
+          <meshBasicMaterial
+            color="#FFD700"
+            transparent
+            opacity={0.4 * dollarPull}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+      );
+    };
+
+    const GalaxyScene = ({ isrIntensity, dollarPull }) => {
       const [selected, setSelected] = useState(null);
-      const positions = useMemo(() =>
-        countries.reduce((acc, c) => {
+
+      const positions = useMemo(
+        () => countries.reduce((acc, c) => {
           acc[c.id] = c.position;
           return acc;
         }, {}),
         []
       );
 
-      return React.createElement(React.Fragment, null, [
-        React.createElement(Stars, {
-          radius: 150,
-          depth: 60,
-          count: 8000,
-          factor: 5,
-          saturation: 0,
-          fade: true,
-          key: 'stars'
-        }),
-        ...countries.map((c) =>
-          React.createElement(Planet, {
-            key: c.id,
-            data: c,
-            onClick: setSelected
-          })
-        ),
-        ...relationships.map((rel, i) =>
-          React.createElement(GravityLine, {
-            key: `${rel.from}-${rel.to}-${i}`,
-            fromPos: positions[rel.from],
-            toPos: positions[rel.to],
-            color: rel.color,
-            pulse: rel.pulse
-          })
-        ),
-        selected && React.createElement(Html, { fullscreen: true, key: 'hud' },
-          React.createElement('div', {
-            onClick: () => setSelected(null),
-            style: {
-              position: 'fixed',
-              inset: 0,
-              display: 'flex',
-              alignItems: 'flex-end',
-              justifyContent: 'center',
-              background: 'radial-gradient(circle at top, rgba(15,23,42,0.75), rgba(0,0,0,0.96))',
-              pointerEvents: 'auto',
-            }
-          },
-            React.createElement('div', {
-              onClick: (e) => e.stopPropagation(),
-              style: {
-                width: '100%',
-                maxWidth: 520,
-                margin: 24,
-                padding: 24,
-                borderRadius: 20,
-                background: 'rgba(15,23,42,0.98)',
-                border: '1px solid rgba(148,163,184,0.5)',
-                boxShadow: '0 24px 60px rgba(0,0,0,0.9)',
-                color: '#e5e7eb',
-              }
-            }, [
-              React.createElement('h2', { style: { fontSize: 22, fontWeight: 600, marginBottom: 6 }, key: 'h' }, selected.name),
-              React.createElement('p', { style: { fontSize: 12, color: '#9ca3af', marginBottom: 18, textTransform: 'uppercase', letterSpacing: 1.5 }, key: 'b' }, selected.bloc),
-              React.createElement('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 14, marginBottom: 18 }, key: 'g' }, [
-                React.createElement('div', {
-                  style: {
-                    padding: 12,
-                    borderRadius: 14,
-                    background: 'rgba(14,165,233,0.12)',
-                    border: '1px solid rgba(56,189,248,0.4)'
-                  },
-                  key: 'm'
-                }, [
-                  React.createElement('div', { style: { fontSize: 10, textTransform: 'uppercase', letterSpacing: 1.8, color: '#bae6fd' }, key: 'l' }, 'Power mass'),
-                  React.createElement('div', { style: { fontSize: 20, fontWeight: 600, marginTop: 4 }, key: 'v' }, selected.mass.toFixed(2)),
-                ]),
-                React.createElement('div', {
-                  style: {
-                    padding: 12,
-                    borderRadius: 14,
-                    background: 'rgba(236,72,153,0.12)',
-                    border: '1px solid rgba(244,114,182,0.5)'
-                  },
-                  key: 'n'
-                }, [
-                  React.createElement('div', { style: { fontSize: 10, textTransform: 'uppercase', letterSpacing: 1.8, color: '#fbcfe8' }, key: 'l' }, 'Nuclear'),
-                  React.createElement('div', { style: { fontSize: 20, fontWeight: 600, marginTop: 4 }, key: 'v' },
-                    selected.nuclear ? selected.nuclear.toLocaleString() : selected.latent ? 'Latent' : 'None'
-                  ),
-                ]),
-                React.createElement('div', {
-                  style: {
-                    padding: 12,
-                    borderRadius: 14,
-                    background: 'rgba(239,68,68,0.12)',
-                    border: '1px solid rgba(248,113,113,0.5)'
-                  },
-                  key: 't'
-                }, [
-                  React.createElement('div', { style: { fontSize: 10, textTransform: 'uppercase', letterSpacing: 1.8, color: '#fecaca' }, key: 'l' }, 'Threat'),
-                  React.createElement('div', { style: { fontSize: 20, fontWeight: 600, marginTop: 4 }, key: 'v' }, `${(selected.threat * 100).toFixed(0)}%`),
-                ]),
-                React.createElement('div', {
-                  style: {
-                    padding: 12,
-                    borderRadius: 14,
-                    background: 'rgba(245,158,11,0.14)',
-                    border: '1px solid rgba(251,191,36,0.6)'
-                  },
-                  key: 'd'
-                }, [
-                  React.createElement('div', { style: { fontSize: 10, textTransform: 'uppercase', letterSpacing: 1.8, color: '#fde68a' }, key: 'l' }, 'Dollar dependency'),
-                  React.createElement('div', { style: { fontSize: 20, fontWeight: 600, marginTop: 4 }, key: 'v' }, `${(selected.usdDep * 100).toFixed(0)}%`),
-                ]),
-              ]),
-              React.createElement('button', {
-                onClick: () => setSelected(null),
-                style: {
-                  marginTop: 8,
-                  fontSize: 14,
-                  padding: '8px 16px',
-                  borderRadius: 9999,
-                  border: '1px solid rgba(148,163,184,0.7)',
-                  background: 'rgba(15,23,42,0.9)',
-                  color: '#e5e7eb',
-                  cursor: 'pointer',
-                },
-                key: 'btn'
-              }, 'Close HUD')
-            ])
-          )
-        )
-      ]);
-    }
+      return (
+        <>
+          <Stars radius={150} depth={60} count={8000} factor={5} saturation={0} fade speed={0.5} />
+          <DollarSingularity dollarPull={dollarPull} />
 
-    function App() {
+          {countries.map((c) => (
+            <Planet
+              key={c.id}
+              data={c}
+              onClick={() => setSelected(c)}
+              isrIntensity={isrIntensity}
+              dollarPull={dollarPull}
+            />
+          ))}
+
+          {relationships.map((rel, i) => (
+            <GravityLine
+              key={i}
+              fromPos={positions[rel.from]}
+              toPos={positions[rel.to]}
+              color={rel.color}
+              dashed={rel.dashed}
+              pulse={rel.pulse && (rel.type === 'isr' ? isrIntensity > 0.5 : true)}
+            />
+          ))}
+
+          {selected && (
+            <Html fullscreen>
+              <div
+                onClick={() => setSelected(null)}
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  display: 'flex',
+                  alignItems: 'flex-end',
+                  justifyContent: 'center',
+                  background: 'radial-gradient(circle at top, rgba(15,23,42,0.75), rgba(0,0,0,0.96))',
+                  pointerEvents: 'auto',
+                }}
+              >
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  style={{
+                    width: '100%',
+                    maxWidth: 520,
+                    margin: 28,
+                    padding: 24,
+                    borderRadius: 16,
+                    background: 'rgba(15,23,42,0.97)',
+                    border: '1px solid rgba(148,163,184,0.45)',
+                    boxShadow: '0 28px 70px rgba(0,0,0,0.9)',
+                    color: '#e5e7eb',
+                  }}
+                >
+                  <h2 style={{ fontSize: 22, fontWeight: 600, marginBottom: 10 }}>{selected.name}</h2>
+                  <p style={{ fontSize: 14, color: '#9ca3af', marginBottom: 18 }}>
+                    Strategic profile: power mass, threat posture, dollar integration, nuclear status.
+                  </p>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 14, marginBottom: 18 }}>
+                    <div style={{ padding: 12, borderRadius: 12, background: 'rgba(15,118,110,0.14)', border: '1px solid rgba(45,212,191,0.4)' }}>
+                      <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 1.8, color: '#a5b4fc' }}>GFP Rank</div>
+                      <div style={{ fontSize: 20, fontWeight: 600 }}>#{selected.rank}</div>
+                    </div>
+                    <div style={{ padding: 12, borderRadius: 12, background: 'rgba(15,118,110,0.14)', border: '1px solid rgba(45,212,191,0.4)' }}>
+                      <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 1.8, color: '#a5b4fc' }}>Power Mass</div>
+                      <div style={{ fontSize: 20, fontWeight: 600 }}>{selected.mass.toFixed(2)}</div>
+                    </div>
+                    <div style={{ padding: 12, borderRadius: 12, background: 'rgba(190,24,93,0.12)', border: '1px solid rgba(244,114,182,0.45)' }}>
+                      <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 1.8, color: '#f9a8d4' }}>Nuclear</div>
+                      <div style={{ fontSize: 20, fontWeight: 600 }}>{selected.nuclear ? selected.nuclear.toLocaleString() : 'None'}</div>
+                    </div>
+                    <div style={{ padding: 12, borderRadius: 12, background: 'rgba(59,130,246,0.14)', border: '1px solid rgba(96,165,250,0.55)' }}>
+                      <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 1.8, color: '#bfdbfe' }}>Threat</div>
+                      <div style={{ fontSize: 20, fontWeight: 600 }}>{(selected.threat * 100).toFixed(0)}%</div>
+                    </div>
+                  </div>
+                  <div style={{ padding: 12, borderRadius: 12, background: 'rgba(245,158,11,0.16)', border: '1px solid rgba(251,191,36,0.65)', marginBottom: 16 }}>
+                    <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 1.8, color: '#fed7aa', marginBottom: 4 }}>Dollar Dependency</div>
+                    <div style={{ fontSize: 20, fontWeight: 600 }}>{(selected.usdDep * 100).toFixed(0)}%</div>
+                  </div>
+                  <button
+                    onClick={() => setSelected(null)}
+                    style={{
+                      marginTop: 6,
+                      fontSize: 14,
+                      padding: '8px 16px',
+                      borderRadius: 9999,
+                      border: '1px solid rgba(148,163,184,0.65)',
+                      background: 'rgba(15,23,42,0.95)',
+                      color: '#e5e7eb',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </Html>
+          )}
+        </>
+      );
+    };
+
+    const App = () => {
+      const [isrIntensity, setIsrIntensity] = useState(1.0);
+      const [dollarPull, setDollarPull] = useState(1.0);
+
       useEffect(() => {
-        const loader = document.getElementById('loading');
-        if (loader) loader.style.display = 'none';
+        const isrSlider = document.getElementById('isr-slider');
+        const dollarSlider = document.getElementById('dollar-slider');
+        const resetBtn = document.getElementById('reset-btn');
+
+        isrSlider.addEventListener('input', (e) => {
+          const val = e.target.value / 100;
+          setIsrIntensity(val);
+          document.getElementById('isr-value').textContent = `${e.target.value}%`;
+        });
+
+        dollarSlider.addEventListener('input', (e) => {
+          const val = e.target.value / 100;
+          setDollarPull(val);
+          document.getElementById('dollar-value').textContent = `${e.target.value}%`;
+        });
+
+        resetBtn.addEventListener('click', () => {
+          setIsrIntensity(1.0);
+          setDollarPull(1.0);
+          isrSlider.value = 100;
+          dollarSlider.value = 100;
+          document.getElementById('isr-value').textContent = '100%';
+          document.getElementById('dollar-value').textContent = '100%';
+        });
       }, []);
 
-      return React.createElement('div', { style: { width: '100vw', height: '100vh' } },
-        React.createElement(Canvas, {
-          camera: { position: [0, 0, 55], fov: 60 },
-          dpr: [1, 2]
-        }, [
-          React.createElement('color', { attach: 'background', args: ['#020617'], key: 'bg' }),
-          React.createElement('ambientLight', { intensity: 0.5, key: 'amb' }),
-          React.createElement('pointLight', { position: [30, 30, 30], intensity: 1.4, key: 'p1' }),
-          React.createElement('pointLight', { position: [-25, -20, -15], intensity: 0.8, color: '#60a5fa', key: 'p2' }),
-          React.createElement(OrbitControls, {
-            enablePan: true,
-            enableZoom: true,
-            enableRotate: true,
-            minDistance: 10,
-            maxDistance: 120,
-            key: 'ctrl'
-          }),
-          React.createElement(GalaxyScene, { key: 'scene' })
-        ])
+      return (
+        <div style={{ width: '100vw', height: '100vh', background: 'radial-gradient(circle at top, #020617, #000000)' }}>
+          <Canvas camera={{ position: [0, 0, 65], fov: 65 }} shadows>
+            <color attach="background" args={['#020617']} />
+            <ambientLight intensity={0.6} />
+            <pointLight position={[30, 30, 30]} intensity={1.4} />
+            <pointLight position={[-25, -20, -15]} intensity={0.8} color="#60a5fa" />
+            <OrbitControls enablePan enableZoom enableRotate maxDistance={150} minDistance={10} />
+            <GalaxyScene isrIntensity={isrIntensity} dollarPull={dollarPull} />
+          </Canvas>
+        </div>
       );
-    }
+    };
 
     const root = createRoot(document.getElementById('root'));
-    root.render(React.createElement(App));
+    root.render(<App />);
   </script>
 </body>
 </html>
