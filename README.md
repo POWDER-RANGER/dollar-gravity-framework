@@ -1,32 +1,29 @@
-﻿# DOLLAR GRAVITY
+# Dollar‑Gravity Framework
+## The Living Strategic Universe
+### Version 4.0 — Complete Visual Blueprint & Canonical Dataset
+#### March 2026
 
-**The Architecture of Monetary Power** — an interactive React + D3 dashboard mapping the USD-centric global finance-security system.
+> **Coverage**: 195 sovereign entities (193 UN members + Vatican City + State of Palestine)  
+> **Author**: Curtis Farrar / POWDER-RANGER  
+> **Repository**: https://github.com/POWDER-RANGER/dollar-gravity-framework  
+> **Data authorities**: GFP 2026 · IISS Military Balance · IMF WEO Mar 2026 · UN Population Division 2026 · World Bank · SIPRI · US Treasury OFAC · Fund for Peace FSI · Bulletin of Atomic Scientists (nuclear stockpiles) · UN GA Voting Records  
+> **Active scenario**: US–Iran War, Day 6 · Russia ISR-sharing confirmed · 50,000+ US troops in theater
 
-Three interlocking steering layers:
-- **NARRATIVE** — Constructed stories that legitimize structural mechanisms
-- **REALITY** — Measurable capital flows, tariff incidence, sanctions chokepoints
-- **PROJECTION** — Forward vectors that pull tomorrow into alignment
+---
 
-## Features
-- 11-module cyber-analytical briefing interface
-- Interactive D3 force-directed graph: draggable nodes, directed causal links, group coloring
-- System Steering triptych: Narrative · Reality · Projection dynamics
-- Explicit falsifiability triggers throughout (the model's immune system)
+See full v4.0 spec in [dollar-gravity-framework-v4.0-complete.md](dollar-gravity-framework-v4.0-complete.md)
 
-## Stack
-React 18 · D3 v7 · Vite 5 · CSS-in-JS
-
-## Local Setup
+## Quick Start
 ```bash
 git clone https://github.com/POWDER-RANGER/dollar-gravity-framework.git
-cd dollar-gravity-framework
+dollar-gravity-framework
 npm install
 npm run dev
-# → http://localhost:5173
 ```
 
-## Model Philosophy
-A falsifiable systems map — not narrative glue. Each module includes explicit "what would change my mind" conditions. Built for analytical clarity about monetary gravity and its steering mechanisms.
+## Stack
+React + D3 + Three.js WebGL for 3D orbital physics simulation.
 
-## License
-CC BY-NC 4.0 — View, fork, and adapt for non-commercial use with attribution.
+---
+
+Full canonical dataset, physics engine spec, rendering rules, and active scenario analysis inside.
