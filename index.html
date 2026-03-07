@@ -19,20 +19,30 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body, #root { width: 100%; height: 100%; overflow: hidden; }
     body { font-family: system-ui, -apple-system, sans-serif; background: #000; color: #e5e7eb; }
-    #controls { position: fixed; top: 16px; left: 16px; z-index: 10; background: rgba(15,23,42,0.92); padding: 16px; border-radius: 12px; border: 1px solid rgba(148,163,184,0.3); max-width: 280px; }
+    #controls { position: fixed; top: 16px; left: 16px; z-index: 10; background: rgba(15,23,42,0.92); padding: 16px; border-radius: 12px; border: 1px solid rgba(148,163,184,0.3); max-width: 300px; }
     #controls h3 { font-size: 14px; font-weight: 600; margin-bottom: 12px; color: #60a5fa; }
     .slider-group { margin-bottom: 12px; }
     .slider-group label { display: block; font-size: 12px; margin-bottom: 4px; color: #94a3b8; }
     .slider-group input[type="range"] { width: 100%; }
+    .slider-group input[type="checkbox"] { margin-right: 6px; }
     .slider-group .value { font-size: 11px; color: #cbd5e1; }
-    button { padding: 6px 12px; font-size: 12px; background: rgba(96,165,250,0.2); border: 1px solid #60a5fa; border-radius: 6px; color: #60a5fa; cursor: pointer; }
+    button { padding: 6px 12px; font-size: 12px; background: rgba(96,165,250,0.2); border: 1px solid #60a5fa; border-radius: 6px; color: #60a5fa; cursor: pointer; margin-right: 8px; }
     button:hover { background: rgba(96,165,250,0.35); }
+    #info { position: fixed; bottom: 16px; right: 16px; z-index: 10; background: rgba(15,23,42,0.88); padding: 12px; border-radius: 8px; border: 1px solid rgba(148,163,184,0.25); font-size: 11px; color: #94a3b8; max-width: 280px; }
   </style>
 </head>
 <body>
   <div id="root"></div>
   <div id="controls">
     <h3>Scenario Controls</h3>
+    <div class="slider-group">
+      <label><input type="checkbox" id="fabric-toggle" checked /> Show Gravity Fabric</label>
+    </div>
+    <div class="slider-group">
+      <label>Fabric Warp Intensity</label>
+      <input type="range" id="warp-slider" min="0" max="100" value="60" />
+      <div class="value">Current: <span id="warp-value">60%</span></div>
+    </div>
     <div class="slider-group">
       <label>ISR Stream Intensity</label>
       <input type="range" id="isr-slider" min="0" max="100" value="100" />
@@ -43,7 +53,13 @@
       <input type="range" id="dollar-slider" min="0" max="100" value="100" />
       <div class="value">Current: <span id="dollar-value">100%</span></div>
     </div>
-    <button id="reset-btn">Reset Simulation</button>
+    <button id="reset-btn">Reset</button>
+    <button id="scenario-btn">Iran Breakout</button>
+  </div>
+  <div id="info">
+    <strong>3D Gravity Fabric Active</strong><br/>
+    Planets warp spacetime based on Power Mass M. Deeper warps = stronger gravitational pull.<br/>
+    USA (M=1.19) creates the deepest valley. Fly under the fabric to see curvature from below.
   </div>
   <script type="module">
     import React, { useRef, useState, useMemo, useEffect } from 'react';
@@ -52,9 +68,8 @@
     import { OrbitControls, Html, Stars, Sphere } from '@react-three/drei';
     import * as THREE from 'three';
 
-    // TIER 1 + TIER 2 Dataset (145 planets - full spec from v4.0)
+    // TIER 1 + TIER 2 Dataset (50 shown, expandable to 145)
     const countries = [
-      // TIER 1 (Ranks 1-30)
       { id: 'USA', name: 'United States', mass: 1.19, color: '#00aaff', position: [0, 0, 0], threat: 0.85, usdDep: 0.95, size: 2.2, nuclear: 3708, haloColor: '#ffffff', rank: 1 },
       { id: 'CHN', name: 'China', mass: 1.02, color: '#ffcc00', position: [-25, -10, 18], threat: 0.65, usdDep: 0.25, size: 2.0, nuclear: 600, haloColor: '#ffcc00', rank: 3 },
       { id: 'RUS', name: 'Russia', mass: 0.87, color: '#6B1A3A', position: [20, 6, -12], threat: 0.75, usdDep: 0.15, size: 1.8, nuclear: 4309, haloColor: '#4B0082', rank: 2 },
@@ -86,8 +101,6 @@
       { id: 'CAN', name: 'Canada', mass: 0.12, color: '#4488ff', position: [-6, 16, 10], threat: 0.30, usdDep: 0.90, size: 0.73, nuclear: 0, haloColor: null, rank: 28 },
       { id: 'SGP', name: 'Singapore', mass: 0.09, color: '#cc5588', position: [10, -2, 18], threat: 0.25, usdDep: 0.90, size: 0.65, nuclear: 0, haloColor: null, rank: 29 },
       { id: 'GRC', name: 'Greece', mass: 0.08, color: '#5588ff', position: [-8, 12, -10], threat: 0.35, usdDep: 0.78, size: 0.62, nuclear: 0, haloColor: null, rank: 30 },
-      
-      // TIER 2 Sample (Ranks 31-50 - add more for full 145)
       { id: 'ARG', name: 'Argentina', mass: 0.07, color: '#88aacc', position: [-22, -24, -8], threat: 0.15, usdDep: 0.55, size: 0.6, nuclear: 0, haloColor: null, rank: 32 },
       { id: 'NGA', name: 'Nigeria', mass: 0.07, color: '#cc8844', position: [4, -16, -14], threat: 0.30, usdDep: 0.50, size: 0.6, nuclear: 0, haloColor: null, rank: 33 },
       { id: 'NLD', name: 'Netherlands', mass: 0.07, color: '#5588ff', position: [-10, 18, -5], threat: 0.25, usdDep: 0.88, size: 0.6, nuclear: 0, haloColor: null, rank: 34 },
@@ -109,7 +122,6 @@
       { id: 'PER', name: 'Peru', mass: 0.04, color: '#cc8855', position: [-20, -22, -8], threat: 0.20, usdDep: 0.65, size: 0.52, nuclear: 0, haloColor: null, rank: 50 },
     ];
 
-    // Relationships (key arcs)
     const relationships = [
       { from: 'RUS', to: 'IRN', type: 'isr', color: '#9B59B6', dashed: true, pulse: true },
       { from: 'USA', to: 'ISR', type: 'alliance', color: '#00aaff', dashed: false, pulse: false },
@@ -120,6 +132,106 @@
       { from: 'USA', to: 'KOR', type: 'alliance', color: '#00aaff', dashed: false, pulse: false },
       { from: 'IND', to: 'PAK', type: 'conflict', color: '#ff6600', dashed: false, pulse: false },
     ];
+
+    // 3D GRAVITY FABRIC Component
+    const GravityFabric = ({ countries, warpIntensity, visible }) => {
+      const fabricRef = useRef();
+      const resolution = 100; // Grid resolution
+      const size = 120; // Fabric size
+
+      // Create custom geometry with warping
+      const geometry = useMemo(() => {
+        const geo = new THREE.PlaneGeometry(size, size, resolution, resolution);
+        return geo;
+      }, [size, resolution]);
+
+      useFrame(({ clock }) => {
+        if (!fabricRef.current || !visible) return;
+        const positions = fabricRef.current.geometry.attributes.position;
+        const time = clock.getElapsedTime();
+
+        for (let i = 0; i < positions.count; i++) {
+          const x = positions.getX(i);
+          const z = positions.getZ(i);
+          let y = 0;
+
+          // Warp based on planet masses and distances
+          countries.forEach(country => {
+            const [px, py, pz] = country.position;
+            const dist = Math.sqrt((x - px) ** 2 + (z - pz) ** 2);
+            if (dist > 0.5) {
+              // Gravitational warp: deeper for higher mass, inverse square
+              y -= (country.mass * 8 * warpIntensity) / (dist * dist + 1);
+            }
+          });
+
+          // Add subtle ripple animation
+          y += Math.sin(time * 0.3 + x * 0.15) * 0.3 + Math.cos(time * 0.25 + z * 0.15) * 0.3;
+
+          positions.setY(i, y);
+        }
+        positions.needsUpdate = true;
+      });
+
+      if (!visible) return null;
+
+      return (
+        <mesh ref={fabricRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -18, 0]} geometry={geometry}>
+          <meshStandardMaterial
+            color="#0a3a5c"
+            wireframe={false}
+            transparent
+            opacity={0.35}
+            side={THREE.DoubleSide}
+            emissive="#004d73"
+            emissiveIntensity={0.3}
+          />
+        </mesh>
+      );
+    };
+
+    // Fabric Wireframe Overlay
+    const FabricWireframe = ({ countries, warpIntensity, visible }) => {
+      const wireRef = useRef();
+      const resolution = 50;
+      const size = 120;
+
+      const geometry = useMemo(() => {
+        return new THREE.PlaneGeometry(size, size, resolution, resolution);
+      }, [size, resolution]);
+
+      useFrame(({ clock }) => {
+        if (!wireRef.current || !visible) return;
+        const positions = wireRef.current.geometry.attributes.position;
+        const time = clock.getElapsedTime();
+
+        for (let i = 0; i < positions.count; i++) {
+          const x = positions.getX(i);
+          const z = positions.getZ(i);
+          let y = 0;
+
+          countries.forEach(country => {
+            const [px, py, pz] = country.position;
+            const dist = Math.sqrt((x - px) ** 2 + (z - pz) ** 2);
+            if (dist > 0.5) {
+              y -= (country.mass * 8 * warpIntensity) / (dist * dist + 1);
+            }
+          });
+
+          y += Math.sin(time * 0.3 + x * 0.15) * 0.3 + Math.cos(time * 0.25 + z * 0.15) * 0.3;
+          positions.setY(i, y);
+        }
+        positions.needsUpdate = true;
+      });
+
+      if (!visible) return null;
+
+      return (
+        <mesh ref={wireRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -17.9, 0]} geometry={geometry}>
+          <meshBasicMaterial color="#00ffaa" wireframe transparent opacity={0.15} />
+        </mesh>
+      );
+    };
 
     const Planet = ({ data, onClick, isrIntensity, dollarPull }) => {
       const meshRef = useRef();
@@ -149,13 +261,11 @@
             <meshStandardMaterial color={data.color} emissive={data.color} emissiveIntensity={0.6} />
           </Sphere>
 
-          {/* Dollar vulnerability ring */}
           <mesh position={[0, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
             <torusGeometry args={[effectiveSize + 0.3, 0.06, 16, 100]} />
             <meshBasicMaterial color="#ffcc00" opacity={data.usdDep * dollarPull} transparent />
           </mesh>
 
-          {/* Nuclear halo */}
           {data.nuclear > 0 && (
             <mesh ref={haloRef}>
               <sphereGeometry args={[effectiveSize * 1.6, 32, 32]} />
@@ -169,7 +279,6 @@
             </mesh>
           )}
 
-          {/* Iran latent glow */}
           {data.latentGlow && (
             <mesh>
               <sphereGeometry args={[effectiveSize * 1.3, 32, 32]} />
@@ -183,7 +292,6 @@
             </mesh>
           )}
 
-          {/* Hover tooltip */}
           {hovered && (
             <Html position={[0, effectiveSize + 0.6, 0]} center>
               <div style={{
@@ -259,7 +367,7 @@
       );
     };
 
-    const GalaxyScene = ({ isrIntensity, dollarPull }) => {
+    const GalaxyScene = ({ isrIntensity, dollarPull, warpIntensity, fabricVisible }) => {
       const [selected, setSelected] = useState(null);
 
       const positions = useMemo(
@@ -273,6 +381,10 @@
       return (
         <>
           <Stars radius={150} depth={60} count={8000} factor={5} saturation={0} fade speed={0.5} />
+          
+          <GravityFabric countries={countries} warpIntensity={warpIntensity} visible={fabricVisible} />
+          <FabricWireframe countries={countries} warpIntensity={warpIntensity} visible={fabricVisible} />
+          
           <DollarSingularity dollarPull={dollarPull} />
 
           {countries.map((c) => (
@@ -376,11 +488,16 @@
     const App = () => {
       const [isrIntensity, setIsrIntensity] = useState(1.0);
       const [dollarPull, setDollarPull] = useState(1.0);
+      const [warpIntensity, setWarpIntensity] = useState(0.6);
+      const [fabricVisible, setFabricVisible] = useState(true);
 
       useEffect(() => {
         const isrSlider = document.getElementById('isr-slider');
         const dollarSlider = document.getElementById('dollar-slider');
+        const warpSlider = document.getElementById('warp-slider');
+        const fabricToggle = document.getElementById('fabric-toggle');
         const resetBtn = document.getElementById('reset-btn');
+        const scenarioBtn = document.getElementById('scenario-btn');
 
         isrSlider.addEventListener('input', (e) => {
           const val = e.target.value / 100;
@@ -394,25 +511,53 @@
           document.getElementById('dollar-value').textContent = `${e.target.value}%`;
         });
 
+        warpSlider.addEventListener('input', (e) => {
+          const val = e.target.value / 100;
+          setWarpIntensity(val);
+          document.getElementById('warp-value').textContent = `${e.target.value}%`;
+        });
+
+        fabricToggle.addEventListener('change', (e) => {
+          setFabricVisible(e.target.checked);
+        });
+
         resetBtn.addEventListener('click', () => {
           setIsrIntensity(1.0);
           setDollarPull(1.0);
+          setWarpIntensity(0.6);
+          setFabricVisible(true);
           isrSlider.value = 100;
           dollarSlider.value = 100;
+          warpSlider.value = 60;
+          fabricToggle.checked = true;
           document.getElementById('isr-value').textContent = '100%';
           document.getElementById('dollar-value').textContent = '100%';
+          document.getElementById('warp-value').textContent = '60%';
+        });
+
+        scenarioBtn.addEventListener('click', () => {
+          // Iran breakout scenario
+          setIsrIntensity(0.3);
+          isrSlider.value = 30;
+          document.getElementById('isr-value').textContent = '30%';
+          alert('Iran Breakout Scenario: ISR cut to 30%, Iran forms deeper warp (nuclear acquisition)');
         });
       }, []);
 
       return (
         <div style={{ width: '100vw', height: '100vh', background: 'radial-gradient(circle at top, #020617, #000000)' }}>
-          <Canvas camera={{ position: [0, 0, 65], fov: 65 }} shadows>
+          <Canvas camera={{ position: [0, 15, 70], fov: 65 }} shadows>
             <color attach="background" args={['#020617']} />
             <ambientLight intensity={0.6} />
             <pointLight position={[30, 30, 30]} intensity={1.4} />
             <pointLight position={[-25, -20, -15]} intensity={0.8} color="#60a5fa" />
-            <OrbitControls enablePan enableZoom enableRotate maxDistance={150} minDistance={10} />
-            <GalaxyScene isrIntensity={isrIntensity} dollarPull={dollarPull} />
+            <OrbitControls enablePan enableZoom enableRotate maxDistance={180} minDistance={8} />
+            <GalaxyScene
+              isrIntensity={isrIntensity}
+              dollarPull={dollarPull}
+              warpIntensity={warpIntensity}
+              fabricVisible={fabricVisible}
+            />
           </Canvas>
         </div>
       );
