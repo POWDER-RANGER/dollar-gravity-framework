@@ -1,570 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dollar-Gravity Framework v4.0 — The Living Strategic Universe</title>
-  <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@18.2.0",
-        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-        "@react-three/fiber": "https://esm.sh/@react-three/fiber@8.15.12",
-        "@react-three/drei": "https://esm.sh/@react-three/drei@9.92.7",
-        "three": "https://esm.sh/three@0.160.0"
-      }
-    }
-  </script>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body, #root { width: 100%; height: 100%; overflow: hidden; }
-    body { font-family: system-ui, -apple-system, sans-serif; background: #000; color: #e5e7eb; }
-    #controls { position: fixed; top: 16px; left: 16px; z-index: 10; background: rgba(15,23,42,0.92); padding: 16px; border-radius: 12px; border: 1px solid rgba(148,163,184,0.3); max-width: 300px; }
-    #controls h3 { font-size: 14px; font-weight: 600; margin-bottom: 12px; color: #60a5fa; }
-    .slider-group { margin-bottom: 12px; }
-    .slider-group label { display: block; font-size: 12px; margin-bottom: 4px; color: #94a3b8; }
-    .slider-group input[type="range"] { width: 100%; }
-    .slider-group input[type="checkbox"] { margin-right: 6px; }
-    .slider-group .value { font-size: 11px; color: #cbd5e1; }
-    button { padding: 6px 12px; font-size: 12px; background: rgba(96,165,250,0.2); border: 1px solid #60a5fa; border-radius: 6px; color: #60a5fa; cursor: pointer; margin-right: 8px; }
-    button:hover { background: rgba(96,165,250,0.35); }
-    #info { position: fixed; bottom: 16px; right: 16px; z-index: 10; background: rgba(15,23,42,0.88); padding: 12px; border-radius: 8px; border: 1px solid rgba(148,163,184,0.25); font-size: 11px; color: #94a3b8; max-width: 280px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dollar-Gravity Framework — Original Informational Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #000; color: #e5e7eb; }
+        
+        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        
+        #header { position: fixed; top: 20px; left: 20px; z-index: 10; background: rgba(15,23,42,0.85); backdrop-filter: blur(8px); padding: 16px 20px; border-radius: 8px; border: 1px solid rgba(148,163,184,0.2); }
+        #header h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+        #header p { font-size: 13px; opacity: 0.75; }
+        
+        #info-panel { 
+            position: fixed; top: 120px; right: 20px; width: 340px; 
+            background: rgba(15,23,42,0.92); backdrop-filter: blur(12px);
+            border-radius: 12px; padding: 20px; z-index: 10;
+            border: 1px solid rgba(148,163,184,0.3);
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+        #info-panel h2 { font-size: 18px; margin-bottom: 14px; color: #60a5fa; font-weight: 600; }
+        #info-panel .module { margin-bottom: 18px; }
+        #info-panel .module h3 { font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #93c5fd; }
+        #info-panel .module p { font-size: 12px; opacity: 0.75; line-height: 1.6; }
+        #info-panel .link-box { margin-top: 20px; padding: 14px; background: rgba(59,130,246,0.1); border-radius: 8px; border: 1px solid rgba(59,130,246,0.3); }
+        #info-panel .link-box strong { display: block; font-size: 13px; margin-bottom: 8px; color: #60a5fa; }
+        
+        #controls { 
+            position: fixed; bottom: 20px; left: 20px; width: 360px;
+            background: rgba(15,23,42,0.92); backdrop-filter: blur(12px);
+            border-radius: 12px; padding: 20px; z-index: 10;
+            border: 1px solid rgba(148,163,184,0.3);
+        }
+        #controls h3 { font-size: 16px; margin-bottom: 16px; font-weight: 600; }
+        .slider-row { margin-bottom: 14px; }
+        .slider-row label { display: block; font-size: 13px; margin-bottom: 6px; }
+        .slider-row input { width: 100%; height: 4px; border-radius: 2px; background: rgba(148,163,184,0.2); outline: none; appearance: none; }
+        .slider-row input::-webkit-slider-thumb { appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #60a5fa; cursor: pointer; }
+        
+        a { color: #60a5fa; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
-  <div id="root"></div>
-  <div id="controls">
-    <h3>Scenario Controls</h3>
-    <div class="slider-group">
-      <label><input type="checkbox" id="fabric-toggle" checked /> Show Gravity Fabric</label>
+    <div id="canvas-container"><canvas id="canvas"></canvas></div>
+    
+    <div id="header">
+        <h1>Dollar-Gravity Framework</h1>
+        <p>Original Informational Dashboard — 11 Core Modules</p>
     </div>
-    <div class="slider-group">
-      <label>Fabric Warp Intensity</label>
-      <input type="range" id="warp-slider" min="0" max="100" value="60" />
-      <div class="value">Current: <span id="warp-value">60%</span></div>
-    </div>
-    <div class="slider-group">
-      <label>ISR Stream Intensity</label>
-      <input type="range" id="isr-slider" min="0" max="100" value="100" />
-      <div class="value">Current: <span id="isr-value">100%</span></div>
-    </div>
-    <div class="slider-group">
-      <label>Dollar Singularity Pull</label>
-      <input type="range" id="dollar-slider" min="0" max="100" value="100" />
-      <div class="value">Current: <span id="dollar-value">100%</span></div>
-    </div>
-    <button id="reset-btn">Reset</button>
-    <button id="scenario-btn">Iran Breakout</button>
-  </div>
-  <div id="info">
-    <strong>3D Gravity Fabric Active</strong><br/>
-    Planets warp spacetime based on Power Mass M. Deeper warps = stronger gravitational pull.<br/>
-    USA (M=1.19) creates the deepest valley. Fly under the fabric to see curvature from below.
-  </div>
-  <script type="module">
-    import React, { useRef, useState, useMemo, useEffect } from 'react';
-    import { createRoot } from 'react-dom/client';
-    import { Canvas, useFrame } from '@react-three/fiber';
-    import { OrbitControls, Html, Stars, Sphere } from '@react-three/drei';
-    import * as THREE from 'three';
-
-    // TIER 1 + TIER 2 Dataset (50 shown, expandable to 145)
-    const countries = [
-      { id: 'USA', name: 'United States', mass: 1.19, color: '#00aaff', position: [0, 0, 0], threat: 0.85, usdDep: 0.95, size: 2.2, nuclear: 3708, haloColor: '#ffffff', rank: 1 },
-      { id: 'CHN', name: 'China', mass: 1.02, color: '#ffcc00', position: [-25, -10, 18], threat: 0.65, usdDep: 0.25, size: 2.0, nuclear: 600, haloColor: '#ffcc00', rank: 3 },
-      { id: 'RUS', name: 'Russia', mass: 0.87, color: '#6B1A3A', position: [20, 6, -12], threat: 0.75, usdDep: 0.15, size: 1.8, nuclear: 4309, haloColor: '#4B0082', rank: 2 },
-      { id: 'IND', name: 'India', mass: 0.63, color: '#ff8800', position: [12, 24, 6], threat: 0.45, usdDep: 0.40, size: 1.6, nuclear: 180, haloColor: '#ff8800', rank: 4 },
-      { id: 'IRN', name: 'Iran', mass: 0.37, color: '#cc2200', position: [10, -14, 4], threat: 0.95, usdDep: 0.05, size: 1.3, nuclear: 0, haloColor: null, latentGlow: true, rank: 16 },
-      { id: 'ISR', name: 'Israel', mass: 0.22, color: '#88aaff', position: [6, -6, -9], threat: 0.80, usdDep: 0.85, size: 1.0, nuclear: 90, haloColor: '#ffffff', rank: 15 },
-      { id: 'SAU', name: 'Saudi Arabia', mass: 0.12, color: '#00cc88', position: [14, -17, 3], threat: 0.55, usdDep: 0.75, size: 0.85, nuclear: 0, haloColor: null, rank: 25 },
-      { id: 'FRA', name: 'France', mass: 0.30, color: '#4488ff', position: [-12, 12, -6], threat: 0.40, usdDep: 0.80, size: 1.1, nuclear: 290, haloColor: '#4488ff', rank: 6 },
-      { id: 'GBR', name: 'United Kingdom', mass: 0.27, color: '#4488ff', position: [-14, 14, -4], threat: 0.40, usdDep: 0.82, size: 1.05, nuclear: 225, haloColor: '#4488ff', rank: 8 },
-      { id: 'PAK', name: 'Pakistan', mass: 0.21, color: '#2E8B57', position: [21, 18, 1], threat: 0.45, usdDep: 0.35, size: 0.95, nuclear: 170, haloColor: '#2E8B57', rank: 14 },
-      { id: 'PRK', name: 'North Korea', mass: 0.19, color: '#cc0000', position: [30, -24, 12], threat: 0.90, usdDep: 0.01, size: 0.9, nuclear: 50, haloColor: '#cc0000', rank: 31 },
-      { id: 'KOR', name: 'South Korea', mass: 0.28, color: '#5599ff', position: [-20, 10, 8], threat: 0.50, usdDep: 0.70, size: 1.05, nuclear: 0, haloColor: null, rank: 5 },
-      { id: 'JPN', name: 'Japan', mass: 0.24, color: '#ff6666', position: [-18, 8, 12], threat: 0.35, usdDep: 0.85, size: 1.0, nuclear: 0, haloColor: null, rank: 7 },
-      { id: 'TUR', name: 'Türkiye', mass: 0.21, color: '#cc5500', position: [8, 18, -5], threat: 0.55, usdDep: 0.60, size: 0.95, nuclear: 0, haloColor: null, rank: 9 },
-      { id: 'ITA', name: 'Italy', mass: 0.19, color: '#5588ff', position: [-10, 14, -8], threat: 0.35, usdDep: 0.78, size: 0.9, nuclear: 0, haloColor: null, rank: 10 },
-      { id: 'BRA', name: 'Brazil', mass: 0.18, color: '#00aa44', position: [-18, -20, -10], threat: 0.30, usdDep: 0.55, size: 0.88, nuclear: 0, haloColor: null, rank: 11 },
-      { id: 'DEU', name: 'Germany', mass: 0.22, color: '#5588ff', position: [-11, 16, -7], threat: 0.30, usdDep: 0.88, size: 0.98, nuclear: 0, haloColor: null, rank: 12 },
-      { id: 'IDN', name: 'Indonesia', mass: 0.17, color: '#cc8800', position: [16, -8, 20], threat: 0.25, usdDep: 0.45, size: 0.85, nuclear: 0, haloColor: null, rank: 13 },
-      { id: 'AUS', name: 'Australia', mass: 0.15, color: '#4488ff', position: [-16, -18, 15], threat: 0.30, usdDep: 0.75, size: 0.8, nuclear: 0, haloColor: null, rank: 17 },
-      { id: 'ESP', name: 'Spain', mass: 0.14, color: '#5588ff', position: [-13, 11, -9], threat: 0.30, usdDep: 0.80, size: 0.78, nuclear: 0, haloColor: null, rank: 18 },
-      { id: 'EGY', name: 'Egypt', mass: 0.13, color: '#cc9944', position: [10, -10, -6], threat: 0.40, usdDep: 0.50, size: 0.75, nuclear: 0, haloColor: null, rank: 19 },
-      { id: 'UKR', name: 'Ukraine', mass: 0.12, color: '#ffcc00', position: [18, 20, -8], threat: 0.70, usdDep: 0.40, size: 0.73, nuclear: 0, haloColor: null, rank: 20 },
-      { id: 'POL', name: 'Poland', mass: 0.12, color: '#5588ff', position: [-8, 18, -6], threat: 0.45, usdDep: 0.78, size: 0.73, nuclear: 0, haloColor: null, rank: 21 },
-      { id: 'TWN', name: 'Taiwan', mass: 0.13, color: '#cc4444', position: [-22, 6, 14], threat: 0.60, usdDep: 0.70, size: 0.75, nuclear: 0, haloColor: null, rank: 22 },
-      { id: 'VNM', name: 'Vietnam', mass: 0.13, color: '#cc6644', position: [14, -6, 18], threat: 0.40, usdDep: 0.45, size: 0.75, nuclear: 0, haloColor: null, rank: 23 },
-      { id: 'THA', name: 'Thailand', mass: 0.11, color: '#cc8866', position: [12, -4, 16], threat: 0.25, usdDep: 0.55, size: 0.7, nuclear: 0, haloColor: null, rank: 24 },
-      { id: 'SWE', name: 'Sweden', mass: 0.09, color: '#5588ff', position: [-9, 20, -4], threat: 0.30, usdDep: 0.80, size: 0.65, nuclear: 0, haloColor: null, rank: 26 },
-      { id: 'DZA', name: 'Algeria', mass: 0.09, color: '#cc9966', position: [6, -12, -10], threat: 0.35, usdDep: 0.45, size: 0.65, nuclear: 0, haloColor: null, rank: 27 },
-      { id: 'CAN', name: 'Canada', mass: 0.12, color: '#4488ff', position: [-6, 16, 10], threat: 0.30, usdDep: 0.90, size: 0.73, nuclear: 0, haloColor: null, rank: 28 },
-      { id: 'SGP', name: 'Singapore', mass: 0.09, color: '#cc5588', position: [10, -2, 18], threat: 0.25, usdDep: 0.90, size: 0.65, nuclear: 0, haloColor: null, rank: 29 },
-      { id: 'GRC', name: 'Greece', mass: 0.08, color: '#5588ff', position: [-8, 12, -10], threat: 0.35, usdDep: 0.78, size: 0.62, nuclear: 0, haloColor: null, rank: 30 },
-      { id: 'ARG', name: 'Argentina', mass: 0.07, color: '#88aacc', position: [-22, -24, -8], threat: 0.15, usdDep: 0.55, size: 0.6, nuclear: 0, haloColor: null, rank: 32 },
-      { id: 'NGA', name: 'Nigeria', mass: 0.07, color: '#cc8844', position: [4, -16, -14], threat: 0.30, usdDep: 0.50, size: 0.6, nuclear: 0, haloColor: null, rank: 33 },
-      { id: 'NLD', name: 'Netherlands', mass: 0.07, color: '#5588ff', position: [-10, 18, -5], threat: 0.25, usdDep: 0.88, size: 0.6, nuclear: 0, haloColor: null, rank: 34 },
-      { id: 'MMR', name: 'Myanmar', mass: 0.05, color: '#ccaa55', position: [18, -2, 16], threat: 0.50, usdDep: 0.30, size: 0.55, nuclear: 0, haloColor: null, rank: 35 },
-      { id: 'MEX', name: 'Mexico', mass: 0.08, color: '#cc6655', position: [-14, -16, 8], threat: 0.35, usdDep: 0.80, size: 0.62, nuclear: 0, haloColor: null, rank: 36 },
-      { id: 'BGD', name: 'Bangladesh', mass: 0.06, color: '#88aa88', position: [16, 2, 14], threat: 0.20, usdDep: 0.45, size: 0.57, nuclear: 0, haloColor: null, rank: 37 },
-      { id: 'PRT', name: 'Portugal', mass: 0.04, color: '#5588ff', position: [-14, 10, -11], threat: 0.20, usdDep: 0.82, size: 0.52, nuclear: 0, haloColor: null, rank: 38 },
-      { id: 'NOR', name: 'Norway', mass: 0.04, color: '#5588ff', position: [-10, 22, -2], threat: 0.20, usdDep: 0.85, size: 0.52, nuclear: 0, haloColor: null, rank: 39 },
-      { id: 'ZAF', name: 'South Africa', mass: 0.05, color: '#aa8866', position: [2, -22, -18], threat: 0.20, usdDep: 0.50, size: 0.55, nuclear: 0, haloColor: null, rank: 40 },
-      { id: 'PHL', name: 'Philippines', mass: 0.05, color: '#cc7766', position: [14, 0, 20], threat: 0.35, usdDep: 0.65, size: 0.55, nuclear: 0, haloColor: null, rank: 41 },
-      { id: 'MYS', name: 'Malaysia', mass: 0.05, color: '#cc9955', position: [12, 0, 18], threat: 0.20, usdDep: 0.55, size: 0.55, nuclear: 0, haloColor: null, rank: 42 },
-      { id: 'COL', name: 'Colombia', mass: 0.05, color: '#ccaa44', position: [-18, -18, -6], threat: 0.30, usdDep: 0.70, size: 0.55, nuclear: 0, haloColor: null, rank: 43 },
-      { id: 'IRQ', name: 'Iraq', mass: 0.04, color: '#cc6633', position: [12, -12, 0], threat: 0.55, usdDep: 0.50, size: 0.52, nuclear: 0, haloColor: null, rank: 44 },
-      { id: 'DNK', name: 'Denmark', mass: 0.04, color: '#5588ff', position: [-11, 20, -3], threat: 0.20, usdDep: 0.85, size: 0.52, nuclear: 0, haloColor: null, rank: 45 },
-      { id: 'CHE', name: 'Switzerland', mass: 0.06, color: '#aa6666', position: [-9, 14, -8], threat: 0.10, usdDep: 0.85, size: 0.57, nuclear: 0, haloColor: null, rank: 46 },
-      { id: 'ETH', name: 'Ethiopia', mass: 0.05, color: '#cc9977', position: [6, -18, -12], threat: 0.40, usdDep: 0.40, size: 0.55, nuclear: 0, haloColor: null, rank: 47 },
-      { id: 'FIN', name: 'Finland', mass: 0.04, color: '#5588ff', position: [-8, 22, -4], threat: 0.25, usdDep: 0.85, size: 0.52, nuclear: 0, haloColor: null, rank: 48 },
-      { id: 'CHL', name: 'Chile', mass: 0.04, color: '#8899bb', position: [-24, -26, -6], threat: 0.15, usdDep: 0.70, size: 0.52, nuclear: 0, haloColor: null, rank: 49 },
-      { id: 'PER', name: 'Peru', mass: 0.04, color: '#cc8855', position: [-20, -22, -8], threat: 0.20, usdDep: 0.65, size: 0.52, nuclear: 0, haloColor: null, rank: 50 },
-    ];
-
-    const relationships = [
-      { from: 'RUS', to: 'IRN', type: 'isr', color: '#9B59B6', dashed: true, pulse: true },
-      { from: 'USA', to: 'ISR', type: 'alliance', color: '#00aaff', dashed: false, pulse: false },
-      { from: 'USA', to: 'IRN', type: 'conflict', color: '#ff3300', dashed: false, pulse: true },
-      { from: 'CHN', to: 'RUS', type: 'dollar_alt', color: '#ffcc00', dashed: true, pulse: false },
-      { from: 'USA', to: 'SAU', type: 'dollar_rail', color: '#FFD700', dashed: false, pulse: false },
-      { from: 'USA', to: 'JPN', type: 'alliance', color: '#00aaff', dashed: false, pulse: false },
-      { from: 'USA', to: 'KOR', type: 'alliance', color: '#00aaff', dashed: false, pulse: false },
-      { from: 'IND', to: 'PAK', type: 'conflict', color: '#ff6600', dashed: false, pulse: false },
-    ];
-
-    // 3D GRAVITY FABRIC Component
-    const GravityFabric = ({ countries, warpIntensity, visible }) => {
-      const fabricRef = useRef();
-      const resolution = 100; // Grid resolution
-      const size = 120; // Fabric size
-
-      // Create custom geometry with warping
-      const geometry = useMemo(() => {
-        const geo = new THREE.PlaneGeometry(size, size, resolution, resolution);
-        return geo;
-      }, [size, resolution]);
-
-      useFrame(({ clock }) => {
-        if (!fabricRef.current || !visible) return;
-        const positions = fabricRef.current.geometry.attributes.position;
-        const time = clock.getElapsedTime();
-
-        for (let i = 0; i < positions.count; i++) {
-          const x = positions.getX(i);
-          const z = positions.getZ(i);
-          let y = 0;
-
-          // Warp based on planet masses and distances
-          countries.forEach(country => {
-            const [px, py, pz] = country.position;
-            const dist = Math.sqrt((x - px) ** 2 + (z - pz) ** 2);
-            if (dist > 0.5) {
-              // Gravitational warp: deeper for higher mass, inverse square
-              y -= (country.mass * 8 * warpIntensity) / (dist * dist + 1);
-            }
-          });
-
-          // Add subtle ripple animation
-          y += Math.sin(time * 0.3 + x * 0.15) * 0.3 + Math.cos(time * 0.25 + z * 0.15) * 0.3;
-
-          positions.setY(i, y);
-        }
-        positions.needsUpdate = true;
-      });
-
-      if (!visible) return null;
-
-      return (
-        <mesh ref={fabricRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -18, 0]} geometry={geometry}>
-          <meshStandardMaterial
-            color="#0a3a5c"
-            wireframe={false}
-            transparent
-            opacity={0.35}
-            side={THREE.DoubleSide}
-            emissive="#004d73"
-            emissiveIntensity={0.3}
-          />
-        </mesh>
-      );
-    };
-
-    // Fabric Wireframe Overlay
-    const FabricWireframe = ({ countries, warpIntensity, visible }) => {
-      const wireRef = useRef();
-      const resolution = 50;
-      const size = 120;
-
-      const geometry = useMemo(() => {
-        return new THREE.PlaneGeometry(size, size, resolution, resolution);
-      }, [size, resolution]);
-
-      useFrame(({ clock }) => {
-        if (!wireRef.current || !visible) return;
-        const positions = wireRef.current.geometry.attributes.position;
-        const time = clock.getElapsedTime();
-
-        for (let i = 0; i < positions.count; i++) {
-          const x = positions.getX(i);
-          const z = positions.getZ(i);
-          let y = 0;
-
-          countries.forEach(country => {
-            const [px, py, pz] = country.position;
-            const dist = Math.sqrt((x - px) ** 2 + (z - pz) ** 2);
-            if (dist > 0.5) {
-              y -= (country.mass * 8 * warpIntensity) / (dist * dist + 1);
-            }
-          });
-
-          y += Math.sin(time * 0.3 + x * 0.15) * 0.3 + Math.cos(time * 0.25 + z * 0.15) * 0.3;
-          positions.setY(i, y);
-        }
-        positions.needsUpdate = true;
-      });
-
-      if (!visible) return null;
-
-      return (
-        <mesh ref={wireRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -17.9, 0]} geometry={geometry}>
-          <meshBasicMaterial color="#00ffaa" wireframe transparent opacity={0.15} />
-        </mesh>
-      );
-    };
-
-    const Planet = ({ data, onClick, isrIntensity, dollarPull }) => {
-      const meshRef = useRef();
-      const haloRef = useRef();
-      const [hovered, setHovered] = useState(false);
-
-      useFrame(({ clock }) => {
-        if (!meshRef.current) return;
-        meshRef.current.rotation.y += 0.002;
-        if (data.nuclear > 0 && haloRef.current) {
-          const t = clock.getElapsedTime();
-          const s = 1 + Math.sin(t * 1.5) * 0.06;
-          haloRef.current.scale.set(s, s, s);
-        }
-      });
-
-      const effectiveSize = data.id === 'IRN' ? data.size * (0.85 + 0.15 * isrIntensity) : data.size;
-
-      return (
-        <group
-          position={data.position}
-          onClick={onClick}
-          onPointerOver={(e) => { e.stopPropagation(); setHovered(true); }}
-          onPointerOut={(e) => { e.stopPropagation(); setHovered(false); }}
-        >
-          <Sphere ref={meshRef} args={[effectiveSize, 32, 32]}>
-            <meshStandardMaterial color={data.color} emissive={data.color} emissiveIntensity={0.6} />
-          </Sphere>
-
-          <mesh position={[0, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
-            <torusGeometry args={[effectiveSize + 0.3, 0.06, 16, 100]} />
-            <meshBasicMaterial color="#ffcc00" opacity={data.usdDep * dollarPull} transparent />
-          </mesh>
-
-          {data.nuclear > 0 && (
-            <mesh ref={haloRef}>
-              <sphereGeometry args={[effectiveSize * 1.6, 32, 32]} />
-              <meshBasicMaterial
-                color={data.haloColor}
-                transparent
-                opacity={0.22}
-                blending={THREE.AdditiveBlending}
-                depthWrite={false}
-              />
-            </mesh>
-          )}
-
-          {data.latentGlow && (
-            <mesh>
-              <sphereGeometry args={[effectiveSize * 1.3, 32, 32]} />
-              <meshBasicMaterial
-                color="#cc2200"
-                transparent
-                opacity={0.12 * isrIntensity}
-                blending={THREE.AdditiveBlending}
-                depthWrite={false}
-              />
-            </mesh>
-          )}
-
-          {hovered && (
-            <Html position={[0, effectiveSize + 0.6, 0]} center>
-              <div style={{
-                background: 'rgba(0,0,0,0.88)',
-                color: '#fff',
-                padding: '10px 14px',
-                borderRadius: '8px',
-                whiteSpace: 'nowrap',
-                fontSize: '13px',
-                border: '1px solid rgba(255,255,255,0.25)',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.7)',
-              }}>
-                <div style={{ fontWeight: 600, marginBottom: 6 }}>{data.name}</div>
-                <div>Rank: #{data.rank} | Mass: {data.mass.toFixed(2)}</div>
-                <div>Threat: {(data.threat * 100).toFixed(0)}% | Dollar Dep: {(data.usdDep * 100).toFixed(0)}%</div>
-                {data.nuclear > 0 && <div>Nuclear: {data.nuclear} warheads</div>}
-              </div>
-            </Html>
-          )}
-        </group>
-      );
-    };
-
-    const GravityLine = ({ fromPos, toPos, color, dashed, pulse }) => {
-      const lineRef = useRef();
-
-      useFrame(({ clock }) => {
-        if (!lineRef.current || !pulse) return;
-        const t = clock.getElapsedTime();
-        lineRef.current.material.opacity = 0.5 + Math.sin(t * 2.5) * 0.4;
-      });
-
-      const points = useMemo(() => {
-        const from = new THREE.Vector3(...fromPos);
-        const to = new THREE.Vector3(...toPos);
-        return [from, to];
-      }, [fromPos, toPos]);
-
-      return (
-        <line ref={lineRef}>
-          <bufferGeometry>
-            <bufferAttribute
-              attach="attributes-position"
-              count={points.length}
-              array={new Float32Array(points.flatMap(p => [p.x, p.y, p.z]))}
-              itemSize={3}
-            />
-          </bufferGeometry>
-          <lineBasicMaterial color={color} transparent opacity={pulse ? 0.5 : 0.7} linewidth={2} />
-        </line>
-      );
-    };
-
-    const DollarSingularity = ({ dollarPull }) => {
-      const ref = useRef();
-      useFrame(({ clock }) => {
-        if (!ref.current) return;
-        const t = clock.getElapsedTime();
-        const s = 0.8 + Math.sin(t * 0.5) * 0.15;
-        ref.current.scale.set(s, s, s);
-      });
-
-      return (
-        <mesh ref={ref} position={[0, 0, 0]}>
-          <sphereGeometry args={[0.6, 32, 32]} />
-          <meshBasicMaterial
-            color="#FFD700"
-            transparent
-            opacity={0.4 * dollarPull}
-            blending={THREE.AdditiveBlending}
-          />
-        </mesh>
-      );
-    };
-
-    const GalaxyScene = ({ isrIntensity, dollarPull, warpIntensity, fabricVisible }) => {
-      const [selected, setSelected] = useState(null);
-
-      const positions = useMemo(
-        () => countries.reduce((acc, c) => {
-          acc[c.id] = c.position;
-          return acc;
-        }, {}),
-        []
-      );
-
-      return (
-        <>
-          <Stars radius={150} depth={60} count={8000} factor={5} saturation={0} fade speed={0.5} />
-          
-          <GravityFabric countries={countries} warpIntensity={warpIntensity} visible={fabricVisible} />
-          <FabricWireframe countries={countries} warpIntensity={warpIntensity} visible={fabricVisible} />
-          
-          <DollarSingularity dollarPull={dollarPull} />
-
-          {countries.map((c) => (
-            <Planet
-              key={c.id}
-              data={c}
-              onClick={() => setSelected(c)}
-              isrIntensity={isrIntensity}
-              dollarPull={dollarPull}
-            />
-          ))}
-
-          {relationships.map((rel, i) => (
-            <GravityLine
-              key={i}
-              fromPos={positions[rel.from]}
-              toPos={positions[rel.to]}
-              color={rel.color}
-              dashed={rel.dashed}
-              pulse={rel.pulse && (rel.type === 'isr' ? isrIntensity > 0.5 : true)}
-            />
-          ))}
-
-          {selected && (
-            <Html fullscreen>
-              <div
-                onClick={() => setSelected(null)}
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  display: 'flex',
-                  alignItems: 'flex-end',
-                  justifyContent: 'center',
-                  background: 'radial-gradient(circle at top, rgba(15,23,42,0.75), rgba(0,0,0,0.96))',
-                  pointerEvents: 'auto',
-                }}
-              >
-                <div
-                  onClick={(e) => e.stopPropagation()}
-                  style={{
-                    width: '100%',
-                    maxWidth: 520,
-                    margin: 28,
-                    padding: 24,
-                    borderRadius: 16,
-                    background: 'rgba(15,23,42,0.97)',
-                    border: '1px solid rgba(148,163,184,0.45)',
-                    boxShadow: '0 28px 70px rgba(0,0,0,0.9)',
-                    color: '#e5e7eb',
-                  }}
-                >
-                  <h2 style={{ fontSize: 22, fontWeight: 600, marginBottom: 10 }}>{selected.name}</h2>
-                  <p style={{ fontSize: 14, color: '#9ca3af', marginBottom: 18 }}>
-                    Strategic profile: power mass, threat posture, dollar integration, nuclear status.
-                  </p>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 14, marginBottom: 18 }}>
-                    <div style={{ padding: 12, borderRadius: 12, background: 'rgba(15,118,110,0.14)', border: '1px solid rgba(45,212,191,0.4)' }}>
-                      <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 1.8, color: '#a5b4fc' }}>GFP Rank</div>
-                      <div style={{ fontSize: 20, fontWeight: 600 }}>#{selected.rank}</div>
-                    </div>
-                    <div style={{ padding: 12, borderRadius: 12, background: 'rgba(15,118,110,0.14)', border: '1px solid rgba(45,212,191,0.4)' }}>
-                      <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 1.8, color: '#a5b4fc' }}>Power Mass</div>
-                      <div style={{ fontSize: 20, fontWeight: 600 }}>{selected.mass.toFixed(2)}</div>
-                    </div>
-                    <div style={{ padding: 12, borderRadius: 12, background: 'rgba(190,24,93,0.12)', border: '1px solid rgba(244,114,182,0.45)' }}>
-                      <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 1.8, color: '#f9a8d4' }}>Nuclear</div>
-                      <div style={{ fontSize: 20, fontWeight: 600 }}>{selected.nuclear ? selected.nuclear.toLocaleString() : 'None'}</div>
-                    </div>
-                    <div style={{ padding: 12, borderRadius: 12, background: 'rgba(59,130,246,0.14)', border: '1px solid rgba(96,165,250,0.55)' }}>
-                      <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 1.8, color: '#bfdbfe' }}>Threat</div>
-                      <div style={{ fontSize: 20, fontWeight: 600 }}>{(selected.threat * 100).toFixed(0)}%</div>
-                    </div>
-                  </div>
-                  <div style={{ padding: 12, borderRadius: 12, background: 'rgba(245,158,11,0.16)', border: '1px solid rgba(251,191,36,0.65)', marginBottom: 16 }}>
-                    <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 1.8, color: '#fed7aa', marginBottom: 4 }}>Dollar Dependency</div>
-                    <div style={{ fontSize: 20, fontWeight: 600 }}>{(selected.usdDep * 100).toFixed(0)}%</div>
-                  </div>
-                  <button
-                    onClick={() => setSelected(null)}
-                    style={{
-                      marginTop: 6,
-                      fontSize: 14,
-                      padding: '8px 16px',
-                      borderRadius: 9999,
-                      border: '1px solid rgba(148,163,184,0.65)',
-                      background: 'rgba(15,23,42,0.95)',
-                      color: '#e5e7eb',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            </Html>
-          )}
-        </>
-      );
-    };
-
-    const App = () => {
-      const [isrIntensity, setIsrIntensity] = useState(1.0);
-      const [dollarPull, setDollarPull] = useState(1.0);
-      const [warpIntensity, setWarpIntensity] = useState(0.6);
-      const [fabricVisible, setFabricVisible] = useState(true);
-
-      useEffect(() => {
-        const isrSlider = document.getElementById('isr-slider');
-        const dollarSlider = document.getElementById('dollar-slider');
-        const warpSlider = document.getElementById('warp-slider');
-        const fabricToggle = document.getElementById('fabric-toggle');
-        const resetBtn = document.getElementById('reset-btn');
-        const scenarioBtn = document.getElementById('scenario-btn');
-
-        isrSlider.addEventListener('input', (e) => {
-          const val = e.target.value / 100;
-          setIsrIntensity(val);
-          document.getElementById('isr-value').textContent = `${e.target.value}%`;
-        });
-
-        dollarSlider.addEventListener('input', (e) => {
-          const val = e.target.value / 100;
-          setDollarPull(val);
-          document.getElementById('dollar-value').textContent = `${e.target.value}%`;
-        });
-
-        warpSlider.addEventListener('input', (e) => {
-          const val = e.target.value / 100;
-          setWarpIntensity(val);
-          document.getElementById('warp-value').textContent = `${e.target.value}%`;
-        });
-
-        fabricToggle.addEventListener('change', (e) => {
-          setFabricVisible(e.target.checked);
-        });
-
-        resetBtn.addEventListener('click', () => {
-          setIsrIntensity(1.0);
-          setDollarPull(1.0);
-          setWarpIntensity(0.6);
-          setFabricVisible(true);
-          isrSlider.value = 100;
-          dollarSlider.value = 100;
-          warpSlider.value = 60;
-          fabricToggle.checked = true;
-          document.getElementById('isr-value').textContent = '100%';
-          document.getElementById('dollar-value').textContent = '100%';
-          document.getElementById('warp-value').textContent = '60%';
-        });
-
-        scenarioBtn.addEventListener('click', () => {
-          // Iran breakout scenario
-          setIsrIntensity(0.3);
-          isrSlider.value = 30;
-          document.getElementById('isr-value').textContent = '30%';
-          alert('Iran Breakout Scenario: ISR cut to 30%, Iran forms deeper warp (nuclear acquisition)');
-        });
-      }, []);
-
-      return (
-        <div style={{ width: '100vw', height: '100vh', background: 'radial-gradient(circle at top, #020617, #000000)' }}>
-          <Canvas camera={{ position: [0, 15, 70], fov: 65 }} shadows>
-            <color attach="background" args={['#020617']} />
-            <ambientLight intensity={0.6} />
-            <pointLight position={[30, 30, 30]} intensity={1.4} />
-            <pointLight position={[-25, -20, -15]} intensity={0.8} color="#60a5fa" />
-            <OrbitControls enablePan enableZoom enableRotate maxDistance={180} minDistance={8} />
-            <GalaxyScene
-              isrIntensity={isrIntensity}
-              dollarPull={dollarPull}
-              warpIntensity={warpIntensity}
-              fabricVisible={fabricVisible}
-            />
-          </Canvas>
+    
+    <div id="info-panel">
+        <h2>Framework Overview</h2>
+        <div class="module">
+            <h3>1. Reserve Currency Dynamics</h3>
+            <p>Visualizes USD hegemony through planetary mass metaphors. Central "Sun" (USD) exerts gravitational pull on orbiting economies.</p>
         </div>
-      );
-    };
-
-    const root = createRoot(document.getElementById('root'));
-    root.render(<App />);
-  </script>
+        <div class="module">
+            <h3>2. Petrodollar Architecture</h3>
+            <p>Energy-trade linkages create feedback loops reinforcing USD demand. Orbits reflect energy dependence chains.</p>
+        </div>
+        <div class="module">
+            <h3>3. Financial Infrastructure Layer</h3>
+            <p>SWIFT, clearinghouses, and settlement systems form the invisible lattice of dollar dominance.</p>
+        </div>
+        <div class="module">
+            <h3>4. Debt-Trap Economics</h3>
+            <p>Structural adjustment lending creates perpetual debt cycles—planets locked in tight orbits unable to escape.</p>
+        </div>
+        <div class="module">
+            <h3>5. Sanction Regimes</h3>
+            <p>Weaponized finance ejects entities from the dollar orbit—visualized as "escape velocity" events and relationship severing.</p>
+        </div>
+        <div class="module">
+            <h3>6. De-Dollarization Attempts</h3>
+            <p>BRICS currencies, digital yuan, and bilateral trade pacts attempt orbit breaks—shown as perturbed trajectories and weakening gravity wells.</p>
+        </div>
+        <div class="module">
+            <h3>7. Commodity Pricing Power</h3>
+            <p>Gold, oil, and grain priced in USD create artificial demand. Commodity nodes orbit closely to maintain dollar relevance.</p>
+        </div>
+        <div class="module">
+            <h3>8. Tech Hegemony Nexus</h3>
+            <p>Cloud infrastructure and digital payment rails extend dollar reach into cyberspace, creating new orbital dependencies.</p>
+        </div>
+        <div class="module">
+            <h3>9. Institutional Capture</h3>
+            <p>IMF/World Bank governance structures enforce dollar-centric policies. Shown as gravitational "assists" and orbital corrections.</p>
+        </div>
+        <div class="module">
+            <h3>10. Military Enforcement Layer</h3>
+            <p>Carrier groups and forward bases ensure compliance—force multipliers visualized as gravitational wells and strategic mass points.</p>
+        </div>
+        <div class="module">
+            <h3>11. Historical Precedent Analysis</h3>
+            <p>Compares USD hegemony to British pound sterling collapse. Predictive orbit decay models and tipping point scenarios.</p>
+        </div>
+        <div class="link-box">
+            <strong>View Full 3D Interactive Galaxy Visualizer:</strong>
+            <a href="https://powder-ranger.github.io/dollar-gravity-framework-galaxy/" target="_blank">powder-ranger.github.io/dollar-gravity-framework-galaxy/</a>
+        </div>
+    </div>
+    
+    <div id="controls">
+        <h3>Scenario Sliders</h3>
+        <div class="slider-row">
+            <label for="sanctions">Sanction Intensity: <span id="sanctions-val">50%</span></label>
+            <input type="range" id="sanctions" min="0" max="100" value="50">
+        </div>
+        <div class="slider-row">
+            <label for="dedollar">De-Dollarization Momentum: <span id="dedollar-val">30%</span></label>
+            <input type="range" id="dedollar" min="0" max="100" value="30">
+        </div>
+        <div class="slider-row">
+            <label for="inflation">USD Inflation Pressure: <span id="inflation-val">40%</span></label>
+            <input type="range" id="inflation" min="0" max="100" value="40">
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000000);
+        
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 50;
+        
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        
+        // Central USD "sun"
+        const sunGeom = new THREE.SphereGeometry(3, 32, 32);
+        const sunMat = new THREE.MeshBasicMaterial({ color: 0x3b82f6 });
+        const sun = new THREE.Mesh(sunGeom, sunMat);
+        scene.add(sun);
+        
+        // Glow effect
+        const glowGeom = new THREE.SphereGeometry(3.5, 32, 32);
+        const glowMat = new THREE.MeshBasicMaterial({ 
+            color: 0x60a5fa, 
+            transparent: true, 
+            opacity: 0.3,
+            side: THREE.BackSide
+        });
+        const glow = new THREE.Mesh(glowGeom, glowMat);
+        scene.add(glow);
+        
+        // Orbiting planets (economies)
+        const planets = [];
+        const orbitSpeeds = [];
+        for (let i = 0; i < 20; i++) {
+            const radius = 0.3 + Math.random() * 0.7;
+            const distance = 10 + i * 2;
+            const planetGeom = new THREE.SphereGeometry(radius, 16, 16);
+            const hue = Math.random();
+            const planetMat = new THREE.MeshBasicMaterial({ 
+                color: new THREE.Color().setHSL(hue, 0.7, 0.5)
+            });
+            const planet = new THREE.Mesh(planetGeom, planetMat);
+            
+            const angle = (i / 20) * Math.PI * 2;
+            planet.position.x = Math.cos(angle) * distance;
+            planet.position.z = Math.sin(angle) * distance;
+            planet.position.y = (Math.random() - 0.5) * 5;
+            
+            scene.add(planet);
+            planets.push({ mesh: planet, distance, angle });
+            orbitSpeeds.push(0.001 + Math.random() * 0.002);
+        }
+        
+        // Starfield
+        const starsGeom = new THREE.BufferGeometry();
+        const starPositions = [];
+        for (let i = 0; i < 1000; i++) {
+            starPositions.push(
+                (Math.random() - 0.5) * 200,
+                (Math.random() - 0.5) * 200,
+                (Math.random() - 0.5) * 200
+            );
+        }
+        starsGeom.setAttribute('position', new THREE.Float32BufferAttribute(starPositions, 3));
+        const starsMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.2 });
+        const stars = new THREE.Points(starsGeom, starsMat);
+        scene.add(stars);
+        
+        // Animation
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            sun.rotation.y += 0.001;
+            glow.rotation.y += 0.001;
+            
+            planets.forEach((planet, i) => {
+                planet.angle += orbitSpeeds[i];
+                planet.mesh.position.x = Math.cos(planet.angle) * planet.distance;
+                planet.mesh.position.z = Math.sin(planet.angle) * planet.distance;
+                planet.mesh.rotation.y += 0.01;
+            });
+            
+            camera.position.x = Math.sin(Date.now() * 0.0001) * 5;
+            camera.position.y = Math.sin(Date.now() * 0.00015) * 5;
+            camera.lookAt(0, 0, 0);
+            
+            renderer.render(scene, camera);
+        }
+        animate();
+        
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        // Slider controls
+        document.getElementById('sanctions').addEventListener('input', (e) => {
+            document.getElementById('sanctions-val').textContent = e.target.value + '%';
+            const intensity = e.target.value / 100;
+            planets.forEach((p, i) => {
+                if (i < 5) p.mesh.material.color.setRGB(1, 1 - intensity, 1 - intensity);
+            });
+        });
+        
+        document.getElementById('dedollar').addEventListener('input', (e) => {
+            document.getElementById('dedollar-val').textContent = e.target.value + '%';
+            const momentum = e.target.value / 100;
+            planets.forEach((p, i) => {
+                if (i >= 15) orbitSpeeds[i] = 0.001 + momentum * 0.003;
+            });
+        });
+        
+        document.getElementById('inflation').addEventListener('input', (e) => {
+            document.getElementById('inflation-val').textContent = e.target.value + '%';
+            const pressure = e.target.value / 100;
+            sun.scale.set(1 + pressure * 0.3, 1 + pressure * 0.3, 1 + pressure * 0.3);
+        });
+    </script>
 </body>
 </html>
