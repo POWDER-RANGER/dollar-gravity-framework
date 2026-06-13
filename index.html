@@ -3,119 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dollar Gravity Observatory - NASA Grade Einstein Fabric</title>
+    <title>$ Dollar Gravity Observatory — NASA-Grade Einstein Fabric</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <style>
-        body { margin: 0; overflow: hidden; background: #000; font-family: 'Courier New', monospace; color: #0ff; }
-        #ui { position: absolute; top: 10px; left: 10px; background: rgba(0,20,40,0.9); padding: 15px; border: 1px solid #0ff; z-index: 100; max-width: 320px; }
-        #panel { position: absolute; top: 10px; right: 10px; width: 380px; background: rgba(0,20,40,0.95); padding: 20px; border: 1px solid #0ff; display: none; z-index: 100; overflow-y: auto; max-height: 90vh; }
-        canvas { display: block; }
-        h1 { margin: 0 0 10px 0; font-size: 1.4em; letter-spacing: 2px; }
-        .legend { font-size: 0.9em; line-height: 1.5; }
+        body { margin:0; overflow:hidden; background:#000011; font-family:'Courier New', monospace; color:#aaffff; }
+        #ui { position:absolute; top:15px; left:15px; background:rgba(0,20,40,0.95); padding:20px; border:2px solid #00ccff; border-radius:8px; z-index:1000; max-width:340px; box-shadow:0 0 20px rgba(0,200,255,0.3); }
+        #panel { position:absolute; top:15px; right:15px; width:420px; background:rgba(0,20,40,0.98); padding:25px; border:2px solid #00ccff; border-radius:8px; display:none; z-index:1000; overflow-y:auto; max-height:88vh; box-shadow:0 0 30px rgba(0,200,255,0.4); }
+        h1 { margin:0 0 12px; font-size:1.65em; letter-spacing:3px; color:#ffdd44; text-shadow:0 0 10px #ffdd44; }
+        button { background:#002244; color:#aaffff; border:1px solid #00ccff; padding:8px 16px; margin:5px; border-radius:4px; cursor:pointer; }
+        button:hover { background:#004466; }
+        .legend { font-size:0.9em; line-height:1.6; }
+        .tag { display:inline-block; padding:2px 8px; background:rgba(255,220,68,0.2); border-radius:3px; margin:2px; }
     </style>
 </head>
 <body>
     <div id="ui">
         <h1>$ DOLLAR GRAVITY OBSERVATORY</h1>
-        <p>Mid-2026 Snapshot | Einstein Fabric Model</p>
+        <p style="margin:8px 0; opacity:0.9;">Mid-2026 Static Snapshot • Einstein Spacetime Fabric</p>
         <button onclick="toggleLegend()">Legend &amp; Methodology</button>
         <button onclick="resetCamera()">Reset View</button>
+        <button onclick="toggleFlowLines()">Toggle Flows</button>
         <div id="legend" style="display:none;" class="legend">
-            <p><strong>Mass</strong>: Economic + Military composite (IMF/SIPRI)</p>
-            <p><strong>Orbit</strong>: USD Dependency</p>
-            <p>Blue rings: Money flows | Red: Military | Green: Alliances</p>
-            <p>Data: Static public sources • Gaps noted</p>
+            <p><strong>Central Mass</strong>: USD Core — deepest well</p>
+            <p><strong>Planet Size</strong>: Composite Power (GDP + Reserves + Military)</p>
+            <p><strong>Blue Rings</strong>: Money/FX Flows</p>
+            <p><strong>Red Halos</strong>: Military/Sanctions</p>
+            <p><strong>Green Arcs</strong>: Alliances &amp; Trade</p>
+            <p>Data: Illustrative IMF/SIPRI aggregates • Static • Gaps explicit</p>
+            <p><em>NASA-grade analogy for strategic systems modeling.</em></p>
         </div>
     </div>
     <div id="panel"></div>
 
     <script>
-        // Simple Three.js scene for NASA-grade demo
-        let scene, camera, renderer;
+        let scene, camera, renderer, controls;
         let bodies = [];
-        const USD_MASS = 10;
+        let flowLines = [];
+        let isFlowVisible = true;
 
         function init() {
             scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            renderer = new THREE.WebGLRenderer({ antialias: true });
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             document.body.appendChild(renderer.domElement);
 
-            // Starfield
-            const starsGeometry = new THREE.BufferGeometry();
-            const starsMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.05 });
-            const starVertices = [];
-            for (let i = 0; i < 10000; i++) {
-                const x = THREE.MathUtils.randFloatSpread(2000);
-                const y = THREE.MathUtils.randFloatSpread(2000);
-                const z = THREE.MathUtils.randFloatSpread(2000);
-                starVertices.push(x, y, z);
-            }
-            starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
-            const stars = new THREE.Points(starsGeometry, starsMaterial);
-            scene.add(stars);
+            // Deep space background
+            scene.fog = new THREE.FogExp2(0x000011, 0.0008);
 
-            // USD Core
-            const coreGeo = new THREE.SphereGeometry(2.5, 32, 32);
-            const coreMat = new THREE.MeshBasicMaterial({ color: 0xffd700 });
+            // Rich starfield
+            const starsGeo = new THREE.BufferGeometry();
+            const starsMat = new THREE.PointsMaterial({ color: 0xaaaaaa, size: 0.7, sizeAttenuation: true });
+            const starVerts = [];
+            for (let i = 0; i < 25000; i++) {
+                starVerts.push(THREE.MathUtils.randFloatSpread(1800), THREE.MathUtils.randFloatSpread(1800), THREE.MathUtils.randFloatSpread(1800));
+            }
+            starsGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVerts, 3));
+            scene.add(new THREE.Points(starsGeo, starsMat));
+
+            // Spacetime Fabric Grid (visual curvature hint)
+            const gridSize = 120;
+            const gridDiv = 60;
+            const gridGeo = new THREE.PlaneGeometry(gridSize, gridSize, gridDiv, gridDiv);
+            const gridMat = new THREE.MeshBasicMaterial({ color: 0x224466, wireframe: true, transparent: true, opacity: 0.35, side: THREE.DoubleSide });
+            const fabric = new THREE.Mesh(gridGeo, gridMat);
+            fabric.rotation.x = -Math.PI / 2;
+            fabric.position.y = -8;
+            scene.add(fabric);
+
+            // USD Core - Massive Golden Sun with intense glow
+            const coreGeo = new THREE.SphereGeometry(4.2, 64, 64);
+            const coreMat = new THREE.MeshPhongMaterial({ color: 0xffee66, emissive: 0xffaa00, emissiveIntensity: 1.2, shininess: 10 });
             const core = new THREE.Mesh(coreGeo, coreMat);
             scene.add(core);
-            bodies.push({mesh: core, name: "USD Core", mass: USD_MASS, info: "Central attractor. Deepest gravity well."});
+            bodies.push({mesh: core, name: "USD Core", mass: 25, info: "The central attractor. Deepest gravity well shaping global finance & security.", color: 0xffee66, allies: "Global reserve system", enemies: "De-dollarization attempts", metrics: "~60% global reserves" });
 
-            // Sample planets
-            createPlanet(4, -8, 0, 0xff4500, "USA", "Largest mass. Strong blue/red halos.");
-            createPlanet(-6, 5, 0, 0x00ff00, "China", "Rival with entangled flows.");
-            createPlanet(7, -4, 0, 0x00bfff, "EU", "Allied cluster.");
-            createPlanet(-3, -7, 0, 0xff1493, "Russia", "Sanctions halo.");
+            // Major Bodies with rich data
+            createPlanet(12, 3, -5, 0x3388ff, "USA", "Dominant power. Strong money & military halos.", {money: "High", military: "Supreme", allies: "NATO+5", enemies: "Strategic rivals", trends: "Resilient post-2022" });
+            createPlanet(-18, 8, 4, 0xff4444, "China", "Rising rival. Entangled trade + bypass networks.", {money: "Growing", military: "Modernizing", allies: "BRICS", enemies: "Indo-Pacific", trends: "+ influence in Global South" });
+            createPlanet(15, -12, 6, 0x44dd88, "EU Cluster", "Allied economic bloc.", {money: "Integrated", military: "Collective", allies: "US-led", enemies: "Energy dependencies", trends: "Stable orbit" });
+            createPlanet(-10, -15, -8, 0xff2288, "Russia", "Sanctions-tested power.", {money: "Bypass-focused", military: "Significant", allies: "Select partners", enemies: "Western bloc", trends: "Adaptive resilience" });
+            createPlanet(8, 18, 3, 0xeedd44, "India", "Emerging multi-aligner.", {money: "Diversifying", military: "Rising", allies: "Quad", enemies: "Border tensions", trends: "Strategic autonomy" });
+            createPlanet(-22, -5, 12, 0x9966ff, "Saudi Arabia", "Petrodollar anchor.", {money: "Oil-linked", military: "Procurement heavy", allies: "US security", enemies: "Regional", trends: "Stabilizing" });
+            createPlanet(5, -20, -10, 0xff7733, "Iran", "Active scenario test case.", {money: "Sanctioned", military: "Asymmetric", allies: "Axis of Resistance", enemies: "US/Israel", trends: "Gravity resistance" });
 
-            camera.position.z = 30;
+            // More moons/planets for depth (expandable to 195 via procedural)
+            createPlanet(25, 10, 8, 0x66aaff, "Japan", "Tech-finance ally", {money: "High reserves", military: "Pacifist upgrade", allies: "US", enemies: "None primary", trends: "Stable" });
+            createPlanet(-25, 15, -12, 0xaaee66, "Brazil", "Resource power", {money: "Commodity", military: "Regional", allies: "BRICS", enemies: "None major", trends: "Growing" });
+
+            camera.position.set(0, 25, 60);
+
+            // Basic lighting
+            const ambient = new THREE.AmbientLight(0x334466, 0.6);
+            scene.add(ambient);
+            const sunLight = new THREE.PointLight(0xffeeaa, 2.5, 0);
+            sunLight.position.set(0, 0, 0);
+            scene.add(sunLight);
 
             animate();
         }
 
-        function createPlanet(x, y, z, color, name, info) {
-            const geo = new THREE.SphereGeometry(1.2, 32, 32);
-            const mat = new THREE.MeshPhongMaterial({ color: color, emissive: color, emissiveIntensity: 0.3 });
+        function createPlanet(x, y, z, color, name, info, extra = {}) {
+            const radius = Math.max(1.1, Math.log(extra.money ? 5 : 3) );
+            const geo = new THREE.SphereGeometry(radius, 48, 48);
+            const mat = new THREE.MeshPhongMaterial({ 
+                color: color, 
+                emissive: color, 
+                emissiveIntensity: 0.6, 
+                shininess: 25,
+                specular: 0x222222
+            });
             const planet = new THREE.Mesh(geo, mat);
             planet.position.set(x, y, z);
+            planet.userData = {name, info, extra};
             scene.add(planet);
-            bodies.push({mesh: planet, name: name, info: info});
+            bodies.push(planet);
+
+            // Colored gravity rings
+            const ringGeo = new THREE.RingGeometry(radius * 1.8, radius * 2.8, 64);
+            const ringMat = new THREE.MeshBasicMaterial({ color: 0x44aaff, side: THREE.DoubleSide, transparent: true, opacity: 0.4 });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.rotation.x = -Math.PI / 2;
+            planet.add(ring);
+
+            // Military red halo
+            const redRing = new THREE.Mesh(new THREE.RingGeometry(radius * 2.9, radius * 3.5, 48), new THREE.MeshBasicMaterial({color: 0xff4444, side: THREE.DoubleSide, transparent:true, opacity:0.25}));
+            redRing.rotation.x = -Math.PI / 2;
+            planet.add(redRing);
         }
 
         function animate() {
             requestAnimationFrame(animate);
             bodies.forEach(b => {
-                if (b.mesh !== bodies[0].mesh) b.mesh.rotation.y += 0.005;
+                if (b !== bodies[0]) b.rotation.y += 0.0025;
             });
             renderer.render(scene, camera);
         }
 
+        // Raycasting for clicks
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
 
-        window.addEventListener('click', (event) => {
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        window.addEventListener('click', (e) => {
+            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(bodies.map(b => b.mesh));
+            const intersects = raycaster.intersectObjects(bodies, true);
             if (intersects.length > 0) {
-                const selected = bodies.find(b => b.mesh === intersects[0].object);
-                showPanel(selected);
+                let obj = intersects[0].object;
+                while (obj && !obj.userData.name) obj = obj.parent;
+                if (obj && obj.userData.name) showPanel(obj.userData);
             }
         });
 
-        function showPanel(body) {
+        function showPanel(data) {
             const panel = document.getElementById('panel');
-            panel.innerHTML = `
-                <h2>${body.name}</h2>
-                <p>${body.info}</p>
-                <p><strong>Mass Rank</strong>: High | <strong>USD Dependency</strong>: Strong</p>
-                <p>Allies: NATO/EU partners | Enemies: Rivals in sanctions networks</p>
-                <p>Falsifiability: Testable via reserve shifts. Gaps: Opaque elite flows.</p>
-                <button onclick="document.getElementById('panel').style.display='none'">Close</button>
-            `;
+            let html = `<h2>${data.name}</h2>
+                <p>${data.info}</p>
+                <div style="margin:15px 0;">
+                    <span class="tag">Money: ${data.extra.money || 'Moderate'}</span>
+                    <span class="tag">Military: ${data.extra.military || 'Significant'}</span>
+                </div>
+                <p><strong>Allies:</strong> ${data.extra.allies || 'Various'}</p>
+                <p><strong>Strategic Rivals:</strong> ${data.extra.enemies || 'N/A'}</p>
+                <p><strong>Trends 2021-2026:</strong> ${data.extra.trends || 'Stable orbit'}</p>
+                <p style="font-size:0.9em; opacity:0.8;">Falsifiability: Observable via reserve shifts, trade data, military posture. Gaps: Private networks opaque.</p>
+                <button onclick="document.getElementById('panel').style.display='none'" style="width:100%">Close Panel</button>`;
+            panel.innerHTML = html;
             panel.style.display = 'block';
         }
 
@@ -125,7 +180,14 @@
         }
 
         function resetCamera() {
-            camera.position.set(0, 5, 30);
+            camera.position.set(0, 25, 60);
+            camera.lookAt(0,0,0);
+        }
+
+        function toggleFlowLines() {
+            isFlowVisible = !isFlowVisible;
+            // In full version, toggle particle flows or arcs between bodies
+            alert('Flow visualization toggle (enhanced particle lines in future iterations)');
         }
 
         window.addEventListener('resize', () => {
