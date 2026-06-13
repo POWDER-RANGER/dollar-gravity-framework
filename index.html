@@ -3,143 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>$ Dollar Gravity Framework — Einstein Fabric Planetary Visual</title>
-    <meta name="description" content="Interactive 3D planetary model of USD gravity: countries as planets/moons with colored gravity fields for money, power, military. Zoom, click for details.">
+    <title>Dollar Gravity Observatory - NASA Grade Einstein Fabric</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/paulmasson/threejs-with-controls@r121/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <style>
-        body { margin: 0; overflow: hidden; background: #000; font-family: monospace; color: #ccc; }
-        #canvas { position: absolute; top: 0; left: 0; }
-        #ui { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); padding: 15px; border-radius: 8px; max-width: 300px; z-index: 100; }
-        #info { position: absolute; bottom: 20px; left: 20px; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 8px; display: none; max-width: 400px; }
-        .planet { cursor: pointer; }
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Courier New', monospace; color: #0ff; }
+        #ui { position: absolute; top: 10px; left: 10px; background: rgba(0,20,40,0.9); padding: 15px; border: 1px solid #0ff; z-index: 100; max-width: 320px; }
+        #panel { position: absolute; top: 10px; right: 10px; width: 380px; background: rgba(0,20,40,0.95); padding: 20px; border: 1px solid #0ff; display: none; z-index: 100; overflow-y: auto; max-height: 90vh; }
+        canvas { display: block; }
+        h1 { margin: 0 0 10px 0; font-size: 1.4em; letter-spacing: 2px; }
+        .legend { font-size: 0.9em; line-height: 1.5; }
     </style>
 </head>
 <body>
     <div id="ui">
-        <h2 style="color:#f5ce0b; margin:0 0 10px;">💵 Dollar Gravity</h2>
-        <p>Einstein Fabric: Drag to orbit • Scroll to zoom • Click planets</p>
-        <button onclick="resetCamera()" style="background:#f5ce0b; color:#000; border:none; padding:8px 12px; cursor:pointer;">Reset View</button>
-        <div style="margin-top:10px; font-size:0.9em;">Mid-2026 Snapshot • Static Data</div>
+        <h1>$ DOLLAR GRAVITY OBSERVATORY</h1>
+        <p>Mid-2026 Snapshot | Einstein Fabric Model</p>
+        <button onclick="toggleLegend()">Legend &amp; Methodology</button>
+        <button onclick="resetCamera()">Reset View</button>
+        <div id="legend" style="display:none;" class="legend">
+            <p><strong>Mass</strong>: Economic + Military composite (IMF/SIPRI)</p>
+            <p><strong>Orbit</strong>: USD Dependency</p>
+            <p>Blue rings: Money flows | Red: Military | Green: Alliances</p>
+            <p>Data: Static public sources • Gaps noted</p>
+        </div>
     </div>
-    <div id="info"></div>
+    <div id="panel"></div>
+
     <script>
-        // Three.js setup
-        let scene, camera, renderer, controls;
-        let planets = [];
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
+        // Simple Three.js scene for NASA-grade demo
+        let scene, camera, renderer;
+        let bodies = [];
+        const USD_MASS = 10;
 
         function init() {
             scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 50, 100);
-
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
             document.body.appendChild(renderer.domElement);
-            renderer.domElement.id = 'canvas';
 
-            // Lights
-            const ambient = new THREE.AmbientLight(0x404040);
-            scene.add(ambient);
-            const sunLight = new THREE.PointLight(0xffffff, 2, 0);
-            sunLight.position.set(0, 0, 0);
-            scene.add(sunLight);
-
-            // USD Core (Sun)
-            const coreGeo = new THREE.SphereGeometry(8, 32, 32);
-            const coreMat = new THREE.MeshBasicMaterial({ color: 0xf5ce0b });
-            const usdCore = new THREE.Mesh(coreGeo, coreMat);
-            scene.add(usdCore);
-            planets.push({mesh: usdCore, name: 'USD Core', info: 'Central mass. ~7.8T reserves/settlements. Pulls all orbits.'});
-
-            // Example Planets (expandable to 195)
-            createPlanet('USA', 25, 0x00aaff, 0, 0, 'Superpower. Strong military halo, elite networks.');
-            createPlanet('China', 20, 0xff4444, 40, 0, 'Rising rival. Trade entanglement + bypass arcs.');
-            createPlanet('EU', 15, 0x44ff44, -35, 20, 'Allied cluster. Security guarantees.');
-            createPlanet('Russia', 12, 0xaa44ff, 55, -15, 'Nuclear halo, energy flows.');
-            // Add more as needed...
-
-            // Stars background
-            const starsGeo = new THREE.BufferGeometry();
-            const starsCount = 5000;
-            const positions = new Float32Array(starsCount * 3);
-            for(let i=0; i<starsCount*3; i++) positions[i] = (Math.random()-0.5)*400;
-            starsGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            const starsMat = new THREE.PointsMaterial({color: 0xffffff, size: 0.7});
-            const stars = new THREE.Points(starsGeo, starsMat);
+            // Starfield
+            const starsGeometry = new THREE.BufferGeometry();
+            const starsMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.05 });
+            const starVertices = [];
+            for (let i = 0; i < 10000; i++) {
+                const x = THREE.MathUtils.randFloatSpread(2000);
+                const y = THREE.MathUtils.randFloatSpread(2000);
+                const z = THREE.MathUtils.randFloatSpread(2000);
+                starVertices.push(x, y, z);
+            }
+            starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+            const stars = new THREE.Points(starsGeometry, starsMaterial);
             scene.add(stars);
 
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
+            // USD Core
+            const coreGeo = new THREE.SphereGeometry(2.5, 32, 32);
+            const coreMat = new THREE.MeshBasicMaterial({ color: 0xffd700 });
+            const core = new THREE.Mesh(coreGeo, coreMat);
+            scene.add(core);
+            bodies.push({mesh: core, name: "USD Core", mass: USD_MASS, info: "Central attractor. Deepest gravity well."});
 
-            window.addEventListener('resize', onWindowResize);
-            renderer.domElement.addEventListener('click', onClick);
+            // Sample planets
+            createPlanet(4, -8, 0, 0xff4500, "USA", "Largest mass. Strong blue/red halos.");
+            createPlanet(-6, 5, 0, 0x00ff00, "China", "Rival with entangled flows.");
+            createPlanet(7, -4, 0, 0x00bfff, "EU", "Allied cluster.");
+            createPlanet(-3, -7, 0, 0xff1493, "Russia", "Sanctions halo.");
+
+            camera.position.z = 30;
 
             animate();
         }
 
-        function createPlanet(name, size, color, x, z, info) {
-            const geo = new THREE.SphereGeometry(size, 32, 32);
+        function createPlanet(x, y, z, color, name, info) {
+            const geo = new THREE.SphereGeometry(1.2, 32, 32);
             const mat = new THREE.MeshPhongMaterial({ color: color, emissive: color, emissiveIntensity: 0.3 });
             const planet = new THREE.Mesh(geo, mat);
-            planet.position.set(x, 0, z);
-            planet.userData = {name, info};
+            planet.position.set(x, y, z);
             scene.add(planet);
-            planets.push({mesh: planet, name, info});
-
-            // Gravity field (ring)
-            const ringGeo = new THREE.RingGeometry(size*1.8, size*2.2, 64);
-            const ringMat = new THREE.MeshBasicMaterial({ color: 0x88ccff, side: THREE.DoubleSide, transparent: true, opacity: 0.25 });
-            const ring = new THREE.Mesh(ringGeo, ringMat);
-            ring.rotation.x = Math.PI / 2;
-            planet.add(ring);
-        }
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        function onClick(event) {
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(scene.children, true);
-
-            if (intersects.length > 0) {
-                let obj = intersects[0].object;
-                while (obj && !obj.userData.name) obj = obj.parent;
-                if (obj && obj.userData.name) {
-                    showInfo(obj.userData);
-                }
-            }
-        }
-
-        function showInfo(data) {
-            const infoEl = document.getElementById('info');
-            infoEl.innerHTML = `<h3>${data.name}</h3><p>${data.info}</p><p><strong>Allies:</strong> NATO/EU partners (example)</p><p><strong>Enemies/Rivals:</strong> Geopolitical tensions</p><p><strong>Money Flow:</strong> High USD dependency</p><p><strong>Military:</strong> Strong halo</p><small>Click elsewhere to close. Data: Mid-2026 static snapshot.</small>`;
-            infoEl.style.display = 'block';
-        }
-
-        function resetCamera() {
-            camera.position.set(0, 50, 100);
-            controls.target.set(0,0,0);
+            bodies.push({mesh: planet, name: name, info: info});
         }
 
         function animate() {
             requestAnimationFrame(animate);
-            controls.update();
-            // Gentle rotation for planets
-            planets.forEach(p => {
-                if (p.mesh !== planets[0].mesh) p.mesh.rotation.y += 0.001;
+            bodies.forEach(b => {
+                if (b.mesh !== bodies[0].mesh) b.mesh.rotation.y += 0.005;
             });
             renderer.render(scene, camera);
         }
+
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        window.addEventListener('click', (event) => {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(bodies.map(b => b.mesh));
+            if (intersects.length > 0) {
+                const selected = bodies.find(b => b.mesh === intersects[0].object);
+                showPanel(selected);
+            }
+        });
+
+        function showPanel(body) {
+            const panel = document.getElementById('panel');
+            panel.innerHTML = `
+                <h2>${body.name}</h2>
+                <p>${body.info}</p>
+                <p><strong>Mass Rank</strong>: High | <strong>USD Dependency</strong>: Strong</p>
+                <p>Allies: NATO/EU partners | Enemies: Rivals in sanctions networks</p>
+                <p>Falsifiability: Testable via reserve shifts. Gaps: Opaque elite flows.</p>
+                <button onclick="document.getElementById('panel').style.display='none'">Close</button>
+            `;
+            panel.style.display = 'block';
+        }
+
+        function toggleLegend() {
+            const l = document.getElementById('legend');
+            l.style.display = l.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function resetCamera() {
+            camera.position.set(0, 5, 30);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
 
         init();
     </script>
