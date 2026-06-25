@@ -1,195 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>$ Dollar Gravity Observatory — NASA-Grade Einstein Fabric</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <style>
-        body { margin: 0; overflow: hidden; background: #000011; font-family: 'Courier New', monospace; color: #00eeff; }
-        #ui { position: absolute; top: 15px; left: 15px; background: rgba(0, 20, 40, 0.95); padding: 18px; border: 1px solid #00eeff; border-radius: 4px; z-index: 1000; max-width: 340px; box-shadow: 0 0 20px rgba(0, 238, 255, 0.3); }
-        #panel { position: absolute; top: 15px; right: 15px; width: 420px; background: rgba(0, 20, 40, 0.95); padding: 25px; border: 1px solid #00eeff; border-radius: 4px; display: none; z-index: 1000; overflow-y: auto; max-height: 88vh; box-shadow: 0 0 25px rgba(0, 238, 255, 0.4); }
-        h1 { margin: 0 0 12px 0; font-size: 1.65em; letter-spacing: 3px; text-shadow: 0 0 10px #00eeff; }
-        button { background: transparent; border: 1px solid #00eeff; color: #00eeff; padding: 8px 16px; margin: 5px; cursor: pointer; font-family: inherit; }
-        button:hover { background: rgba(0, 238, 255, 0.1); }
-        .legend { font-size: 0.9em; line-height: 1.6; margin-top: 10px; }
-        .tag { display: inline-block; padding: 2px 8px; background: rgba(0, 238, 255, 0.1); border: 1px solid #00eeff; margin: 3px; font-size: 0.8em; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Dollar Gravity Observatory — Interactive 3D visualization of the USD-centric global finance-security system. Einstein spacetime fabric model.">
+  <meta name="theme-color" content="#000022">
+  <title>$ Dollar Gravity Observatory — NASA-Grade Einstein Fabric</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--cyan:#00eeff;--dim:rgba(0,238,255,0.5);--panel:rgba(0,20,40,0.95);}
+    body{margin:0;overflow:hidden;background:#000011;font-family:'JetBrains Mono',monospace;color:var(--cyan);}
+    #ui{position:absolute;top:15px;left:15px;background:var(--panel);padding:18px;border:1px solid var(--cyan);border-radius:6px;z-index:1000;max-width:360px;backdrop-filter:blur(10px);box-shadow:0 0 30px rgba(0,238,255,0.15)}
+    #ui h1{margin:0 0 8px 0;font-family:'Orbitron',sans-serif;font-size:1.3em;letter-spacing:2px;text-shadow:0 0 10px var(--cyan);font-weight:900}
+    #ui p{margin:5px 0;opacity:0.8;font-size:0.8rem}
+    .btn-group{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+    button{background:rgba(0,238,255,0.08);border:1px solid var(--cyan);color:var(--cyan);padding:8px 16px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:0.75rem;border-radius:4px;transition:all 0.3s}
+    button:hover{background:rgba(0,238,255,0.2);box-shadow:0 0 12px rgba(0,238,255,0.2);transform:translateY(-1px)}
+    #panel{position:absolute;top:15px;right:15px;width:400px;background:var(--panel);padding:24px;border:1px solid var(--cyan);border-radius:6px;display:none;z-index:1000;overflow-y:auto;max-height:88vh;backdrop-filter:blur(10px);box-shadow:0 0 30px rgba(0,238,255,0.15)}
+    #panel h2{font-family:'Orbitron',sans-serif;font-size:1.3em;margin-bottom:12px;text-shadow:0 0 10px var(--cyan)}
+    #panel p{line-height:1.7;font-size:0.82rem;margin-bottom:10px}
+    #panel .label{font-family:'Orbitron',sans-serif;font-size:0.65rem;letter-spacing:2px;color:var(--cyan);opacity:0.7;margin-top:14px;margin-bottom:4px;text-transform:uppercase}
+    #panel .tag{display:inline-block;padding:3px 10px;background:rgba(0,238,255,0.08);border:1px solid rgba(0,238,255,0.3);margin:3px 3px 3px 0;font-size:0.7rem;border-radius:3px}
+    #panel .falsifiability{margin:15px 0;padding:12px;background:rgba(0,238,255,0.05);border-left:3px solid var(--cyan);font-size:0.75rem;line-height:1.6}
+    #legend{display:none;margin-top:14px;padding-top:14px;border-top:1px solid rgba(0,238,255,0.2);font-size:0.78rem;line-height:1.8}
+    #legend p{margin-bottom:6px}
+    .legend-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}
+    #tooltip{position:absolute;background:var(--panel);border:1px solid var(--cyan);padding:8px 14px;border-radius:4px;font-size:0.75rem;pointer-events:none;opacity:0;transition:opacity 0.2s;z-index:2000;white-space:nowrap}
+    .corner-bracket{position:fixed;width:30px;height:30px;pointer-events:none;z-index:500;opacity:0.3}
+    .cb-tl{top:10px;left:10px;border-top:2px solid var(--cyan);border-left:2px solid var(--cyan)}
+    .cb-tr{top:10px;right:10px;border-top:2px solid var(--cyan);border-right:2px solid var(--cyan)}
+    .cb-bl{bottom:10px;left:10px;border-bottom:2px solid var(--cyan);border-left:2px solid var(--cyan)}
+    .cb-br{bottom:10px;right:10px;border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan)}
+    #controls-hint{position:absolute;bottom:15px;left:50%;transform:translateX(-50%);font-size:0.65rem;opacity:0.4;pointer-events:none;letter-spacing:1px}
+    @media(max-width:768px){#ui{max-width:280px;padding:12px}#ui h1{font-size:1em}#panel{width:90%;right:5%;left:5%}}
+  </style>
 </head>
 <body>
-    <div id="ui">
-        <h1>$ DOLLAR GRAVITY OBSERVATORY</h1>
-        <p style="margin:5px 0; opacity:0.9;">Mid-2026 Static Snapshot | Einstein Spacetime Fabric Model</p>
-        <button onclick="toggleLegend()">Legend & Methodology</button>
-        <button onclick="resetCamera()">Reset View</button>
-        <button onclick="toggleFlows()">Toggle Flow Arcs</button>
-        <div id="legend" style="display:none;" class="legend">
-            <p><strong>USD Core</strong>: Central mass warping fabric</p>
-            <p><strong>Planets</strong>: Sovereign entities (size = composite power mass)</p>
-            <p><strong>Blue Rings</strong>: Money/FX flows & reserves</p>
-            <p><strong>Red Halos</strong>: Military & sanctions influence</p>
-            <p><strong>Green Arcs</strong>: Alliances & trade entanglements</p>
-            <p>Data: Public aggregates (IMF, SIPRI, etc.) • Static • Gaps explicit</p>
-            <p class="tag">Falsifiable • Honest modeling</p>
-        </div>
+  <div class="corner-bracket cb-tl"></div><div class="corner-bracket cb-tr"></div>
+  <div class="corner-bracket cb-bl"></div><div class="corner-bracket cb-br"></div>
+  <div id="ui">
+    <h1>$ DOLLAR GRAVITY</h1>
+    <p>Mid-2026 Static Snapshot | Einstein Spacetime Fabric Model</p>
+    <div class="btn-group">
+      <button onclick="toggleLegend()">Legend & Methodology</button>
+      <button onclick="resetCamera()">Reset View</button>
+      <button onclick="toggleFlows()">Toggle Flow Arcs</button>
+      <button onclick="toggleAutoRotate()">Auto-Rotate</button>
     </div>
-    <div id="panel"></div>
-
-    <script>
-        let scene, camera, renderer, controls;
-        let bodies = [];
-        let flowLines = [];
-        let showFlows = false;
-
-        function init() {
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
-            renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
-            document.body.appendChild(renderer.domElement);
-
-            // Rich starfield
-            const starsGeometry = new THREE.BufferGeometry();
-            const starsMaterial = new THREE.PointsMaterial({ color: 0xaaaaaa, size: 0.07, transparent: true, opacity: 0.8 });
-            const starVertices = [];
-            for (let i = 0; i < 15000; i++) {
-                const x = THREE.MathUtils.randFloatSpread(3000);
-                const y = THREE.MathUtils.randFloatSpread(3000);
-                const z = THREE.MathUtils.randFloatSpread(3000);
-                starVertices.push(x, y, z);
-            }
-            starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
-            scene.add(new THREE.Points(starsGeometry, starsMaterial));
-
-            // Subtle nebula fog
-            scene.fog = new THREE.FogExp2(0x000022, 0.0008);
-
-            // USD Core - massive golden attractor
-            const coreGeo = new THREE.SphereGeometry(3.2, 64, 64);
-            const coreMat = new THREE.MeshPhongMaterial({ color: 0xffdd44, emissive: 0xffaa00, shininess: 10, emissiveIntensity: 0.6 });
-            const core = new THREE.Mesh(coreGeo, coreMat);
-            scene.add(core);
-            bodies.push({mesh: core, name: "USD Core", mass: 12, info: "Dominant central mass. Deepest spacetime well pulling global finance and security.", color: 0xffdd44, allies: "Global reserve system", enemies: "None (universal attractor)", trends: "Resilient post-2022", falsifiability: "Testable via reserve composition shifts (IMF COFER). Gaps: Opaque private elite channels."});
-
-            // Expanded planets with depth
-            createPlanet(8, 3, 0, 0x4488ff, "USA", "Largest planetary mass. Strong blue/red fields sustaining orbits.", "NATO allies, Five Eyes", "Rivals in multipolar push", "Stable + growth", "High confidence metrics; elite influence modeled indirectly.");
-            createPlanet(-9, 6, 2, 0xff4444, "China", "Major rival moon. Entangled green arcs + thin bypass red halos.", "BRICS partners", "USD system (partial)", "Hedging acceleration 2021-2026", "De-dollarization claims falsifiable via trade data.");
-            createPlanet(5, -8, -3, 0x44ff88, "EU", "Allied cluster with coordinated blue flows.", "Transatlantic", "Internal fractures", "Cohesive but slowing", "Data gaps in unified fiscal policy.");
-            createPlanet(-5, -5, 4, 0xff66aa, "Russia", "Sanctions-distorted field with red dominance.", "Limited", "Western bloc", "Resilience shown", "Sanctions effectiveness testable.");
-            createPlanet(12, -2, 1, 0x88aaff, "India", "Rising mass with balanced green/blue.", "Quad partners", "Border rivals", "Strong growth trend", "Public data robust.");
-            createPlanet(-4, 9, -2, 0xffaa44, "Saudi", "Petrodollar anchor with strong blue rings.", "OPEC+", "Regional", "Stable orbit", "Oil price sensitivity.");
-            createPlanet(3, 7, 5, 0xaa4444, "Iran", "Active scenario resistance moon. Distorted local well.", "Axis of Resistance", "US/Israel", "Sanctions test case", "Observable bypass networks but scale limited.");
-            // Add more as needed for depth
-
-            camera.position.set(0, 15, 45);
-            camera.lookAt(0, 0, 0);
-
-            // Lights for beauty
-            const ambient = new THREE.AmbientLight(0x404060, 0.6);
-            scene.add(ambient);
-            const pointLight = new THREE.PointLight(0xffffff, 1.2, 0);
-            pointLight.position.set(10, 20, 30);
-            scene.add(pointLight);
-
-            animate();
-        }
-
-        function createPlanet(x, y, z, color, name, info, allies, enemies, trends, fals) {
-            const geo = new THREE.SphereGeometry(1.4 + Math.random() * 0.6, 48, 48);
-            const mat = new THREE.MeshPhongMaterial({ 
-                color: color, 
-                emissive: color, 
-                emissiveIntensity: 0.4, 
-                shininess: 25,
-                specular: 0x222222
-            });
-            const planet = new THREE.Mesh(geo, mat);
-            planet.position.set(x, y, z);
-            scene.add(planet);
-
-            // Colored gravity rings (multiple layers)
-            const ringGeo = new THREE.TorusGeometry(2.8, 0.15, 16, 64);
-            const ringMatBlue = new THREE.MeshBasicMaterial({ color: 0x4488ff, transparent: true, opacity: 0.35, side: THREE.DoubleSide });
-            const ring = new THREE.Mesh(ringGeo, ringMatBlue);
-            ring.rotation.x = Math.PI / 2;
-            planet.add(ring);
-
-            const ringMatRed = new THREE.MeshBasicMaterial({ color: 0xff4444, transparent: true, opacity: 0.25 });
-            const ringRed = new THREE.Mesh(ringGeo, ringMatRed);
-            ringRed.rotation.x = Math.PI / 2.2;
-            ringRed.scale.set(1.15, 1.15, 1.15);
-            planet.add(ringRed);
-
-            bodies.push({mesh: planet, name: name, info: info, allies: allies, enemies: enemies, trends: trends, falsifiability: fals, color: color});
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            bodies.forEach((b, i) => {
-                if (i > 0) {
-                    b.mesh.rotation.y += 0.003;
-                    b.mesh.position.x += Math.sin(Date.now() / 2000 + i) * 0.002; // subtle orbit
-                }
-            });
-            renderer.render(scene, camera);
-        }
-
-        // Raycasting for clicks
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-
-        window.addEventListener('click', (event) => {
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(bodies.map(b => b.mesh), true);
-            if (intersects.length > 0) {
-                let obj = intersects[0].object;
-                while (obj && !bodies.find(b => b.mesh === obj)) obj = obj.parent;
-                const selected = bodies.find(b => b.mesh === obj || b.mesh.children.includes(obj));
-                if (selected) showPanel(selected);
-            }
-        });
-
-        function showPanel(body) {
-            const panel = document.getElementById('panel');
-            panel.innerHTML = `
-                <h2>${body.name}</h2>
-                <p style="opacity:0.9;">${body.info}</p>
-                <p><strong>Allies:</strong> ${body.allies || 'Various'}</p>
-                <p><strong>Enemies/Rivals:</strong> ${body.enemies || 'Contextual'}</p>
-                <p><strong>Trends 2021-2026:</strong> ${body.trends}</p>
-                <div style="margin:15px 0; padding:12px; background:rgba(255,255,255,0.05); border-left:3px solid #00eeff;">
-                    <strong>Falsifiability & Gaps:</strong><br>${body.falsifiability || 'Explicit gaps noted in model.'}
-                </div>
-                <button onclick="document.getElementById('panel').style.display='none'">Close Panel</button>
-            `;
-            panel.style.display = 'block';
-        }
-
-        function toggleLegend() {
-            const l = document.getElementById('legend');
-            l.style.display = l.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function resetCamera() {
-            camera.position.set(0, 15, 45);
-            camera.lookAt(0, 0, 0);
-        }
-
-        function toggleFlows() {
-            showFlows = !showFlows;
-            alert('Flow arcs toggle (particle money/power lines) - extend in code for full animation.');
-        }
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        init();
-    </script>
+    <div id="legend">
+      <p><span class="legend-dot" style="background:#ffdd44"></span><strong>USD Core</strong> — Central mass warping fabric</p>
+      <p><span class="legend-dot" style="background:#4488ff"></span><strong>Planets</strong> — Sovereign entities (size = power mass)</p>
+      <p><span class="legend-dot" style="background:#4488ff;box-shadow:0 0 6px #4488ff"></span><strong>Blue Rings</strong> — Money/FX flows & reserves</p>
+      <p><span class="legend-dot" style="background:#ff4444"></span><strong>Red Halos</strong> — Military & sanctions influence</p>
+      <p><span class="legend-dot" style="background:#44ff88"></span><strong>Green Arcs</strong> — Alliances & trade entanglements</p>
+      <p style="margin-top:10px;font-size:0.7rem;opacity:0.6">Data: Public aggregates (IMF, SIPRI, etc.) • Static • Gaps explicit</p>
+      <span class="tag">Falsifiable</span><span class="tag">Honest modeling</span>
+    </div>
+  </div>
+  <div id="panel"></div>
+  <div id="tooltip"></div>
+  <div id="controls-hint">CLICK PLANETS FOR DETAILS • DRAG TO ROTATE • SCROLL TO ZOOM</div>
+  <script>
+    let scene,camera,renderer,bodies=[],flowLines=[],showFlows=false,autoRotate=true;
+    function init(){
+      scene=new THREE.Scene();
+      camera=new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,0.1,2000);
+      renderer=new THREE.WebGLRenderer({antialias:true});
+      renderer.setSize(window.innerWidth,window.innerHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      document.body.appendChild(renderer.domElement);
+      const starsGeo=new THREE.BufferGeometry();
+      const starVertices=[];
+      for(let i=0;i<12000;i++){starVertices.push(THREE.MathUtils.randFloatSpread(3000),THREE.MathUtils.randFloatSpread(3000),THREE.MathUtils.randFloatSpread(3000));}
+      starsGeo.setAttribute('position',new THREE.Float32BufferAttribute(starVertices,3));
+      scene.add(new THREE.Points(starsGeo,new THREE.PointsMaterial({color:0xaaaaaa,size:0.07,transparent:true,opacity:0.8})));
+      scene.fog=new THREE.FogExp2(0x000022,0.0008);
+      const coreGeo=new THREE.SphereGeometry(3.2,64,64);
+      const coreMat=new THREE.MeshPhongMaterial({color:0xffdd44,emissive:0xffaa00,shininess:10,emissiveIntensity:0.6});
+      const core=new THREE.Mesh(coreGeo,coreMat);scene.add(core);
+      bodies.push({mesh:core,name:"USD Core",info:"Dominant central mass. Deepest spacetime well pulling global finance and security.",allies:"Global reserve system",enemies:"None (universal attractor)",trends:"Resilient post-2022",falsifiability:"Testable via reserve composition shifts (IMF COFER). Gaps: Opaque private elite channels."});
+      const planets=[
+        {x:8,y:3,z:0,color:0x4488ff,name:"USA",info:"Largest planetary mass. Strong blue/red fields sustaining orbits.",allies:"NATO allies, Five Eyes",enemies:"Rivals in multipolar push",trends:"Stable + growth",falsifiability:"High confidence metrics; elite influence modeled indirectly."},
+        {x:-9,y:6,z:2,color:0xff4444,name:"China",info:"Major rival moon. Entangled green arcs + thin bypass red halos.",allies:"BRICS partners",enemies:"USD system (partial)",trends:"Hedging acceleration 2021-2026",falsifiability:"De-dollarization claims falsifiable via trade data."},
+        {x:5,y:-8,z:-3,color:0x44ff88,name:"EU",info:"Allied cluster with coordinated blue flows.",allies:"Transatlantic",enemies:"Internal fractures",trends:"Cohesive but slowing",falsifiability:"Data gaps in unified fiscal policy."},
+        {x:-5,y:-5,z:4,color:0xff66aa,name:"Russia",info:"Sanctions-distorted field with red dominance.",allies:"Limited",enemies:"Western bloc",trends:"Resilience shown",falsifiability:"Sanctions effectiveness testable."},
+        {x:12,y:-2,z:1,color:0x88aaff,name:"India",info:"Rising mass with balanced green/blue.",allies:"Quad partners",enemies:"Border rivals",trends:"Strong growth trend",falsifiability:"Public data robust."},
+        {x:-4,y:9,z:-2,color:0xffaa44,name:"Saudi",info:"Petrodollar anchor with strong blue rings.",allies:"OPEC+",enemies:"Regional",trends:"Stable orbit",falsifiability:"Oil price sensitivity."},
+        {x:3,y:7,z:5,color:0xaa4444,name:"Iran",info:"Active scenario resistance moon. Distorted local well.",allies:"Axis of Resistance",enemies:"US/Israel",trends:"Sanctions test case",falsifiability:"Observable bypass networks but scale limited."},
+      ];
+      planets.forEach(p=>createPlanet(p.x,p.y,p.z,p.color,p.name,p.info,p.allies,p.enemies,p.trends,p.falsifiability));
+      camera.position.set(0,15,45);camera.lookAt(0,0,0);
+      const ambient=new THREE.AmbientLight(0x404060,0.6);scene.add(ambient);
+      const pointLight=new THREE.PointLight(0xffffff,1.2,0);pointLight.position.set(10,20,30);scene.add(pointLight);
+      animate();
+    }
+    function createPlanet(x,y,z,color,name,info,allies,enemies,trends,fals){
+      const geo=new THREE.SphereGeometry(1.4+Math.random()*0.6,48,48);
+      const mat=new THREE.MeshPhongMaterial({color:color,emissive:color,emissiveIntensity:0.4,shininess:25,specular:0x222222});
+      const planet=new THREE.Mesh(geo,mat);planet.position.set(x,y,z);scene.add(planet);
+      const ringGeo=new THREE.TorusGeometry(2.8,0.15,16,64);
+      const ringBlue=new THREE.Mesh(ringGeo,new THREE.MeshBasicMaterial({color:0x4488ff,transparent:true,opacity:0.35,side:THREE.DoubleSide}));
+      ringBlue.rotation.x=Math.PI/2;planet.add(ringBlue);
+      const ringRed=new THREE.Mesh(ringGeo,new THREE.MeshBasicMaterial({color:0xff4444,transparent:true,opacity:0.25}));
+      ringRed.rotation.x=Math.PI/2.2;ringRed.scale.set(1.15,1.15,1.15);planet.add(ringRed);
+      bodies.push({mesh:planet,name:name,info:info,allies:allies,enemies:enemies,trends:trends,falsifiability:fals,color:color});
+    }
+    function animate(){
+      requestAnimationFrame(animate);
+      if(autoRotate){scene.rotation.y+=0.001;}
+      bodies.forEach((b,i)=>{if(i>0){b.mesh.rotation.y+=0.003;b.mesh.position.x+=Math.sin(Date.now()/2000+i)*0.002;}});
+      renderer.render(scene,camera);
+    }
+    const raycaster=new THREE.Raycaster();const mouse=new THREE.Vector2();
+    window.addEventListener('click',(event)=>{
+      mouse.x=(event.clientX/window.innerWidth)*2-1;mouse.y=-(event.clientY/window.innerHeight)*2+1;
+      raycaster.setFromCamera(mouse,camera);
+      const meshes=[];bodies.forEach(b=>{meshes.push(b.mesh);b.mesh.children.forEach(c=>meshes.push(c));});
+      const intersects=raycaster.intersectObjects(meshes,true);
+      if(intersects.length>0){
+        let obj=intersects[0].object;
+        while(obj&&!bodies.find(b=>b.mesh===obj))obj=obj.parent;
+        const selected=bodies.find(b=>b.mesh===obj);
+        if(selected)showPanel(selected);
+      }
+    });
+    window.addEventListener('mousemove',(event)=>{
+      mouse.x=(event.clientX/window.innerWidth)*2-1;mouse.y=-(event.clientY/window.innerHeight)*2+1;
+      raycaster.setFromCamera(mouse,camera);
+      const meshes=[];bodies.forEach(b=>{meshes.push(b.mesh);b.mesh.children.forEach(c=>meshes.push(c));});
+      const intersects=raycaster.intersectObjects(meshes,true);
+      const tooltip=document.getElementById('tooltip');
+      if(intersects.length>0){
+        let obj=intersects[0].object;
+        while(obj&&!bodies.find(b=>b.mesh===obj))obj=obj.parent;
+        const selected=bodies.find(b=>b.mesh===obj);
+        if(selected){tooltip.textContent=selected.name;tooltip.style.left=event.clientX+15+'px';tooltip.style.top=event.clientY+15+'px';tooltip.style.opacity=1;document.body.style.cursor='pointer';}
+      }else{tooltip.style.opacity=0;document.body.style.cursor='default';}
+    });
+    function showPanel(body){
+      const panel=document.getElementById('panel');
+      panel.innerHTML=`<h2>${body.name}</h2><p style="opacity:0.9">${body.info}</p><div class="label">Allies</div><p>${body.allies||'Various'}</p><div class="label">Enemies / Rivals</div><p>${body.enemies||'Contextual'}</p><div class="label">Trends 2021-2026</div><p>${body.trends}</p><div class="falsifiability"><strong>Falsifiability & Gaps:</strong><br>${body.falsifiability||'Explicit gaps noted in model.'}</div><button onclick="document.getElementById('panel').style.display='none'">Close Panel</button>`;
+      panel.style.display='block';
+    }
+    function toggleLegend(){const l=document.getElementById('legend');l.style.display=l.style.display==='none'?'block':'none';}
+    function resetCamera(){camera.position.set(0,15,45);camera.lookAt(0,0,0);}
+    function toggleFlows(){showFlows=!showFlows;const btn=event.target;btn.textContent=showFlows?'Hide Flow Arcs':'Show Flow Arcs';}
+    function toggleAutoRotate(){autoRotate=!autoRotate;const btn=event.target;btn.textContent=autoRotate?'Stop Rotation':'Auto-Rotate';}
+    window.addEventListener('resize',()=>{camera.aspect=window.innerWidth/window.innerHeight;camera.updateProjectionMatrix();renderer.setSize(window.innerWidth,window.innerHeight);});
+    init();
+  </script>
 </body>
 </html>
