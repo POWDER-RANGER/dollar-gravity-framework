@@ -36,6 +36,15 @@
     .cb-br{bottom:10px;right:10px;border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan)}
     #controls-hint{position:absolute;bottom:15px;left:50%;transform:translateX(-50%);font-size:0.65rem;opacity:0.4;pointer-events:none;letter-spacing:1px}
     @media(max-width:768px){#ui{max-width:280px;padding:12px}#ui h1{font-size:1em}#panel{width:90%;right:5%;left:5%}}
+    /* CROSS-PROJECT NAV */
+    .xpn{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(0,0,17,0.95);backdrop-filter:blur(20px);border-top:1px solid rgba(255,234,0,0.2);padding:10px 20px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:12px;transition:transform 0.3s;box-shadow:0 -4px 30px rgba(0,0,0,0.5)}
+    .xpn a{color:rgba(0,238,255,0.4);text-decoration:none;padding:6px 14px;border-radius:4px;transition:all 0.3s;white-space:nowrap;border:1px solid rgba(255,234,0,0.1)}
+    .xpn a:hover{color:#ffea00;border-color:#ffea00;background:rgba(255,234,0,0.08);box-shadow:0 0 12px rgba(255,234,0,0.2)}
+    .xpn a.xa{color:#ffea00;border-color:#ffea00;background:rgba(255,234,0,0.12);font-weight:700;text-shadow:0 0 8px rgba(255,234,0,0.3)}
+    .xpn .xt{color:#00eeff;margin-right:10px;font-size:11px;letter-spacing:3px;text-transform:uppercase}
+    .xpnt{position:fixed;bottom:52px;right:20px;z-index:9999;background:rgba(0,0,17,0.8);border:1px solid rgba(255,234,0,0.2);color:#ffea00;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;cursor:pointer;transition:all 0.3s;box-shadow:0 0 15px rgba(255,234,0,0.1)}
+    .xpnt:hover{background:rgba(255,234,0,0.15);box-shadow:0 0 20px rgba(255,234,0,0.3);transform:scale(1.1)}
+    @media(max-width:768px){.xpn{font-size:10px;gap:4px;padding:8px 10px}.xpn a{padding:4px 8px;font-size:10px}.xpn .xt{display:none}.xpnt{bottom:48px;width:32px;height:32px;font-size:12px}}
   </style>
 </head>
 <body>
@@ -63,6 +72,17 @@
   <div id="panel"></div>
   <div id="tooltip"></div>
   <div id="controls-hint">CLICK PLANETS FOR DETAILS • DRAG TO ROTATE • SCROLL TO ZOOM</div>
+  <!-- CROSS-PROJECT NAVIGATION -->
+  <div class="xpn" id="xpn">
+  <span class="xt">// ECOSYSTEM</span>
+  <a href="https://powder-ranger.github.io" id="xpn-portfolio">Portfolio</a>
+  <a href="https://powder-ranger.github.io/nso-kryptonite-platform" id="xpn-nso">NSO Kryptonite</a>
+  <a href="https://powder-ranger.github.io/CIVWATCH" id="xpn-civwatch">CIVWATCH</a>
+  <a href="https://powder-ranger.github.io/OBLISK" id="xpn-oblisk">OBLISK</a>
+  <a href="https://powder-ranger.github.io/ai-nexus" id="xpn-ainexus">AI Nexus</a>
+  <a href="https://powder-ranger.github.io/dollar-gravity-framework" id="xpn-dollar">Dollar Gravity</a>
+  </div>
+  <button class="xpnt" id="xpnt" onclick="tgxpn()" title="Toggle nav (Shift+E)">&#9650;</button>
   <script>
     let scene,camera,renderer,bodies=[],flowLines=[],showFlows=false,autoRotate=true;
     function init(){
@@ -151,6 +171,11 @@
     function toggleAutoRotate(){autoRotate=!autoRotate;const btn=event.target;btn.textContent=autoRotate?'Stop Rotation':'Auto-Rotate';}
     window.addEventListener('resize',()=>{camera.aspect=window.innerWidth/window.innerHeight;camera.updateProjectionMatrix();renderer.setSize(window.innerWidth,window.innerHeight);});
     init();
+    // Cross-nav
+    const pn=document.getElementById('xpn'),pt=document.getElementById('xpnt');
+    function tgxpn(){const h=pn.style.transform==='translateY(100%)';pn.style.transform=h?'translateY(0)':'translateY(100%)';pt.innerHTML=h?'&#9650;':'&#9660;';pt.style.bottom=h?'52px':'20px';}
+    document.getElementById('xpn-dollar').classList.add('xa');
+    document.addEventListener('keydown',e=>{if(e.shiftKey&&e.key==='E')tgxpn();if(e.shiftKey&&e.key==='T')window.scrollTo({top:0,behavior:'smooth'});});
   </script>
 </body>
 </html>
