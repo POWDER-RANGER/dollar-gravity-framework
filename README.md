@@ -22,6 +22,8 @@
 
 **🌐 [Open the framework →](https://powder-ranger.github.io/dollar-gravity-framework/)**
 
+**🌌 [3D Galaxy v4.0 →](https://powder-ranger.github.io/dollar-gravity-framework/galaxy/)** — 145 sovereign bodies on a warped spacetime fabric, with scenario sliders (fabric warp, ISR stream, dollar-singularity pull) and an Iran-breakout scenario.
+
 A falsifiable systems model of the dollar-centric global finance and security system — how USD settlement, Treasuries, correspondent rails, and US legal jurisdiction interlock, and how rivals, holdouts, elites, conflict, and domestic drift all still route through that core. Every structural claim is paired with the observable condition that would break it.
 
 ---
@@ -51,10 +53,10 @@ git clone https://github.com/POWDER-RANGER/dollar-gravity-framework.git
 cd dollar-gravity-framework
 npm ci
 npm run dev      # dev server (entry: src/index.html)
-npm run build    # writes index.html + assets/ to repo root
+npm run build    # writes index.html, galaxy/index.html, assets/ to repo root
 ```
 
-GitHub Pages serves the `main` branch root. Commit the rebuilt `index.html` and `assets/` after any change to `src/`.
+GitHub Pages serves the `main` branch root. Commit the rebuilt `index.html`, `galaxy/` and `assets/` after any change to `src/`.
 
 ---
 
@@ -83,7 +85,7 @@ GitHub Pages serves the `main` branch root. Commit the rebuilt `index.html` and 
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-Stack: React 18 · D3 7 · Vite. Single-page app, no backend, no tracking.
+Stack: React 18 · D3 7 · React Three Fiber / Three.js (galaxy) · Vite. Single-page app, no backend, no tracking.
 
 ---
 

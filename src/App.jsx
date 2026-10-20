@@ -1105,9 +1105,16 @@ export default function App() {
             GEO-SYS ANALYST // CLEARANCE: OPEN SOURCE
           </span>
         </div>
-        <span style={{ fontFamily: "monospace", fontSize: "10px", color: "#1e3a5f" }}>
-          REV 2.1 — {new Date().toISOString().split("T")[0]}
-        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+          <a href="./galaxy/" style={{
+            fontFamily: "monospace", fontSize: "10px", letterSpacing: "0.12em",
+            color: "#f59e0b", textDecoration: "none", border: "1px solid #3a2a08",
+            padding: "4px 10px", borderRadius: "3px",
+          }}>3D GALAXY v4.0 →</a>
+          <span style={{ fontFamily: "monospace", fontSize: "10px", color: "#1e3a5f" }}>
+            REV 2.1 — {new Date().toISOString().split("T")[0]}
+          </span>
+        </div>
       </div>
 
       <div className="dg-body" style={{ display: "flex", flex: 1 }}>

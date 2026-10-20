@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dollar-Gravity Framework v4.0 — The Living Strategic Universe</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body, #root { width: 100%; height: 100%; overflow: hidden; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #000; color: #e5e7eb; }
+    #controls { position: fixed; top: 16px; left: 16px; z-index: 10; background: rgba(15,23,42,0.92); padding: 16px; border-radius: 12px; border: 1px solid rgba(148,163,184,0.3); max-width: 300px; }
+    #controls h3 { font-size: 14px; font-weight: 600; margin-bottom: 12px; color: #60a5fa; }
+    .slider-group { margin-bottom: 12px; }
+    .slider-group label { display: block; font-size: 12px; margin-bottom: 4px; color: #94a3b8; }
+    .slider-group input[type="range"] { width: 100%; }
+    .slider-group input[type="checkbox"] { margin-right: 6px; }
+    .slider-group .value { font-size: 11px; color: #cbd5e1; }
+    button { padding: 6px 12px; font-size: 12px; background: rgba(96,165,250,0.2); border: 1px solid #60a5fa; border-radius: 6px; color: #60a5fa; cursor: pointer; margin-right: 8px; }
+    button:hover { background: rgba(96,165,250,0.35); }
+    #info { position: fixed; bottom: 16px; right: 16px; z-index: 10; background: rgba(15,23,42,0.88); padding: 12px; border-radius: 8px; border: 1px solid rgba(148,163,184,0.25); font-size: 11px; color: #94a3b8; max-width: 280px; }
+  </style>
+  <script type="module" crossorigin src="../assets/galaxy-DTV0lOv_.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/jsx-runtime-C15oeiPA.js">
+</head>
+<body>
+  <div id="root"></div>
+  <a href="../" style="position:fixed;top:16px;right:16px;z-index:10;font:11px system-ui,sans-serif;letter-spacing:.08em;color:#60a5fa;text-decoration:none;background:rgba(15,23,42,.92);border:1px solid rgba(148,163,184,.3);border-radius:8px;padding:8px 12px">← FRAMEWORK v2.1</a>
+  <div id="controls">
+    <h3>Scenario Controls</h3>
+    <div class="slider-group">
+      <label><input type="checkbox" id="fabric-toggle" checked /> Show Gravity Fabric</label>
+    </div>
+    <div class="slider-group">
+      <label>Fabric Warp Intensity</label>
+      <input type="range" id="warp-slider" min="0" max="100" value="60" />
+      <div class="value">Current: <span id="warp-value">60%</span></div>
+    </div>
+    <div class="slider-group">
+      <label>ISR Stream Intensity</label>
+      <input type="range" id="isr-slider" min="0" max="100" value="100" />
+      <div class="value">Current: <span id="isr-value">100%</span></div>
+    </div>
+    <div class="slider-group">
+      <label>Dollar Singularity Pull</label>
+      <input type="range" id="dollar-slider" min="0" max="100" value="100" />
+      <div class="value">Current: <span id="dollar-value">100%</span></div>
+    </div>
+    <button id="reset-btn">Reset</button>
+    <button id="scenario-btn">Iran Breakout</button>
+  </div>
+  <div id="info">
+    <strong>3D Gravity Fabric Active</strong><br/>
+    Planets warp spacetime based on Power Mass M. Deeper warps = stronger gravitational pull.<br/>
+    USA (M=1.19) creates the deepest valley. Fly under the fabric to see curvature from below.
+  </div>
+</body>
+</html>
