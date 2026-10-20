@@ -26,6 +26,10 @@ git push origin main
 
 `npm run build` deletes `assets/` first so stale hashed files never accumulate. Always commit source and rebuilt output together.
 
+**Never edit the built files by hand** (`index.html`, `galaxy/index.html`, `assets/`). The next build overwrites them. Page metadata lives in `src/index.html` and `src/galaxy/index.html`.
+
+CI (`.github/workflows/build-check.yml`) runs `npm ci`, `npm run build` and `npm run check` on every push and pull request.
+
 ## Local preview
 
 ```bash
