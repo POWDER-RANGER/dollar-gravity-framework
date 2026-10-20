@@ -1,0 +1,43 @@
+# Changelog
+
+## Rev 2.2: 2026-10-20
+
+Full audit of the site and galaxy.
+
+**Content and sourcing**
+- New central data layer `src/data/metrics.js`: 13 sourced figures (BIS, IMF COFER, SWIFT, Treasury TIC, SCOTUS IEEPA ruling, FISA 702, Iran war, blockade, Russian assets, DPRK crypto theft, Palantir, debt limit) with as-of dates and links. Pages reference entries by id.
+- New **Sources & Method** page (`#/sources`): every figure with date, link and caveat, plus a table of 10 carried-over claims flagged *unverified*.
+- Inline `Cite` links and `Unv` badges throughout the modules.
+- Stale content updated: SCOTUS struck down IEEPA tariffs (Feb 2026); China's Treasury holdings (−22% since Dec 2024); 2026 Iran war and blockade; Russian assets / EU loan; FISA 702 lapse; DPRK crypto theft.
+- Falsifiers page: each of F-1 … F-5 now has a test and a *current reading*; none triggered.
+- Removed the Sankey diagram, which was built on made-up sample data.
+- Overview stats are derived from data modules (graph size, source and unverified counts).
+
+**System Map**
+- Rewritten D3 graph: group-anchored layout, pre-settled, auto-fit, zoom (Ctrl/⌘+wheel and buttons), drag, keyboard selection, neighbour highlighting, working group filters, detail panel with "acts on / acted on by".
+- Degree table is computed from the edge list (the previous hard-coded table was wrong).
+
+**Navigation and design**
+- Hash routing with deep links (`#/sources/<id>`), per-page document titles, focus and scroll management.
+- Grouped sidebar, mobile drawer, previous/next pager, error boundary, print styles, noscript fallback.
+- Accessibility: skip link, `aria-current`, `aria-pressed` filters, contrast-safe tokens, `prefers-reduced-motion`.
+- Mobile layouts for the triptych, matrix and falsifier cards.
+- SEO and sharing: description, canonical, Open Graph / Twitter tags, favicon, `og.png`.
+- D3 lazy-loaded; main bundle ~65 kB.
+
+**Galaxy v4.0**
+- Fixed the fabric (geometry was in the wrong plane, so the warp collapsed to a line).
+- Controls moved from DOM listeners to React state; removed `alert()`.
+- Scenario presets (Baseline, Iran breakout, Dollar fracture) now change masses and are labelled illustrative.
+- Added: search and camera focus, detail panel with relationships and bases, legend with edge toggles, sortable data table with CSV export, About panel stating what is and is not sourced, shareable URL state (`#c=IRN&s=iran-breakout`), loading state, WebGL fallback, portrait camera, reduced-motion support.
+- Dashed edges now actually dash; labels are curated to avoid overlap; depth-coloured fabric.
+- **Correction:** earlier copy said the galaxy held 145 bodies. The dataset has **50**.
+
+**Repository**
+- Removed dead code (`docs/` stubs, `ForceGraph`, `MoneyPowerSankey`, `system-data.js`, stray v4.0 markdown dump).
+- Added `docs/METHODOLOGY.md`, `docs/DEPLOY.md`, `scripts/check-build.mjs`, `.nojekyll`.
+
+## Rev 2.1 / v4.0: restoration
+
+- Restored the original 11-module analytical framework as the live site (commit `58a434d`).
+- Shipped the v4.0 3D galaxy at `/galaxy/` (commit `a7e17d7`).

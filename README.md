@@ -5,14 +5,14 @@
 
 <br>
 
-[![Typing SVG](https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=18&duration=2600&pause=700&color=FFEA00&center=true&vCenter=true&width=900&lines=11+Analytical+Modules+%E2%80%94+One+System;Narrative+%C2%B7+Reality+%C2%B7+Projection;Every+Claim+Ships+With+Its+Falsifier;Rivals+Still+Route+Through+the+Core)](https://github.com/POWDER-RANGER/dollar-gravity-framework)
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=18&duration=2600&pause=700&color=FFEA00&center=true&vCenter=true&width=900&lines=12+Analytical+Modules+%E2%80%94+One+System;Narrative+%C2%B7+Reality+%C2%B7+Projection;Every+Claim+Ships+With+Its+Falsifier;Rivals+Still+Route+Through+the+Core)](https://github.com/POWDER-RANGER/dollar-gravity-framework)
 
 <br>
 
-![](https://img.shields.io/badge/REV-2.1-FFEA00?style=for-the-badge&labelColor=0D1117)
+![](https://img.shields.io/badge/REV-2.2-FFEA00?style=for-the-badge&labelColor=0D1117)
 ![](https://img.shields.io/badge/REACT-D3-00C853?style=for-the-badge&labelColor=0D1117)
-![](https://img.shields.io/badge/MODULES-11-FFD600?style=for-the-badge&labelColor=0D1117)
-![](https://img.shields.io/badge/FALSIFIERS-5_ACTIVE-F87171?style=for-the-badge&labelColor=0D1117)
+![](https://img.shields.io/badge/MODULES-12-FFD600?style=for-the-badge&labelColor=0D1117)
+![](https://img.shields.io/badge/FALSIFIERS-5_MONITORED-F87171?style=for-the-badge&labelColor=0D1117)
 
 </div>
 
@@ -22,7 +22,7 @@
 
 **🌐 [Open the framework →](https://powder-ranger.github.io/dollar-gravity-framework/)**
 
-**🌌 [3D Galaxy v4.0 →](https://powder-ranger.github.io/dollar-gravity-framework/galaxy/)** — 145 sovereign bodies on a warped spacetime fabric, with scenario sliders (fabric warp, ISR stream, dollar-singularity pull) and an Iran-breakout scenario.
+**🌌 [3D Galaxy v4.0 →](https://powder-ranger.github.io/dollar-gravity-framework/galaxy/)**: 50 sovereign bodies on a warped gravity fabric. Search, detail panel, legend, sortable data table, and illustrative scenarios (Baseline, Iran breakout, Dollar fracture). Scores are hand-assigned and the page says so; it is a schematic, not data.
 
 A falsifiable systems model of the dollar-centric global finance and security system — how USD settlement, Treasuries, correspondent rails, and US legal jurisdiction interlock, and how rivals, holdouts, elites, conflict, and domestic drift all still route through that core. Every structural claim is paired with the observable condition that would break it.
 
@@ -32,17 +32,22 @@ A falsifiable systems model of the dollar-centric global finance and security sy
 
 | # | Module | What it covers |
 |---|--------|----------------|
-| 01 | **Overview** | Core claims, model architecture, confidence |
-| 02 | **Monetary Core** | USD rails, Fed / Treasury mechanics, debt-ceiling dynamics |
-| 03 | **Trade Weapons** | Tariff incidence (domestic burden) vs sanctions chokepoint leverage |
-| 04 | **Rivals & Holdouts** | In-system rivals vs constrained outsiders and their bypass stacks |
-| 05 | **Elite Networks** | Competing coalitions — mechanism-level, not a monolithic board |
-| 06 | **War / Conflict** | Real stakes, data / R&D feedback loops, signaling vs disruption |
-| 07 | **Domestic Drift** | Fragmented US surveillance vs centralized models |
-| 08 | **Resistance** | Courts, NGOs, encryption, decentralization, backfire dynamics |
-| 09 | **Falsifiers** | F-1 … F-5 — the metrics that would force a rewrite |
-| 10 | **System Map** | Interactive D3 force graph — 24 nodes, 37 causal / structural links |
-| 11 | **System Steering** | Narrative · Reality · Projection triptych and layer matrix |
+| 00 | **Overview** | Core claims, model architecture, what changed in the current revision |
+| 01 | **Monetary Core** | USD rails, reserves, Fed / Treasury mechanics, debt-limit dynamics |
+| 02 | **Trade Weapons** | Tariff incidence (domestic burden) vs sanctions chokepoint leverage |
+| 03 | **Rivals & Holdouts** | US–China entanglement; Iran and North Korea at the edge |
+| 04 | **Elite Networks** | Competing coalitions, mechanism-level, with the public datasets to measure them |
+| 05 | **War / Conflict** | War as real stakes, as a data engine, and as financial warfare |
+| 06 | **Domestic Drift** | Centralized vs fragmented surveillance architectures |
+| 07 | **Resistance** | Courts, NGOs, encryption, decentralization, backfire dynamics |
+| 08 | **Falsifiers** | F-1 … F-5: the triggers that would force a rewrite, each with a current reading |
+| 09 | **System Map** | Interactive D3 causal graph: 24 nodes, 37 links, filters, detail panel |
+| 10 | **System Steering** | Narrative · Reality · Projection triptych and layer matrix |
+| 11 | **Sources & Method** | Every figure with as-of date, link and caveat; claims still unverified |
+
+### Evidence standard
+
+Real-world figures live in one file, `src/data/metrics.js`, with value, as-of date, source, URL and a primary/secondary flag. Pages cite entries by id, and the Sources page renders the file. Claims carried over from earlier revisions that have not been re-checked are shown with an *unverified* badge rather than silently kept or deleted. See [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md).
 
 ---
 
@@ -54,9 +59,10 @@ cd dollar-gravity-framework
 npm ci
 npm run dev      # dev server (entry: src/index.html)
 npm run build    # writes index.html, galaxy/index.html, assets/ to repo root
+npm run check    # verifies committed assets match the HTML pages
 ```
 
-GitHub Pages serves the `main` branch root. Commit the rebuilt `index.html`, `galaxy/` and `assets/` after any change to `src/`.
+GitHub Pages serves the `main` branch root. Commit the rebuilt `index.html`, `galaxy/` and `assets/` together with any change to `src/`. Details: [`docs/DEPLOY.md`](docs/DEPLOY.md) · history: [`docs/CHANGELOG.md`](docs/CHANGELOG.md).
 
 ---
 
@@ -85,7 +91,15 @@ GitHub Pages serves the `main` branch root. Commit the rebuilt `index.html`, `ga
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-Stack: React 18 · D3 7 · React Three Fiber / Three.js (galaxy) · Vite. Single-page app, no backend, no tracking.
+Stack: React 18 · D3 7 (lazy-loaded) · React Three Fiber / Three.js (galaxy) · Vite. Static site, hash-routed, no backend, no tracking.
+
+```
+src/data/metrics.js   sourced figures + unverified claims   (edit here to update numbers)
+src/data/graph.js     system-map nodes and links
+src/galaxy/data.js    galaxy bodies, relationships, scenarios
+src/pages/            one component per module
+docs/                 methodology, changelog, deploy
+```
 
 ---
 

@@ -1,16 +1,15 @@
 {
   "name": "dollar-gravity-framework",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "private": true,
-  "homepage": "https://POWDER-RANGER.github.io/dollar-gravity-framework",
   "scripts": {
     "dev": "vite",
     "build": "rm -rf assets && vite build",
-    "preview": "vite preview --outDir .."
+    "preview": "vite preview --outDir ..",
+    "check": "node scripts/check-build.mjs"
   },
   "dependencies": {
     "d3": "^7.9.0",
-    "d3-sankey": "^0.12.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "@react-three/fiber": "^8.17.0",
@@ -19,7 +18,12 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^6.0.2",
-    "gh-pages": "^6.3.0",
     "vite": "^8.0.16"
+  },
+  "homepage": "https://powder-ranger.github.io/dollar-gravity-framework/",
+  "description": "A falsifiable systems model of the USD-centric global finance and security system.",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
   }
 }
