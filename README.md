@@ -1,108 +1,89 @@
 <!-- ══════════════════════════════════════════ DOLLAR GRAVITY HEADER -->
 <div align="center">
 
-[![Header](https://capsule-render.vercel.app/api?type=waving&color=0:0D1117,35:4A3600,70:FFD600,100:FFEA00&height=300&section=header&text=DOLLAR+GRAVITY&fontSize=80&fontColor=FFEA00&animation=fadeIn&fontAlignY=42&desc=Interactive+3D+Model+of+Global+USD+Gravity&descColor=FFF59D&descSize=18&descAlignY=64)](https://github.com/POWDER-RANGER/dollar-gravity-framework)
+[![Header](https://capsule-render.vercel.app/api?type=waving&color=0:0D1117,35:4A3600,70:FFD600,100:FFEA00&height=300&section=header&text=DOLLAR+GRAVITY&fontSize=80&fontColor=FFEA00&animation=fadeIn&fontAlignY=42&desc=A+Falsifiable+Systems+Model+of+USD+Power&descColor=FFF59D&descSize=18&descAlignY=64)](https://github.com/POWDER-RANGER/dollar-gravity-framework)
 
 <br>
 
-[![Typing SVG](https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=18&duration=2600&pause=700&color=FFEA00&center=true&vCenter=true&width=900&lines=Einstein+Fabric+Planetary+Visual+%E2%80%94+Interactive+3D;Each+Sovereign+%3D+Planet%2FMoon+%E2%80%94+Colored+Gravity+Fields;Gold%3DMoney+Flows+%E2%80%94+Red%3DMilitary+%E2%80%94+Blue%3DAlliances;Zoom%2C+Orbit%2C+Click+for+Details)](https://github.com/POWDER-RANGER/dollar-gravity-framework)
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=18&duration=2600&pause=700&color=FFEA00&center=true&vCenter=true&width=900&lines=11+Analytical+Modules+%E2%80%94+One+System;Narrative+%C2%B7+Reality+%C2%B7+Projection;Every+Claim+Ships+With+Its+Falsifier;Rivals+Still+Route+Through+the+Core)](https://github.com/POWDER-RANGER/dollar-gravity-framework)
 
 <br>
 
-![](https://img.shields.io/badge/3D-INTERACTIVE-FFEA00?style=for-the-badge&labelColor=0D1117)
-![](https://img.shields.io/badge/REACT-D3+Three.js-00C853?style=for-the-badge&labelColor=0D1117)
-![](https://img.shields.io/badge/ENTITIES-195+SOVEREIGN-FFD600?style=for-the-badge&labelColor=0D1117)
+![](https://img.shields.io/badge/REV-2.1-FFEA00?style=for-the-badge&labelColor=0D1117)
+![](https://img.shields.io/badge/REACT-D3-00C853?style=for-the-badge&labelColor=0D1117)
+![](https://img.shields.io/badge/MODULES-11-FFD600?style=for-the-badge&labelColor=0D1117)
+![](https://img.shields.io/badge/FALSIFIERS-5_ACTIVE-F87171?style=for-the-badge&labelColor=0D1117)
 
 </div>
 
 ---
 
-## 🌍 Live Demo
+## 🌍 Live
 
-**🌐 [Launch Interactive 3D Visualization →](https://powder-ranger.github.io/dollar-gravity-framework/)**
+**🌐 [Open the framework →](https://powder-ranger.github.io/dollar-gravity-framework/)**
 
-Each sovereign entity = planet/moon. Colored gravity fields visualize:
-- 💰 **Gold** — Money flows
-- 🎯 **Red halos** — Military power
-- 🔗 **Blue arcs** — Alliances
-
-Zoom, orbit, and click for details. Static snapshots — honest. Expandable to 195 entities.
+A falsifiable systems model of the dollar-centric global finance and security system — how USD settlement, Treasuries, correspondent rails, and US legal jurisdiction interlock, and how rivals, holdouts, elites, conflict, and domestic drift all still route through that core. Every structural claim is paired with the observable condition that would break it.
 
 ---
 
-## ✨ Features
+## 🧭 Modules
 
-| Feature | Description |
-|---------|-------------|
-| 🌍 **3D Planetary Model** | Each sovereign entity rendered as a planet or moon |
-| 💰 **Money Flow Visualization** | Gold-colored gravity fields show USD capital flows |
-| 🎯 **Military Power Halos** | Red halos indicate relative military strength |
-| 🔗 **Alliance Arcs** | Blue arcs connecting allied nations |
-| 🔍 **Interactive Controls** | Zoom, orbit, and click for detailed information |
-| 📊 **Real-time Data** | Static snapshots with expandable data pipeline |
+| # | Module | What it covers |
+|---|--------|----------------|
+| 01 | **Overview** | Core claims, model architecture, confidence |
+| 02 | **Monetary Core** | USD rails, Fed / Treasury mechanics, debt-ceiling dynamics |
+| 03 | **Trade Weapons** | Tariff incidence (domestic burden) vs sanctions chokepoint leverage |
+| 04 | **Rivals & Holdouts** | In-system rivals vs constrained outsiders and their bypass stacks |
+| 05 | **Elite Networks** | Competing coalitions — mechanism-level, not a monolithic board |
+| 06 | **War / Conflict** | Real stakes, data / R&D feedback loops, signaling vs disruption |
+| 07 | **Domestic Drift** | Fragmented US surveillance vs centralized models |
+| 08 | **Resistance** | Courts, NGOs, encryption, decentralization, backfire dynamics |
+| 09 | **Falsifiers** | F-1 … F-5 — the metrics that would force a rewrite |
+| 10 | **System Map** | Interactive D3 force graph — 24 nodes, 37 causal / structural links |
+| 11 | **System Steering** | Narrative · Reality · Projection triptych and layer matrix |
 
 ---
 
 ## 🚀 Quick Start
 
 ```bash
-# Clone
 git clone https://github.com/POWDER-RANGER/dollar-gravity-framework.git
 cd dollar-gravity-framework
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Or build for production
-npm run build
+npm ci
+npm run dev      # dev server (entry: src/index.html)
+npm run build    # writes index.html + assets/ to repo root
 ```
+
+GitHub Pages serves the `main` branch root. Commit the rebuilt `index.html` and `assets/` after any change to `src/`.
 
 ---
 
 ## 🏗️ Architecture
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    DOLLAR GRAVITY — 3D VISUALIZATION                     ║
-║                                                                          ║
-║  ┌──────────────────────────────────────────────────────────────────┐   ║
-║  │                    DATA LAYER                                     │   ║
-║  │  Sovereign entities (195) │ GDP │ Military │ Trade │ Alliances  │   ║
-║  └──────────────────────────────┬───────────────────────────────────┘   ║
-║                                 ▼                                         ║
-║  ┌──────────────────────────────────────────────────────────────────┐   ║
-║  │                    GRAVITY ENGINE                                 │   ║
-║  │  USD flow calculation │ Relative mass │ Force vectors            │   ║
-║  └──────────────────────────────┬───────────────────────────────────┘   ║
-║                                 ▼                                         ║
-║  ┌──────────────────────────────────────────────────────────────────┐   ║
-║  │                    3D RENDERER (Three.js)                         │   ║
-║  │  Planets │ Moons │ Gravity fields │ Halos │ Alliance arcs        │   ║
-║  └──────────────────────────────┬───────────────────────────────────┘   ║
-║                                 ▼                                         ║
-║  ┌──────────────────────────────────────────────────────────────────┐   ║
-║  │                    INTERACTION LAYER                              │   ║
-║  │  Zoom │ Orbit │ Click-to-detail │ Tooltips │ Search              │   ║
-║  └──────────────────────────────────────────────────────────────────┘   ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════╗
+║                 DOLLAR GRAVITY — ANALYTICAL FRAMEWORK                ║
+║                                                                      ║
+║   MONETARY CORE ── USD settlement · Treasuries · payment rails       ║
+║        │                                                             ║
+║        ▼                                                             ║
+║   LEVERAGE ───── tariffs · sanctions · jurisdiction                  ║
+║        │                                                             ║
+║        ▼                                                             ║
+║   ACTORS ─────── rivals · holdouts · elite coalitions · conflict     ║
+║        │                                                             ║
+║        ▼                                                             ║
+║   DRIFT / BRAKES  domestic surveillance · courts · encryption        ║
+║        │                                                             ║
+║        ▼                                                             ║
+║   STEERING FIELD  narrative ⇄ reality ⇄ projection                   ║
+║        │                                                             ║
+║        ▼                                                             ║
+║   FALSIFIERS ─── F-1 de-dollarization … F-5 debt-ceiling failure     ║
+╚══════════════════════════════════════════════════════════════════════╝
 ```
 
----
-
-## 📊 Data Model
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `entity_name` | string | Sovereign entity name |
-| `gdp_usd` | number | GDP in USD |
-| `military_score` | number | Relative military power index |
-| `trade_volume` | number | Annual trade volume |
-| `alliances` | array[] | Connected allied entities |
-| `usd_dependency` | number | Ratio of USD in reserves/trade |
-| `sanctions_status` | enum | None/Light/Heavy |
+Stack: React 18 · D3 7 · Vite. Single-page app, no backend, no tracking.
 
 ---
 
@@ -124,7 +105,7 @@ npm run build
 | Project | Link | Description |
 |---------|------|-------------|
 | **Main Portfolio** | [powder-ranger.github.io](https://powder-ranger.github.io) | Master portfolio with all 46 repos |
-| **Dollar Gravity** | [powder-ranger.github.io/dollar-gravity-framework](https://powder-ranger.github.io/dollar-gravity-framework) | Interactive 3D USD gravity visualization |
+| **Dollar Gravity** | [powder-ranger.github.io/dollar-gravity-framework](https://powder-ranger.github.io/dollar-gravity-framework) | Falsifiable USD power-system framework |
 | **CIVWATCH** | [powder-ranger.github.io/CIVWATCH](https://powder-ranger.github.io/CIVWATCH) | Civic transparency platform |
 | **OBLISK** | [powder-ranger.github.io/OBLISK](https://powder-ranger.github.io/OBLISK) | Multi-agent AI orchestration |
 | **AI Nexus** | [powder-ranger.github.io/ai-nexus](https://powder-ranger.github.io/ai-nexus) | Browser-based AI platform |
@@ -137,7 +118,6 @@ npm run build
 | **[OBLISK](https://github.com/POWDER-RANGER/OBLISK)** | Python | Multi-agent AI with encrypted vaults |
 | **[RED-AGENT-GOV](https://github.com/POWDER-RANGER/RED-AGENT-GOV)** | Python | Governance-enforced agent engine |
 | **[CharlesAI](https://github.com/POWDER-RANGER/CharlesAI)** | PowerShell | COMET Agent with memory & orchestration |
-| **[OBELISK-Enterprise](https://github.com/POWDER-RANGER/OBELISK-Enterprise)** | Python | $2.5M AI Governance Platform |
 | **[NSO Kryptonite](https://github.com/POWDER-RANGER/nso-kryptonite-platform)** | TypeScript | Adversarial defense command center |
 | **[AI Nexus](https://github.com/POWDER-RANGER/ai-nexus)** | JavaScript | Browser-based complete AI platform |
 | **[Guiding Light AI](https://github.com/POWDER-RANGER/guiding-light-ai)** | Rust | Values-to-policies CLI tool |
@@ -159,7 +139,7 @@ npm run build
 
 ---
 
-**Contributions welcome!** Help us expand to all 195 sovereign entities.
+**Contributions welcome** — especially new falsifiers and sourced metrics.
 
 <div align="center">
 
