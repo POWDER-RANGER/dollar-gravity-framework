@@ -12,13 +12,14 @@ import PageResistance from "./pages/PageResistance.jsx";
 import PageFalsifiers from "./pages/PageFalsifiers.jsx";
 import PageSteering from "./pages/PageSteering.jsx";
 import PageSources from "./pages/PageSources.jsx";
+import PageGalaxyData from "./pages/PageGalaxyData.jsx";
 
 const PageGraph = lazy(() => import("./pages/PageGraph.jsx")); // pulls in d3 only when needed
 
 const COMPONENTS = {
   overview: PageOverview, monetary: PageMonetary, trade: PageTrade, rivals: PageRivals,
   elites: PageElites, war: PageWar, domestic: PageDomestic, resistance: PageResistance,
-  falsifiers: PageFalsifiers, graph: PageGraph, steering: PageSteering, sources: PageSources,
+  falsifiers: PageFalsifiers, graph: PageGraph, steering: PageSteering, sources: PageSources, "galaxy-data": PageGalaxyData,
 };
 const WIDE = new Set(["graph", "steering"]);
 

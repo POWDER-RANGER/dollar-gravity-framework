@@ -50,19 +50,20 @@ A schematic of 50 sovereign bodies (`src/galaxy/data.js`). **It is illustrative 
 | `mass` | Composite "power mass" (economy, military, reserve-currency role). US = 1.19 by construction | Hand-assigned in the original v4.0 build |
 | `threat` | 0–1 adversarial posture toward the dollar order | Hand-assigned judgment |
 | `usdDep` | 0–1 integration with dollar rails and reserves | Hand-assigned judgment |
-| `nuclear` | Approximate warhead inventory | Carried over from v4.0; not re-verified in rev 2.2. Check SIPRI / FAS |
+| `nuclear` | Military-stockpile warheads, nine states | Federation of American Scientists 2026 (sourced) |
 | `rank` | Ordinal in the original dataset (Global Firepower style) | Carried over; not re-verified |
 | `position` | 3D placement | Chosen for legibility; distance and height carry no meaning |
 
-Relationships (`relationships`) carry a one-line `basis`. The Russia→Iran ISR edge is flagged unverified. Scenario presets (`SCENARIOS`) apply **arbitrary visual weights** to show direction of change; they are not forecasts.
+Relationships (`relationships`) carry a one-line `basis`. The Russia→Iran ISR edge rests on anonymous-source press reports and is labelled "reported". The same provenance is published in module 12 (Galaxy Data & Method), generated from `data.js`. Scenario presets (`SCENARIOS`) apply **arbitrary visual weights** to show direction of change; they are not forecasts.
 
 The gravity fabric is `y = −Σ mᵢ·14·warp / (1 + dᵢ²/25)` summed over bodies, with `dᵢ` the horizontal distance to body *i*. It is a visual device, not a physical model.
 
 ## 7. Known limitations
 
-- Several 2026 events (Iran war timeline, blockade) rest on secondary, fast-moving sources and need re-checking against current reporting.
+- Several 2026 events (Iran war timeline, blockade, 20 Oct status) rest on secondary, fast-moving sources and need re-checking against current reporting.
 - The SWIFT currency shares were read from a PDF with scrambled chart labels; currencies were matched to values by rank order. Confirm against the PDF.
-- FISA Section 702 status after July 2026 was not verified.
+- FISA Section 702 status was checked only to 17 Sep 2026 (Brennan Center tracker).
 - The debt-limit timing is an advocacy-group projection; compare with Treasury and CBO releases.
-- Ten legacy claims remain unverified (see the Sources page).
+- All ten rev 2.2 legacy claims were resolved in rev 2.3 (see the Sources page); the unverified list is currently empty.
+- SWIFT shares still depend on scrambled chart labels (see the entry's caveat).
 - Galaxy scores are judgments, not measurements.

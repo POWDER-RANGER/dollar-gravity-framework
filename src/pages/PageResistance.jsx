@@ -17,8 +17,8 @@ export default function PageResistance() {
         ]} />
         <Update>
           <p>
-            Congress used a brake in 2026: Section 702 was allowed to lapse in June rather than renewed without a
-            warrant requirement <Cite id="fisa-702" />. The practical effect was limited because existing FISC
+            Congress let a brake engage in 2026: Section 702 lapsed in June after the House failed to pass an
+            extension <Cite id="fisa-702" />, and by mid-September it had not been reauthorized <Cite id="fisa-702-status" />. The practical effect was limited because existing FISC
             certifications keep collection running, which is itself a lesson in how brakes interact with continuity
             mechanisms.
           </p>

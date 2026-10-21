@@ -1,6 +1,6 @@
 import { PAGES, href } from "../pages-meta.js";
 import { GRAPH_STATS } from "../data/graph.js";
-import { SOURCES, UNVERIFIED, REV, REVIEWED } from "../data/metrics.js";
+import { SOURCES, UNVERIFIED, RESOLVED, REV, REVIEWED } from "../data/metrics.js";
 import { Section, P, Bullets, Gap, Update, Cite } from "../components/ui.jsx";
 
 export default function PageOverview() {
@@ -8,7 +8,7 @@ export default function PageOverview() {
     { label: "Graph nodes · links", val: `${GRAPH_STATS.nodes} · ${GRAPH_STATS.links}`, color: "#60a5fa" },
     { label: "Falsifiers tracked · triggered", val: "5 · 0", color: "#f87171" },
     { label: "Sourced figures, dated", val: String(Object.keys(SOURCES).length), color: "#22d3ee" },
-    { label: "Claims flagged unverified", val: String(UNVERIFIED.length), color: "#fb923c" },
+    { label: `Legacy claims re-checked · still unverified`, val: `${RESOLVED.length} · ${UNVERIFIED.length}`, color: "#fb923c" },
   ];
   const modules = PAGES.filter((p) => p.id !== "overview");
 
@@ -46,11 +46,11 @@ export default function PageOverview() {
 
       <Update title={`What changed in rev ${REV}`}>
         <ul>
-          <li>Figures now carry as-of dates and links <Cite id="cofer" /> and un-sourced claims are flagged, not hidden.</li>
-          <li>Tariff module reflects the Feb 2026 Supreme Court ruling against IEEPA tariffs <Cite id="scotus-ieepa" />.</li>
-          <li>Iran is now a live case: war, ceasefire collapse and naval blockade <Cite id="iran-blockade" />.</li>
-          <li>FISA 702 lapsed in June 2026 without reform <Cite id="fisa-702" />.</li>
-          <li>Each falsifier shows its current reading against its threshold.</li>
+          <li>All 10 claims flagged unverified in rev 2.2 were checked: 2 confirmed, 5 replaced or corrected with sourced figures, 3 removed or restated as model judgment <Cite id="kiel-tariffs" />.</li>
+          <li>The tariff ruling is now read from the Supreme Court opinion, and refunds are flowing <Cite id="scotus-ieepa" /> <Cite id="ieepa-refunds" />.</li>
+          <li>Iran status through 20 Oct: combat paused, talks stalled <Cite id="iran-status" />.</li>
+          <li>FISA 702 still not reauthorized as of mid-September <Cite id="fisa-702-status" />.</li>
+          <li>New module 12 documents what the 3D Galaxy does and does not source.</li>
         </ul>
       </Update>
 
@@ -70,7 +70,7 @@ export default function PageOverview() {
         <Bullets items={[
           <><b>Gap / falsifiability</b> boxes state what observation would weaken the claim above them.</>,
           <><b>[src]</b> links to the figure's source, as-of date and any caveats on the Sources page.</>,
-          <><b>unverified</b> marks a number carried over from earlier revisions that has not been checked yet.</>,
+          <><b>unverified</b> marks a number carried over from earlier revisions that has not been checked. None are open in this revision; see the Sources page for how each was resolved.</>,
           <>Sections marked <b>▲ 2026 update</b> record events since the original analysis. They come from the sources listed, not from the model.</>,
         ]} />
       </Section>

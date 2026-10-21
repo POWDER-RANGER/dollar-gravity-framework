@@ -1,13 +1,13 @@
-import { PageHeader, Gap, Cite, Unv } from "../components/ui.jsx";
+import { PageHeader, Gap, Cite } from "../components/ui.jsx";
 
 const COLS = [
   {
     id: "narrative", label: "NARRATIVE", color: "#c084fc", sub: "The constructed story", icon: "◈",
     desc: "Narrative manufactures consent by framing structural mechanisms as neutral or inevitable. It shapes which questions get asked and which stay invisible.",
     items: [
-      ["Tariffs as punishment", <>Framed as foreign countries paying; the burden routes to domestic importers and consumers <Unv id="u-passthrough" />.</>],
+      ["Tariffs as punishment", <>Framed as foreign countries paying; measured incidence falls almost entirely on US buyers <Cite id="kiel-tariffs" />.</>],
       ["Sanctions as moral theater", "Narrated as principled response; operationally a financial chokepoint calibrated by sector and enforcement capacity."],
-      ["Debt limit as crisis", <>Politically performed as existential; mechanically resolved many times (78+ since 1960 in the earlier revision) <Unv id="u-debt-acts" />.</>],
+      ["Debt limit as crisis", <>Politically performed as existential; mechanically resolved many times (78 acts since 1960, a floor) <Cite id="debt-acts" />.</>],
       ["Surveillance as security", "Vendor ecosystems normalized as technological necessity; fragmentation framed as decentralization rather than distributed control."],
       ["War as defense", "Procurement acceleration and R&D feedback loops narrated as reactive; structurally they are forward-operating incentive systems."],
     ],
@@ -18,9 +18,9 @@ const COLS = [
     desc: "Reality is the structural layer: capital flows, sanctions incidence, payment chokepoints, procurement data. It constrains what narrative can claim and what projection can promise.",
     items: [
       ["USD dominance metrics", <>Dollar on one side of 89% of FX trades <Cite id="bis-fx" />; 56.70% of reserves <Cite id="cofer" />; 49.25% of SWIFT value <Cite id="swift" />. Slipping at the margin, no replacement at scale.</>],
-      ["Tariff incidence", <>High US-side incidence in pass-through studies <Unv id="u-passthrough" />. Legal basis changed when IEEPA tariffs fell <Cite id="scotus-ieepa" />.</>],
-      ["Sanctions efficacy by sector", <>Finance hits fast; tech gaps take years <Unv id="u-chip-lag" />; energy reroutes via intermediaries. Iran now faces a physical blockade <Cite id="iran-blockade" />.</>],
-      ["Elite coordination metrics", <>Per-cycle campaign finance <Unv id="u-fec" />, agency-to-industry timing <Unv id="u-revolving" />, top-five contractor concentration <Unv id="u-dod" />. Measurable in public filings; figures await re-sourcing.</>],
+      ["Tariff incidence", <>About 96% on US buyers in one large study <Cite id="kiel-tariffs" />. Legal basis changed when IEEPA tariffs fell <Cite id="scotus-ieepa" />.</>],
+      ["Sanctions efficacy by sector", <>Finance hits fast; tech gaps take longer (model judgment); energy reroutes via intermediaries. Iran now faces a physical blockade <Cite id="iran-blockade" />.</>],
+      ["Elite coordination metrics", <>2024 federal election spending projected at $15.9B or more <Cite id="opensecrets-2024" />; the top five contractors held about 30% of DoD contract obligations in FY2024 <Cite id="dod-top5" />. Agency-to-industry movement is tracked in OpenSecrets' revolving-door data; no figure is claimed here.</>],
       ["Surveillance pipeline", <>Army–Palantir agreement up to $10B <Cite id="palantir-army" />. Section 702 lapsed but collection continues <Cite id="fisa-702" />.</>],
     ],
     warn: "Reality is not self-interpreting. Every metric sits inside a frame that shapes which numbers get measured and how they are reported.",

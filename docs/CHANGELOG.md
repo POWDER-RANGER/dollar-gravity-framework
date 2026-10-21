@@ -1,5 +1,19 @@
 # Changelog
 
+## Rev 2.3: 2026-10-20
+
+Resolved the ten claims flagged unverified in rev 2.2.
+
+- **Replaced with sourced figures:** tariff pass-through (Kiel: ≈96% US buyers, not 86–94%), 2024 election spending (≥$15.9B), China cameras (≈700M, secondary), Iranian crude pricing (≈$10/bbl discount pre-war, premium in Apr 2026).
+- **Corrected:** DoD top-five concentration is ≈30% (CRS, FY2024), not ≈35%.
+- **Confirmed:** 78 debt-limit acts (Treasury; a floor); 80 fusion centers (DHS 2019).
+- **Removed / reclassified:** 2.7-year revolving door (no source); chip-lag and Ukraine-doctrine figures now stated as model judgment.
+- `UNVERIFIED` is empty; `RESOLVED` records each outcome on the Sources page.
+- SCOTUS entry now read from the opinion itself (6–3; major-questions section joined by three). IEEPA refunds added (≈$122B certified, CBP, 17 Sep).
+- Added Iran status (20 Oct), FISA 702 status (17 Sep), Russia→Iran ISR reporting.
+- Galaxy: warhead counts updated to FAS 2026; ISR edge relabelled "reported".
+- New module 12, **Galaxy Data & Method**, generated from `src/galaxy/data.js`.
+
 ## Rev 2.2: 2026-10-20
 
 Full audit of the site and galaxy.

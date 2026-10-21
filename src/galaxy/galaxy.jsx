@@ -158,16 +158,16 @@ function About() {
         <li><b>Sphere size and fabric depth</b>: power mass, a composite of economic weight, military capability and reserve-currency role. The United States is 1.19 by construction.</li>
         <li><b>Gold ring</b>: integration with dollar rails and reserves (opacity = score × dollar pull).</li>
         <li><b>Halo</b>: nuclear-armed state. <b>Red glow</b> on Iran: latent threshold state, scaled by the ISR slider.</li>
-        <li><b>Edges</b>: framework-asserted relationships. Toggle each type in the legend. The Russia→Iran ISR edge is unverified.</li>
+        <li><b>Edges</b>: framework-asserted relationships. Toggle each type in the legend. The Russia→Iran ISR edge rests on anonymous-source press reports.</li>
         <li><b>Position</b>: arranged for legibility. Distance and height mean nothing.</li>
       </ul>
       <h3>What is and is not sourced</h3>
       <ul>
         <li>Power mass, threat and USD-integration scores are <b>hand-assigned</b> in the original v4.0 build. They are judgments, not measurements.</li>
-        <li>Warhead counts are approximate stockpile estimates carried over from v4.0 and <b>were not re-verified</b> in rev 2.2. Check SIPRI or the Federation of American Scientists before citing.</li>
+        <li>Warhead counts are military-stockpile estimates from the Federation of American Scientists (2026 edition).</li>
         <li>“Dataset rank” is the ordinal in the original dataset (Global Firepower style). It is not re-verified.</li>
         <li>Scenario presets use <b>arbitrary visual weights</b> to show direction of change. They are not forecasts.</li>
-        <li>Dated, sourced figures about the real world live on the main site’s <a href="../#/sources">Sources page</a>.</li>
+        <li>Dated, sourced figures about the real world live on the main site’s <a href="../#/sources">Sources page</a>. The full provenance, dataset and scenario table is on <a href="../#/galaxy-data">Galaxy Data &amp; Method</a>.</li>
       </ul>
       <h3>Editing the data</h3>
       <p>All 50 bodies, relationships and scenarios are in <code>src/galaxy/data.js</code>. <a href={`${REPO}/blob/main/docs/METHODOLOGY.md`} target="_blank" rel="noopener noreferrer">Methodology</a> · <a href={REPO} target="_blank" rel="noopener noreferrer">Source</a></p>
@@ -360,7 +360,7 @@ function App() {
           </fieldset>
 
           <Slider id="s-warp" label="Fabric warp" hint="Depth of the gravity wells." value={ctl.warp} onChange={setCtlKey("warp")} />
-          <Slider id="s-isr" label="ISR stream" hint="Strength of the Russia→Iran ISR edge (unverified) and Iran’s latent glow." value={ctl.isr} onChange={setCtlKey("isr")} />
+          <Slider id="s-isr" label="ISR stream" hint="Strength of the Russia→Iran ISR edge (reported) and Iran’s latent glow." value={ctl.isr} onChange={setCtlKey("isr")} />
           <Slider id="s-dollar" label="Dollar pull" hint="Singularity brightness and the gold dollar-integration rings." value={ctl.dollar} onChange={setCtlKey("dollar")} />
 
           <div className="g-checks">

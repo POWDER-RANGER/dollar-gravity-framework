@@ -2,11 +2,12 @@
 // as-of date and source. Pages reference entries by id; the Sources page
 // renders this file. Update here, not in page prose.
 
-export const REV = "2.2";
+export const REV = "2.3";
 export const REVIEWED = "2026-10-20";
 
 /** @type {Record<string, {label:string,value:string,detail:string,asOf:string,source:string,url:string,kind:"primary"|"secondary",note?:string}>} */
 export const SOURCES = {
+  // ── Monetary core ──────────────────────────────────────────────────────
   "bis-fx": {
     label: "USD share of global FX turnover",
     value: "89%",
@@ -33,7 +34,7 @@ export const SOURCES = {
     source: "SWIFT Global Currency Tracker (Mar 2026 edition)",
     url: "https://www.swift.com/sites/default/files/files/global-currency-tracker_march-2026_final_v3.pdf",
     kind: "primary",
-    note: "Extracted from the PDF with scrambled chart labels; currencies matched to values by rank order. Confirm against the PDF.",
+    note: "Read from the PDF with scrambled chart labels; currencies matched to values by rank order. The July 2026 edition's first chart reads USD 58.63%, EUR 13.46%, which is plausibly a measure that excludes intra-Eurozone payments, but its chart labels are also scrambled and its text states no shares. Not resolved: confirm against the PDF.",
   },
   tic: {
     label: "Foreign holdings of US Treasury securities",
@@ -63,45 +64,99 @@ export const SOURCES = {
     kind: "secondary",
     note: "Advocacy-group projection; compare with Treasury and CBO releases.",
   },
+  "debt-acts": {
+    label: "Congressional actions on the debt limit",
+    value: "78",
+    detail: "“Since 1960, Congress has acted 78 separate times to permanently raise, temporarily extend, or revise the definition of the debt limit.”",
+    asOf: "Treasury page (undated)",
+    source: "US Treasury, Debt Limit",
+    url: "https://home.treasury.gov/policy-issues/financial-markets-financial-institutions-and-fiscal-service/debt-limit",
+    kind: "primary",
+    note: "The same count was in press coverage in April 2023, so the page may not reflect later increases. Treat 78 as a floor.",
+  },
+
+  // ── Trade weapons ──────────────────────────────────────────────────────
+  "kiel-tariffs": {
+    label: "Who paid the 2025 US tariffs",
+    value: "≈ 96% US buyers",
+    detail: "Kiel Institute traced tariff effects across more than 25 million shipment records (almost $4T of US imports). US importers and consumers bore about 96% of the tariff cost; foreign exporters about 4%. Export prices did not fall; volumes did (Indian exports to the US fell by up to 24% after the August 2025 increases).",
+    asOf: "Published 19 Jan 2026 · 2025 data",
+    source: "Kiel Institute, “America's Own Goal: Who Pays the Tariffs?” (Hinz, Lohmann, Mahlkow, Vorwig)",
+    url: "https://www.kielinstitut.de/publications/news/americas-own-goal-americans-pay-almost-entirely-for-trumps-tariffs/",
+    kind: "primary",
+    note: "One study. It measures how export prices responded; how importers split costs with consumers downstream is a separate question. The 86–94% range in earlier revisions had no source and is retired.",
+  },
   "scotus-ieepa": {
     label: "IEEPA tariffs struck down",
     value: "6–3",
-    detail: "Learning Resources v. Trump, 20 Feb 2026: IEEPA does not authorize tariffs. Section 232 and 301 authorities remain; Section 122 (up to 15%, 150 days) discussed as a replacement. No clear refund process established.",
+    detail: "Learning Resources v. Trump, No. 24-1287 (with Trump v. V.O.S. Selections, No. 25-250), decided 20 Feb 2026: IEEPA does not authorize the President to impose tariffs. The Chief Justice wrote for the Court; Justice Thomas dissented, and Justice Kavanaugh dissented joined by Justices Thomas and Alito. The major-questions reasoning (Part II-A-2) was joined by only three Justices. Section 232 and 301 authorities are unaffected; Section 122 (up to 15%, 150 days) was the stated replacement.",
     asOf: "20 Feb 2026",
-    source: "Clark Hill client summary of the decision",
-    url: "https://www.clarkhill.com/news-events/news/supreme-court-overturns-trumps-ieepa-tariffs",
-    kind: "secondary",
-    note: "Law-firm summary. Read the opinion at supremecourt.gov for holding details.",
+    source: "Supreme Court of the United States, slip opinion (preliminary print, 607 U.S. 229)",
+    url: "https://www.supremecourt.gov/opinions/25pdf/607us2r12_8nj9.pdf",
+    kind: "primary",
+    note: "Read from the opinion itself. Later developments on the Section 122 tariffs (a 2–1 Court of International Trade ruling on 7 May and a Federal Circuit stay in June) come from Wikipedia and were not checked against the dockets.",
   },
-  "fisa-702": {
-    label: "FISA Section 702 lapse",
-    value: "12 Jun 2026",
-    detail: "House failed a short-term extension 198–218 on 11 Jun; the authority reached its sunset at midnight 12 Jun, the first lapse since 2008. Collection continues under FISC certifications approved in Mar 2026 (reported to run to ~Mar 2027). No reauthorization found in sources checked through 28 Jul 2026.",
-    asOf: "Jun–Jul 2026",
-    source: "Recording Law summary; EFF analysis",
-    url: "https://www.recordinglaw.com/news/fisa-section-702-surveillance-lapse/",
+  "ieepa-refunds": {
+    label: "IEEPA tariff refunds",
+    value: "≈ $122B certified",
+    detail: "As of 17 Sep 2026 CBP reported about $122B (including interest) certified and transmitted to Treasury for payment, and about $134.7B accepted into its CAPE refund system: more than 286,000 declarations covering about 27.2 million entries. About $1.3B is on hold for missing bank details. CAPE Phase 3 opens 6 Oct 2026 for court-ordered reliquidations.",
+    asOf: "17 Sep 2026",
+    source: "C.H. Robinson client advisory summarizing CBP's progress report",
+    url: "https://www.chrobinson.com/en-au/resources/insights-and-advisories/client-advisories/2026q3/09-17-26-cbp-cape-phase-3-ieepa-refunds/",
     kind: "secondary",
-    note: "Status after July not verified. Check Congress.gov before relying on it.",
+    note: "Certified for payment is not confirmed as paid. Check CBP's CAPE updates for current totals.",
   },
+
+  // ── Rivals, war, sanctions ─────────────────────────────────────────────
   "iran-war": {
     label: "2026 Iran war timeline",
     value: "28 Feb 2026",
-    detail: "War began with US/Israeli strikes; Iran closed the Strait of Hormuz. Ceasefire 8 Apr (Pakistan-mediated). Islamabad Memorandum signed 17 Jun. Ceasefire collapsed 8 Jul; low-intensity fighting continued.",
-    asOf: "Through 8 Jul 2026 (page marked as needing update)",
+    detail: "War began with US/Israeli strikes; Iran closed the Strait of Hormuz. Ceasefire 8 Apr (Pakistan-mediated). Islamabad Memorandum signed 17 Jun. Ceasefire collapsed 8 Jul; fighting resumed.",
+    asOf: "Through 8 Jul 2026 (the page has no later entries)",
     source: "Wikipedia: 2026 Iran war ceasefire",
     url: "https://en.wikipedia.org/wiki/2026_Iran_war_ceasefire",
     kind: "secondary",
-    note: "Secondary, fast-moving source. Verify against current reporting.",
+    note: "Secondary, fast-moving source with some internal inconsistencies. Verify against current reporting.",
+  },
+  "iran-status": {
+    label: "Iran war: status on 20 Oct 2026",
+    value: "Paused, unresolved",
+    detail: "Major combat paused; diplomacy stalled. The last US strikes on Iranian military and IRGC targets were on 1 Sep. The US and Israel are reportedly weighing new strikes. The IRGC calls the Strait of Hormuz closed; CENTCOM says it is open and US-controlled, with about 400 merchant ships transiting in the prior week. Iran's seven-day reopening proposal, tied to its ceasefire conditions, was rejected by the US last month.",
+    asOf: "20 Oct 2026",
+    source: "Gulf News, “What to know Oct. 20, 2026”",
+    url: "https://gulfnews.com/uae/us-israel-iran-war-lull-nears-breaking-point-us-israel-weighing-new-strikes-what-to-know-oct-20-2026-1.500716736",
+    kind: "secondary",
+    note: "One regional outlet. IRGC and CENTCOM claims are each unverified, and reported incidents on 19 Oct are unconfirmed.",
   },
   "iran-blockade": {
     label: "US naval blockade of Iran",
     value: "Ongoing",
-    detail: "Began 13 Apr 2026; lifted 18 Jun after the memorandum; reinstated 14 Jul. Iran's central bank governor said on 19 Aug that oil exports had effectively ceased; WSJ reported on 7 Sep that new exports from the Gulf had halted.",
+    detail: "Began 13 Apr 2026; lifted 18 Jun after the memorandum; reinstated 14 Jul (55 vessels redirected by 11 Aug). Iran's central bank governor said on 19 Aug that oil exports had effectively ceased. WSJ reported on 7–8 Sep that new exports from the Gulf had halted, with Iran relying on floating stockpiles loaded before the reinstatement.",
     asOf: "Through 9 Sep 2026",
     source: "Wikipedia: 2026 US naval blockade of Iran",
     url: "https://en.wikipedia.org/wiki/2026_United_States_naval_blockade_of_Iran",
     kind: "secondary",
-    note: "Secondary, fast-moving source. Verify against current reporting.",
+    note: "The page lists the blockade as ongoing but its entries end in September. Secondary, fast-moving source; verify against current reporting.",
+  },
+  "iran-oil-price": {
+    label: "Iranian crude vs Brent (Chinese independent refiners)",
+    value: "+$1.50–2 / bbl",
+    detail: "In April 2026 refiners in Shandong bought Iranian Light at a $1.50–2 per barrel premium to ICE Brent, against a discount of about $10 per barrel before the war.",
+    asOf: "10 Apr 2026",
+    source: "Reuters, via Yahoo Finance",
+    url: "https://finance.yahoo.com/news/chinas-teapots-buy-iranian-oil-043401829.html",
+    kind: "secondary",
+    note: "Unnamed trade sources. Pricing after the blockade was reinstated (14 Jul) was not checked, and exports have since fallen sharply. The “20–40% below market” figure in earlier revisions is retired.",
+  },
+  "russia-iran-isr": {
+    label: "Russian intelligence support to Iran",
+    value: "Reported",
+    detail: "CNN, following the Washington Post, reported on 6 Mar 2026 that Russia is giving Iran intelligence on the locations and movements of US troops, ships and aircraft, much of it satellite imagery, citing multiple people familiar with US intelligence reporting. On 25 Jul 2026 Ukrainian officials alleged continued Russian satellite support and drone-component shipments.",
+    asOf: "6 Mar and 28 Jul 2026 reporting",
+    source: "CNN (via ABC17); FDD Long War Journal",
+    url: "https://abc17news.com/politics/national-politics/cnn-us-politics/2026/03/06/russia-is-aiding-irans-war-effort-by-providing-intel-on-us-military-targets-sources-say/",
+    kind: "secondary",
+    note: "Anonymous US sources; no Russian response was reported, and the Defense Secretary said Russia and China are “not really a factor” in the war. The Ukrainian claims are allegations. CNN noted it is unclear whether any Iranian attack can be tied to Russian targeting intelligence.",
   },
   "russia-assets": {
     label: "Immobilized Russian central-bank assets",
@@ -122,6 +177,49 @@ export const SOURCES = {
     kind: "secondary",
     note: "The all-time figure appears only in the page metadata.",
   },
+
+  // ── Elite networks ─────────────────────────────────────────────────────
+  "opensecrets-2024": {
+    label: "2024 federal election spending",
+    value: "≥ $15.9B",
+    detail: "OpenSecrets projected at least $15.9B for the 2024 presidential and congressional cycle, a record. Outside spending was expected to exceed $5B.",
+    asOf: "Projection, Oct 2024",
+    source: "CNN, reporting OpenSecrets",
+    url: "https://lite.cnn.com/2024/10/08/politics/2024-election-most-expensive",
+    kind: "secondary",
+    note: "A pre-election projection; check OpenSecrets for final totals. The “$4B+ per cycle” figure in earlier revisions had no source and is retired.",
+  },
+  "dod-top5": {
+    label: "Top-five share of DoD contract obligations",
+    value: "≈ 30%",
+    detail: "FY2024: Lockheed Martin $50.7B, RTX $24.8B, Boeing $23.2B, Northrop Grumman $18.6B, General Dynamics $15.6B. Together about $132.9B of $445.1B in total DoD contractor obligations (29.9%).",
+    asOf: "FY2024 · CRS version of 6 Feb 2026",
+    source: "Congressional Research Service, IF10600, Defense Primer: Department of Defense Contractors (from SAM.gov data)",
+    url: "https://www.everycrsreport.com/files/2026-02-06_IF10600_a75eaddf1ecd59c646b22da91534c60e4489edba.html",
+    kind: "primary",
+    note: "Link is a public mirror of the CRS report. The sum and ratio were computed from its table; the report states 30%. The ≈35% in earlier revisions is corrected.",
+  },
+
+  // ── Domestic drift ─────────────────────────────────────────────────────
+  "fisa-702": {
+    label: "FISA Section 702 lapse",
+    value: "12 Jun 2026",
+    detail: "House failed a short-term extension 198–218 on 11 Jun; the authority reached its sunset at midnight 12 Jun, the first lapse since 2008. Collection continues under FISC certifications approved in Mar 2026 (reported to run to ~Mar 2027).",
+    asOf: "Jun 2026",
+    source: "Recording Law summary; EFF analysis",
+    url: "https://www.recordinglaw.com/news/fisa-section-702-surveillance-lapse/",
+    kind: "secondary",
+  },
+  "fisa-702-status": {
+    label: "FISA Section 702: status since the lapse",
+    value: "No reauthorization",
+    detail: "As of 17 Sep 2026 the Brennan Center's 2026 resource page lists no reauthorization after the June lapse. Its analyses state that surveillance continues until March 2027 even if the statute lapses, and that the authority will not lapse if reauthorized by then.",
+    asOf: "Tracker updated 17 Sep 2026",
+    source: "Brennan Center, Section 702 (2026 resource page)",
+    url: "https://www.brennancenter.org/our-work/research-reports/section-702-foreign-intelligence-surveillance-act-fisa-2026-resource-page",
+    kind: "secondary",
+    note: "Advocacy-organization tracker; the page itself does not state a post-June vote. Nothing after 17 Sep was checked. Confirm on Congress.gov.",
+  },
   "palantir-army": {
     label: "Palantir US Army enterprise agreement",
     value: "≤ $10B",
@@ -131,21 +229,66 @@ export const SOURCES = {
     url: "https://thedefensepost.com/2025/08/02/palantir-us-army-contract/",
     kind: "secondary",
   },
+  "china-cameras": {
+    label: "Surveillance cameras in China (estimate)",
+    value: "≈ 700M",
+    detail: "Comparitech's estimate of cameras in China, citing a US House document dated 7 Mar 2024. It also cites an IHS Markit estimate of more than 1 billion cameras worldwide at the end of 2021.",
+    asOf: "Estimate cited in 2024",
+    source: "Comparitech, “The world's most surveilled cities”",
+    url: "https://www.comparitech.com/vpn-privacy/the-worlds-most-surveilled-cities/",
+    kind: "secondary",
+    note: "Not an official count; treat as an order of magnitude. The “600M+” figure in earlier revisions is replaced.",
+  },
+  "fusion-centers": {
+    label: "Fusion centers in the DHS national network",
+    value: "80",
+    detail: "“The National Network is comprised of 80 fusion centers, 79 centers participated in the 2019 Assessment.” Centers are state- and locally run; DHS designates them primary (typically statewide) or recognized (typically major urban areas).",
+    asOf: "FY2019 assessment",
+    source: "DHS, 2019 Fusion Center Assessment: Summary of Findings (state-hosted copy)",
+    url: "https://www.maine.gov/dps/msp/sites/maine.gov.dps.msp/files/inline-files/2019%20Fusion%20Centers%20Assessment%20Summary%20of%20Findings_Final.pdf",
+    kind: "primary",
+    note: "DHS's current page defines the two types but states no total, so the present count was not confirmed.",
+  },
+  "fusion-oversight": {
+    label: "Fusion-center oversight critique",
+    value: "2012 Senate review",
+    detail: "The Senate Permanent Subcommittee on Investigations reviewed more than a year of fusion-center reporting and “could not identify any reports that uncovered a terrorist threat,” and found wasteful federal grant spending (flat-screen TVs, SUVs, hidden cameras). Senator Coburn later said GAO found little if any improvement in DHS oversight.",
+    asOf: "2012 review · page citing a Nov 2014 statement",
+    source: "Senate HSGAC minority-party page on the subcommittee investigation",
+    url: "https://www.hsgac.senate.gov/media/reps/value-of-terrorism-prevention-centers-remains-unproven",
+    kind: "secondary",
+    note: "Partisan summary of the subcommittee report. Read the report itself for detail.",
+  },
+
+  // ── Galaxy ─────────────────────────────────────────────────────────────
+  "fas-nuclear": {
+    label: "Nuclear warhead inventories (galaxy)",
+    value: "9 states",
+    detail: "Military stockpile estimates: Russia 4,400 · United States 3,700 · China 620 · France 290 · United Kingdom 225 · India 190 · Pakistan 170 · Israel 90 · North Korea 60.",
+    asOf: "2026 edition",
+    source: "Federation of American Scientists, Status of World Nuclear Forces 2026",
+    url: "https://fas.org/initiative/status-world-nuclear-forces/",
+    kind: "primary",
+    note: "The page header carries a 2025 date while its table is labelled 2026. Estimates are revised as new information appears.",
+  },
 };
 
 /**
- * Claims carried over from earlier revisions that were NOT independently
- * verified in this review. They stay in the text, flagged, until sourced.
+ * Claims carried over from earlier revisions that have NOT been verified.
+ * They stay in the text, flagged, until sourced or removed. Empty in rev 2.3.
  */
-export const UNVERIFIED = [
-  { id: "u-passthrough", claim: "Tariff pass-through to US buyers of 86–94%; exporter absorption ~6–14%", where: "Trade Weapons, Steering" },
-  { id: "u-debt-acts", claim: "Congress has acted 78+ times on the debt limit since 1960", where: "Steering" },
-  { id: "u-fec", claim: "Campaign finance of $4B+ per cycle", where: "Steering" },
-  { id: "u-revolving", claim: "Average 2.7 years from agency to industry", where: "Steering" },
-  { id: "u-dod", claim: "Top five defense contractors ≈ 35% of DoD spend", where: "Steering" },
-  { id: "u-fusion", claim: "80+ DHS-linked fusion centers", where: "Domestic Drift, Steering" },
-  { id: "u-cameras", claim: "600M+ surveillance cameras in China", where: "Domestic Drift" },
-  { id: "u-iran-discount", claim: "Iranian oil sold at ~20–40% below market", where: "Rivals & Holdouts" },
-  { id: "u-chip-lag", claim: "18–24 month lag before chip controls affect the battlefield", where: "War, Steering" },
-  { id: "u-ukraine-doctrine", claim: "Drone / counter-drone doctrine matured in ~18 months", where: "War" },
+export const UNVERIFIED = [];
+
+/** Rev 2.3 outcome for each of the ten legacy claims flagged unverified in rev 2.2. */
+export const RESOLVED = [
+  { claim: "Tariff pass-through to US buyers of 86–94%", outcome: "Replaced", now: "About 96% US buyers, 4% foreign exporters (Kiel, Jan 2026)", id: "kiel-tariffs" },
+  { claim: "Congress has acted 78+ times on the debt limit since 1960", outcome: "Confirmed", now: "78 per Treasury; treat as a floor", id: "debt-acts" },
+  { claim: "Campaign finance of $4B+ per cycle", outcome: "Replaced", now: "2024 federal elections projected at $15.9B or more", id: "opensecrets-2024" },
+  { claim: "Average 2.7 years from agency to industry", outcome: "Removed", now: "No source found. The revolving-door mechanism stays; no figure is claimed." },
+  { claim: "Top five defense contractors ≈ 35% of DoD spend", outcome: "Corrected", now: "About 30% of FY2024 contract obligations (CRS)", id: "dod-top5" },
+  { claim: "80+ DHS-linked fusion centers", outcome: "Confirmed", now: "80 in the DHS national network (2019 assessment); current count not confirmed", id: "fusion-centers" },
+  { claim: "600M+ surveillance cameras in China", outcome: "Replaced", now: "About 700M, a secondary estimate with no official count", id: "china-cameras" },
+  { claim: "Iranian oil sold at ~20–40% below market", outcome: "Replaced", now: "About $10/bbl below Brent before the war; a $1.50–2 premium in April 2026", id: "iran-oil-price" },
+  { claim: "18–24 month lag before chip controls affect the battlefield", outcome: "Reclassified", now: "No source found. Now stated as the model's judgment, with no figure." },
+  { claim: "Drone / counter-drone doctrine matured in ~18 months", outcome: "Reclassified", now: "No source found. Now stated as the model's judgment, with no figure." },
 ];

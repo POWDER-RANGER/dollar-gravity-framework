@@ -5,13 +5,13 @@
 
 <br>
 
-[![Typing SVG](https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=18&duration=2600&pause=700&color=FFEA00&center=true&vCenter=true&width=900&lines=12+Analytical+Modules+%E2%80%94+One+System;Narrative+%C2%B7+Reality+%C2%B7+Projection;Every+Claim+Ships+With+Its+Falsifier;Rivals+Still+Route+Through+the+Core)](https://github.com/POWDER-RANGER/dollar-gravity-framework)
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=18&duration=2600&pause=700&color=FFEA00&center=true&vCenter=true&width=900&lines=13+Analytical+Modules+%E2%80%94+One+System;Narrative+%C2%B7+Reality+%C2%B7+Projection;Every+Claim+Ships+With+Its+Falsifier;Rivals+Still+Route+Through+the+Core)](https://github.com/POWDER-RANGER/dollar-gravity-framework)
 
 <br>
 
-![](https://img.shields.io/badge/REV-2.2-FFEA00?style=for-the-badge&labelColor=0D1117)
+![](https://img.shields.io/badge/REV-2.3-FFEA00?style=for-the-badge&labelColor=0D1117)
 ![](https://img.shields.io/badge/REACT-D3-00C853?style=for-the-badge&labelColor=0D1117)
-![](https://img.shields.io/badge/MODULES-12-FFD600?style=for-the-badge&labelColor=0D1117)
+![](https://img.shields.io/badge/MODULES-13-FFD600?style=for-the-badge&labelColor=0D1117)
 ![](https://img.shields.io/badge/FALSIFIERS-5_MONITORED-F87171?style=for-the-badge&labelColor=0D1117)
 
 </div>
@@ -22,7 +22,7 @@
 
 **🌐 [Open the framework →](https://powder-ranger.github.io/dollar-gravity-framework/)**
 
-**🌌 [3D Galaxy v4.0 →](https://powder-ranger.github.io/dollar-gravity-framework/galaxy/)**: 50 sovereign bodies on a warped gravity fabric. Search, detail panel, legend, sortable data table, and illustrative scenarios (Baseline, Iran breakout, Dollar fracture). Scores are hand-assigned and the page says so; it is a schematic, not data.
+**🌌 [3D Galaxy v4.0 →](https://powder-ranger.github.io/dollar-gravity-framework/galaxy/)**: 50 sovereign bodies on a warped gravity fabric. Search, detail panel, legend, sortable data table, and illustrative scenarios (Baseline, Iran breakout, Dollar fracture). Scores are hand-assigned (warhead counts are FAS 2026) and the page says so; it is a schematic, not data. Provenance: module 12.
 
 A falsifiable systems model of the dollar-centric global finance and security system — how USD settlement, Treasuries, correspondent rails, and US legal jurisdiction interlock, and how rivals, holdouts, elites, conflict, and domestic drift all still route through that core. Every structural claim is paired with the observable condition that would break it.
 
@@ -43,11 +43,12 @@ A falsifiable systems model of the dollar-centric global finance and security sy
 | 08 | **Falsifiers** | F-1 … F-5: the triggers that would force a rewrite, each with a current reading |
 | 09 | **System Map** | Interactive D3 causal graph: 24 nodes, 37 links, filters, detail panel |
 | 10 | **System Steering** | Narrative · Reality · Projection triptych and layer matrix |
-| 11 | **Sources & Method** | Every figure with as-of date, link and caveat; claims still unverified |
+| 11 | **Sources & Method** | Every figure with as-of date, link and caveat; how each legacy claim was resolved |
+| 12 | **Galaxy Data & Method** | What the 3D Galaxy sources vs judges; full dataset, edges, scenarios |
 
 ### Evidence standard
 
-Real-world figures live in one file, `src/data/metrics.js`, with value, as-of date, source, URL and a primary/secondary flag. Pages cite entries by id, and the Sources page renders the file. Claims carried over from earlier revisions that have not been re-checked are shown with an *unverified* badge rather than silently kept or deleted. See [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md).
+Real-world figures live in one file, `src/data/metrics.js`, with value, as-of date, source, URL and a primary/secondary flag. Pages cite entries by id, and the Sources page renders the file. Claims that cannot be sourced are flagged *unverified*, restated as model judgment, or removed, never silently kept. See [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md).
 
 ---
 

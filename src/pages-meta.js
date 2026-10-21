@@ -14,6 +14,7 @@ export const PAGES = [
   { id: "graph", num: "09", label: "System Map", icon: "⬡", group: "Synthesis", color: "#60a5fa", desc: "Interactive causal graph of 24 nodes and 37 links." },
   { id: "steering", num: "10", label: "System Steering", icon: "⟡", group: "Synthesis", color: "#c084fc", desc: "Narrative · Reality · Projection: the field that bends the nodes." },
   { id: "sources", num: "11", label: "Sources & Method", icon: "≡", group: "Evidence", color: "#22d3ee", desc: "Every figure with its as-of date and link; claims still unverified." },
+  { id: "galaxy-data", num: "12", label: "Galaxy Data & Method", icon: "✦", group: "Evidence", color: "#22d3ee", desc: "What the 3D Galaxy shows, what is sourced, what is judgment, and how to edit it." },
 ];
 
 export const PAGE_BY_ID = Object.fromEntries(PAGES.map((p) => [p.id, p]));

@@ -1,4 +1,4 @@
-import { PageHeader, Section, P, Bullets, Gap, Update, Cite, Unv, Metric, Metrics } from "../components/ui.jsx";
+import { PageHeader, Section, P, Bullets, Gap, Update, Cite, Metric, Metrics } from "../components/ui.jsx";
 
 export default function PageDomestic() {
   const c = "#34d399";
@@ -11,7 +11,7 @@ export default function PageDomestic() {
         <Bullets items={[
           "Integrated state capacity: party, military, corporate and security functions interlock by design.",
           "Social-credit and behavioral-scoring systems operate across financial, social and civic domains, with uneven national consistency.",
-          <>Facial recognition at very large scale (commonly cited at 600M+ cameras) <Unv id="u-cameras" />.</>,
+          <>Facial recognition at very large scale: estimates of installed cameras run to roughly 700M, with no official count <Cite id="china-cameras" />.</>,
           "Platform capture: WeChat, Alipay and Douyin operate under state data-sharing obligations.",
           "Xinjiang: an extreme surveillance architecture tested on the Uyghur population and exported to partners.",
         ]} />
@@ -21,7 +21,7 @@ export default function PageDomestic() {
         <P>The US model is not centralized by design, but fragmentation is not absence. A distributed ecosystem produces similar outcomes through different means:</P>
         <Bullets items={[
           "Data brokers: commercial aggregation of location, financial and behavioral data sold to government agencies, often without a warrant.",
-          <>Fusion centers: DHS-linked state and local intelligence hubs, commonly cited at 80+ nationwide, with variable oversight <Unv id="u-fusion" />.</>,
+          <>Fusion centers: 80 state and local intelligence hubs in the DHS national network <Cite id="fusion-centers" />, with oversight criticized in a 2012 Senate subcommittee review <Cite id="fusion-oversight" />.</>,
           "Platform analytics: social graph, search and location data reachable through legal process (NSLs, subpoenas, emergency requests).",
           "Vendor ecosystems: Palantir, Axon, ShotSpotter and Clearview AI as nodes in a fragmented but integrated system.",
           "FISA Section 702: collection authority that targets foreign communications but inevitably sweeps in domestic ones.",
@@ -30,8 +30,8 @@ export default function PageDomestic() {
           <p>
             The House failed a short-term extension 198–218 on 11 June, and Section 702 reached its sunset on 12 June
             2026, the first lapse since 2008. Collection continues under FISC certifications approved in March 2026,
-            reported to run to roughly March 2027. No reauthorization appeared in the sources checked through late July
-            <Cite id="fisa-702" />. Check Congress.gov for the current status.
+            reported to run to roughly March 2027 <Cite id="fisa-702" />. A Brennan Center tracker updated 17 September
+            still lists no reauthorization <Cite id="fisa-702-status" />. Check Congress.gov for the current status.
           </p>
           <p>
             Reading: a lapse is not reform. The statutory lever was pulled, but the operational pipeline did not stop.

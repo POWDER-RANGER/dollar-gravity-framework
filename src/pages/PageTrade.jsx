@@ -1,4 +1,4 @@
-import { PageHeader, Section, P, Bullets, Gap, Update, Cite, Unv } from "../components/ui.jsx";
+import { PageHeader, Section, P, Bullets, Gap, Update, Cite } from "../components/ui.jsx";
 
 export default function PageTrade() {
   const c = "#60a5fa";
@@ -12,16 +12,19 @@ export default function PageTrade() {
         <Bullets items={[
           "Collected from US importers at the border, not from the foreign exporting country.",
           "Revenue goes to the US Treasury. It is not a transfer to or from China or any other trade partner.",
-          <>The economic burden is primarily domestic: borne by importers, then passed to consumers. Pass-through studies put US-side incidence very high (86–94% in the earlier revision) <Unv id="u-passthrough" />.</>,
-          "Exporters absorb part of the cost through price cuts to stay competitive, but measured absorption is limited.",
+          <>The economic burden is primarily domestic: borne by importers, then passed to consumers. A Kiel Institute analysis of more than 25 million shipment records found US buyers bore about 96% of the 2025 tariff cost <Cite id="kiel-tariffs" />.</>,
+          "Exporters can absorb part of the cost through price cuts to stay competitive, but measured absorption is small: about 4% in the Kiel study, where export prices held and volumes fell instead.",
           "There is no direct causal link to Treasury interest payments: China earns interest as a bondholder through normal debt markets, not through a tariff mechanism.",
         ]} />
         <Update>
           <p>
             On 20 February 2026 the Supreme Court held 6–3 that the International Emergency Economic Powers Act does
-            not authorize tariffs, voiding the IEEPA tariffs. Other authorities (Section 232, Section 301, and a
-            temporary Section 122 surcharge of up to 15% for 150 days) remain available, and the refund process is
-            unclear <Cite id="scotus-ieepa" />.
+            not authorize tariffs, voiding the IEEPA tariffs <Cite id="scotus-ieepa" />. Other authorities (Section
+            232, Section 301, and a temporary Section 122 surcharge of up to 15% for 150 days) remain available.
+          </p>
+          <p>
+            Refunds are now flowing: by 17 September CBP reported about $122B, including interest, certified for
+            payment through its CAPE system <Cite id="ieepa-refunds" />.
           </p>
           <p>
             Implication for the model: tariffs as an <em>instrument</em> survive, but their legal basis, and therefore

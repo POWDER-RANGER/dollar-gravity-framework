@@ -1,4 +1,4 @@
-import { PageHeader, Section, P, Bullets, Gap, Update, Cite, Unv, Metric, Metrics } from "../components/ui.jsx";
+import { PageHeader, Section, P, Bullets, Gap, Update, Cite, Metric, Metrics } from "../components/ui.jsx";
 
 export default function PageRivals() {
   const c = "#f87171";
@@ -28,7 +28,7 @@ export default function PageRivals() {
       <Section title="Iran: high-constraint holdout" tag="Constrained" color={c}>
         <Bullets items={[
           "Decades of sanctions forced the development of alternative financial architecture.",
-          <>Oil moved through intermediaries at a discount (earlier estimate ~20–40% below market) <Unv id="u-iran-discount" />.</>,
+          <>Oil moved through intermediaries at a discount: about $10 a barrel below Brent before the war, then at a $1.50–2 premium in April 2026 as supply tightened <Cite id="iran-oil-price" />.</>,
           "Barter, cryptocurrency and gold cover some external transactions.",
           "IRGC-linked networks run shadow banking across Turkey, Afghanistan and Pakistan.",
           "Real cost: persistent currency weakness, a technology gap and reduced capital access.",
@@ -39,6 +39,7 @@ export default function PageRivals() {
             <li>8 Apr: Pakistan-mediated ceasefire. 13 Apr: US naval blockade of Iranian ports begins.</li>
             <li>17–18 Jun: Islamabad Memorandum signed; blockade lifted. 8 Jul: ceasefire collapses. 14 Jul: blockade reinstated <Cite id="iran-war" />.</li>
             <li>19 Aug: Iran's central bank governor says oil exports have effectively ceased <Cite id="iran-blockade" />.</li>
+            <li>20 Oct: major combat paused since early September, talks stalled; Iran calls Hormuz closed while CENTCOM says it is open <Cite id="iran-status" />. Russian intelligence support to Iran is reported by US sources <Cite id="russia-iran-isr" />.</li>
           </ul>
           <p>
             Reading: the bypass stack that survived financial sanctions is now being tested by physical interdiction.

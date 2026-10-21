@@ -1,5 +1,6 @@
 import { PageHeader, P, Section } from "../components/ui.jsx";
-import { SOURCES, UNVERIFIED, REVIEWED, REV } from "../data/metrics.js";
+import { href } from "../pages-meta.js";
+import { SOURCES, UNVERIFIED, RESOLVED, REVIEWED, REV } from "../data/metrics.js";
 
 export default function PageSources() {
   return (
@@ -38,17 +39,23 @@ export default function PageSources() {
         </div>
       </Section>
 
-      <Section title="Claims not yet verified" tag={`${UNVERIFIED.length} open`} color="#fb923c">
+      <Section title="Legacy claims re-checked" tag={`${RESOLVED.length} resolved · ${UNVERIFIED.length} open`} color="#fb923c">
         <div id="unverified" className="src" style={{ padding: 0, border: 0, background: "none" }}>
-          <P>These statements were in earlier revisions. They are plausible and commonly cited, but this review did not trace them to a source.</P>
-          <table className="unv-table">
-            <thead><tr><th>Claim</th><th>Where used</th></tr></thead>
-            <tbody>
-              {UNVERIFIED.map((u) => (
-                <tr key={u.id}><td>{u.claim}</td><td>{u.where}</td></tr>
-              ))}
-            </tbody>
-          </table>
+          <P>Rev 2.2 flagged ten carried-over claims as unverified. Rev 2.3 traced each one; this is the outcome.</P>
+          <div style={{ overflowX: "auto" }}>
+            <table className="unv-table">
+              <thead><tr><th>Earlier claim</th><th>Outcome</th><th>Now</th></tr></thead>
+              <tbody>
+                {RESOLVED.map((r) => (
+                  <tr key={r.claim}>
+                    <td>{r.claim}</td><td>{r.outcome}</td>
+                    <td>{r.now} {r.id && <a href={href("sources", r.id)}>[src]</a>}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {UNVERIFIED.length > 0 && <P>Still unverified: {UNVERIFIED.map((u) => u.claim).join("; ")}.</P>}
         </div>
       </Section>
 

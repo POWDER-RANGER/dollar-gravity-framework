@@ -10,12 +10,12 @@ const FALSIFIERS = [
   {
     id: "F-2", title: "Sanctions efficacy collapse", status: "ACTIVE TEST", color: "#f87171",
     test: <>A sanctioned state sustains tech acquisition, military sustainment and state revenue for 3+ years despite maximum pressure. That would falsify the claim that financial warfare is decisive.</>,
-    reading: <>Russia: war continues, assets immobilized indefinitely <Cite id="russia-assets" />. Iran: blockade since Apr 2026 (reinstated Jul), with its central bank reporting oil exports effectively ceased <Cite id="iran-blockade" />. Evidence is mixed and the clock has not run 3 years. <b>Not resolved.</b></>,
+    reading: <>Russia: war continues, assets immobilized indefinitely <Cite id="russia-assets" />. Iran: blockade since Apr 2026 (reinstated Jul), with its central bank reporting oil exports effectively ceased <Cite id="iran-blockade" />. By 20 Oct combat was paused but unresolved <Cite id="iran-status" />. Evidence is mixed and the clock has not run 3 years. <b>Not resolved.</b></>,
   },
   {
     id: "F-3", title: "Domestic surveillance rollback", status: "WATCH", color: "#22d3ee",
     test: <>Congress enacts meaningful Section 702 reform, courts invalidate data-broker-to-government pipelines, or state privacy laws create genuinely enforceable barriers. That would break the "ratchet only turns one way" assumption.</>,
-    reading: <>702 lapsed on 12 Jun 2026 without reform, but collection continues under existing FISC certifications (reported to ~Mar 2027) <Cite id="fisa-702" />. A lapse is not a rollback. <b>Not triggered; the most active file.</b></>,
+    reading: <>702 lapsed on 12 Jun 2026 without reform, but collection continues under existing FISC certifications (reported to ~Mar 2027) <Cite id="fisa-702" />, and a mid-September tracker lists no reauthorization <Cite id="fisa-702-status" />. A lapse is not a rollback. <b>Not triggered; the most active file.</b></>,
   },
   {
     id: "F-4", title: "Elite coalition fracture", status: "EMERGING", color: "#a78bfa",
