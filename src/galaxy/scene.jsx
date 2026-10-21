@@ -21,6 +21,8 @@ const ZS = Float32Array.from(countries.map((c) => c.position[2]));
 const COL_DEEP = new THREE.Color("#0b2a4a");
 const COL_WELL = new THREE.Color("#f59e0b");
 const TMP = new THREE.Color();
+const COL_BG = new THREE.Color("#030816");
+const HALF = FABRIC_SIZE / 2;
 
 /** Gravity fabric: one geometry, a solid surface (depth-coloured) plus a wireframe overlay. */
 function Fabric({ masses, warp, reduced }) {
@@ -50,7 +52,11 @@ function Fabric({ masses, warp, reduced }) {
       }
       y += Math.sin(t * 0.3 + x * 0.15) * 0.3 + Math.cos(t * 0.25 + z * 0.15) * 0.3;
       pos.setY(i, y);
-      TMP.copy(COL_DEEP).lerp(COL_WELL, Math.min(1, Math.max(0, -y / 14)));
+      // radial edge fade so the sheet dissolves into space instead of ending in a hard square
+      const r = Math.sqrt(x * x + z * z) / HALF;
+      const e = Math.min(1, Math.max(0, (r - 0.55) / 0.45));
+      const fade = 1 - e * e * (3 - 2 * e);
+      TMP.copy(COL_DEEP).lerp(COL_WELL, Math.min(1, Math.max(0, -y / 14))).lerp(COL_BG, 1 - fade);
       col.setXYZ(i, TMP.r, TMP.g, TMP.b);
     }
     pos.needsUpdate = true;
@@ -62,10 +68,10 @@ function Fabric({ masses, warp, reduced }) {
   return (
     <group position={[0, FABRIC_Y, 0]}>
       <mesh geometry={geo}>
-        <meshStandardMaterial vertexColors transparent opacity={0.5} side={THREE.DoubleSide} emissive="#0a3a5c" emissiveIntensity={0.25} />
+        <meshBasicMaterial vertexColors transparent opacity={0.42} side={THREE.DoubleSide} blending={THREE.AdditiveBlending} depthWrite={false} />
       </mesh>
       <mesh geometry={geo} position={[0, 0.05, 0]}>
-        <meshBasicMaterial color="#5eead4" wireframe transparent opacity={0.1} />
+        <meshBasicMaterial vertexColors wireframe transparent opacity={0.24} blending={THREE.AdditiveBlending} depthWrite={false} />
       </mesh>
     </group>
   );

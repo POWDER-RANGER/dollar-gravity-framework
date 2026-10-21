@@ -2,6 +2,7 @@ import { PAGES, href } from "../pages-meta.js";
 import { GRAPH_STATS } from "../data/graph.js";
 import { SOURCES, UNVERIFIED, RESOLVED, REV, REVIEWED } from "../data/metrics.js";
 import { Section, P, Bullets, Gap, Update, Cite } from "../components/ui.jsx";
+import { GravityWell, Gauges, FalsifierBoard } from "../components/Viz.jsx";
 
 export default function PageOverview() {
   const stats = [
@@ -14,13 +15,25 @@ export default function PageOverview() {
 
   return (
     <div>
-      <div className="eyebrow">Analytical framework · Rev {REV} · Reviewed {REVIEWED}</div>
-      <h1 className="h1" tabIndex={-1} data-page-title>
-        Dollar-Centric Global Finance<br />&amp; Security System
-      </h1>
-      <p className="lede">
-        A falsifiable systems model: rivalries, bypasses, and competing blocs that still route through the core.
-      </p>
+      <div className="hero">
+        <GravityWell />
+        <div className="hero-copy">
+          <div className="eyebrow">Analytical framework · Rev {REV} · Reviewed {REVIEWED}</div>
+          <h1 className="h1 hero-title" tabIndex={-1} data-page-title>
+            Dollar-Centric Global Finance<br />&amp; Security System
+          </h1>
+          <p className="lede">
+            A falsifiable systems model: rivalries, bypasses, and competing blocs that still route through the core.
+          </p>
+          <div className="hero-cta">
+            <a className="cta primary" href={href("monetary")}>Start with the monetary core →</a>
+            <a className="cta" href="./galaxy/">Open the 3D galaxy</a>
+            <a className="cta" href={href("falsifiers")}>See what would break it</a>
+          </div>
+        </div>
+      </div>
+
+      <Gauges />
 
       <div className="stat-grid">
         {stats.map((s) => (
@@ -30,6 +43,8 @@ export default function PageOverview() {
           </div>
         ))}
       </div>
+
+      <FalsifierBoard />
 
       <Section title="What this model claims" tag="Core" color="#60a5fa">
         <P>

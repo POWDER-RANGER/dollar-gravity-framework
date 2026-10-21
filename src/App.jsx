@@ -29,6 +29,82 @@ function parseHash() {
   return { id: PAGE_BY_ID[id] ? id : DEFAULT_PAGE, anchor: anchor || null };
 }
 
+/** Scroll progress bar under the header. */
+function Progress() {
+  const ref = useRef(null);
+  useEffect(() => {
+    let raf = 0;
+    const on = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const h = document.documentElement.scrollHeight - innerHeight;
+        if (ref.current) ref.current.style.transform = `scaleX(${h > 0 ? Math.min(1, scrollY / h) : 0})`;
+      });
+    };
+    on();
+    addEventListener("scroll", on, { passive: true });
+    addEventListener("resize", on);
+    return () => { removeEventListener("scroll", on); removeEventListener("resize", on); cancelAnimationFrame(raf); };
+  }, []);
+  return <div className="progress" aria-hidden="true"><i ref={ref} /></div>;
+}
+
+/** "On this page" rail built from the rendered section headings. */
+function Toc({ routeId }) {
+  const [items, setItems] = useState([]);
+  const [active, setActive] = useState(null);
+  useEffect(() => {
+    setItems([]); setActive(null);
+    let io;
+    const t = setTimeout(() => {
+      const hs = [...document.querySelectorAll(".page .section-title")];
+      hs.forEach((h, i) => { if (!h.id) h.id = `toc-${routeId}-${i}`; });
+      setItems(hs.map((h) => ({ id: h.id, text: h.textContent })));
+      if (!("IntersectionObserver" in window)) return;
+      hs.forEach((h) => { const s = h.closest(".section"); if (s) s.dataset.tocId = h.id; });
+      io =new IntersectionObserver((es) => {
+        const vis = es.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (vis[0]) setActive(vis[0].target.dataset.tocId);
+      }, { rootMargin: "-70px 0px -60% 0px" });
+      hs.forEach((h) => { const s = h.closest(".section"); if (s) io.observe(s); });
+    }, 250);
+    return () => { clearTimeout(t); io?.disconnect(); };
+  }, [routeId]);
+  if (items.length < 3) return null;
+  return (
+    <nav className="toc" aria-label="On this page">
+      <div className="toc-label">On this page</div>
+      <ol>
+        {items.map((it) => (
+          <li key={it.id}>
+            <a href={`#/${routeId}`} aria-current={active === it.id ? "true" : undefined}
+              onClick={(e) => { e.preventDefault(); document.getElementById(it.id)?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }); }}>
+              {it.text}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+}
+
+/** Fade-up for blocks below the fold. Skipped under reduced motion. */
+function useReveal(routeId) {
+  useEffect(() => {
+    if (!("IntersectionObserver" in window) || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let io;
+    const t = setTimeout(() => {
+      const els = [...document.querySelectorAll(".page .section, .page .card, .page .fals, .page .src, .page .tcol, .page .gap, .page .update, .page .fboard")]
+        .filter((el) => el.getBoundingClientRect().top > innerHeight);
+      io = new IntersectionObserver((es) => es.forEach((e) => {
+        if (e.isIntersecting) { e.target.classList.remove("pre"); io.unobserve(e.target); }
+      }), { rootMargin: "0px 0px -6% 0px" });
+      els.forEach((el) => { el.classList.add("pre"); io.observe(el); });
+    }, 120);
+    return () => { clearTimeout(t); io?.disconnect(); document.querySelectorAll(".pre").forEach((el) => el.classList.remove("pre")); };
+  }, [routeId]);
+}
+
 class Boundary extends Component {
   state = { error: null };
   static getDerivedStateFromError(error) { return { error }; }
@@ -86,6 +162,7 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKey);
   }, [menu]);
 
+  useReveal(route.id);
   const grouped = useMemo(() => GROUPS.map((g) => [g, PAGES.filter((p) => p.group === g)]), []);
   const close = useCallback(() => setMenu(false), []);
 
@@ -106,6 +183,7 @@ export default function App() {
           <a className="btn-link galaxy" href="./galaxy/">3D GALAXY<span> v4.0</span> →</a>
         </div>
       </header>
+      <Progress />
 
       <div className="body">
         <nav id="sidebar" className={`sidebar${menu ? " open" : ""}`} aria-label="Modules">
@@ -131,6 +209,7 @@ export default function App() {
         <div className={`overlay${menu ? " open" : ""}`} onClick={close} aria-hidden="true" />
 
         <main className="main" id="main" tabIndex={-1} ref={mainRef}>
+          <div className="page-wrap">
           <div className={`page${WIDE.has(route.id) ? " wide" : ""}`}>
             <Boundary k={route.id}>
               <Suspense fallback={<div className="page-loading">Loading module…</div>}>
@@ -152,6 +231,8 @@ export default function App() {
                 </a>
               )}
             </nav>
+          </div>
+          {!WIDE.has(route.id) && <Toc routeId={route.id} />}
           </div>
         </main>
       </div>

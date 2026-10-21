@@ -1,3 +1,4 @@
+import { Gauges } from "../components/Viz.jsx";
 import { PageHeader, Section, P, Bullets, Gap, Update, Cite, Metric, Metrics } from "../components/ui.jsx";
 
 export default function PageMonetary() {
@@ -5,6 +6,8 @@ export default function PageMonetary() {
     <div>
       <PageHeader eyebrow="Module 01 · Monetary core" title="USD as global architecture" color="#f59e0b"
         lede="Four layers of dollar power, each with its own leverage points and vulnerabilities." />
+
+      <Gauges />
 
       <Section title="The dollar system is not just money" tag="Structural">
         <P>Dollar hegemony operates across four interdependent layers:</P>

@@ -1,7 +1,7 @@
 import { PageHeader, P, Cite } from "../components/ui.jsx";
 import { href } from "../pages-meta.js";
 
-const FALSIFIERS = [
+export const FALSIFIERS = [
   {
     id: "F-1", title: "De-dollarization threshold", status: "MONITOR", color: "#f59e0b",
     test: <>USD share of global reserves falls below 50%, or USD share of SWIFT payment value falls below 30%. Either would require fundamental revision of the monetary core. Watch BRICS+ payment architecture, oil-trade currency denomination and central-bank reserve-diversification filings.</>,

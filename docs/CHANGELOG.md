@@ -1,5 +1,15 @@
 # Changelog
 
+## Rev 2.3.1: 2026-10-20 (visual)
+
+- Overview hero: animated SVG gravity well, gradient title, calls to action.
+- Sourced dollar-share gauges (BIS FX, IMF COFER, SWIFT) on Overview and Monetary Core, read from `metrics.js`.
+- Falsifier board on Overview (status of F-1 … F-5, linked).
+- "On this page" rail on wide screens, built from section headings, with active-section tracking.
+- Scroll progress bar; fade-up reveal for below-the-fold blocks (off under reduced motion and in print).
+- Ambient background, refined cards, stats, callouts and pager.
+- Galaxy: fabric now fades radially into space (no hard square edge); additive glow on wells.
+
 ## Rev 2.3: 2026-10-20
 
 Resolved the ten claims flagged unverified in rev 2.2.
